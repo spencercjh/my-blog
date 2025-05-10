@@ -4,6 +4,7 @@ description: 我如何在 bilibili 二开 ChaosBlade
 slug: bcm-engine
 tags: [chaos-engineering, Kubernetes]
 hide_table_of_contents: false
+authors: [spencercjh]
 ---
 
 # bcm-engine —— 我们如何给 ChaosBlade 第二春
