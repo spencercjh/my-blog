@@ -42,7 +42,7 @@ const config: Config = {
             defaultReadingTime({ content, options: { wordsPerMinute: 1000 } }),
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
-          editUrl: "https://github.com/spencercjh/my-blog",
+          editUrl: "https://github.com/spencercjh/my-blog/tree/main",
           // Useful options to enforce blogging best practices
           onInlineTags: "warn",
           onInlineAuthors: "warn",
