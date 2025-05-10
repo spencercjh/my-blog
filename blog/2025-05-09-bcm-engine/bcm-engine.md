@@ -20,7 +20,7 @@ hide_table_of_contents: false
 
 bcm-engine 是我们 folk ChaosBlade 之后的项目名称，项目并没有开源。
 
-对混沌工程还不太熟悉的读者可以阅读中国信通院混沌工程实验室发表的[《中国混沌工程调查报告 （2021 年）》](http://www.caict.ac.cn/kxyj/qwfb/ztbg/202111/P020211115608682270800.pdf)。
+对混沌工程还不太熟悉的读者可以阅读中国信通院混沌工程实验室发表的 [《中国混沌工程调查报告 （2021 年）》](http://www.caict.ac.cn/kxyj/qwfb/ztbg/202111/P020211115608682270800.pdf)。
 
 ## 背景
 
@@ -63,26 +63,26 @@ CNCF TOC（Technical Oversight Committee）的 Blog。
 
 根据公开资料显示，[ChaosBlade](https://github.com/chaosblade-io/chaosblade)
 项目主体于 [2019 年 3 月](https://github.com/chaosblade-io/chaosblade/releases/tag/v0.0.1)
-开源， [2021 年 4 月](https://www.cncf.io/projects/chaosblade/)成为 CNCF Sandbox 项目，其中包括一个命令行程序 blade CLI
+开源， [2021 年 4 月](https://www.cncf.io/projects/chaosblade/) 成为 CNCF Sandbox 项目，其中包括一个命令行程序 blade CLI
 以及各种各样的故障注入
 executor（如 [chaosblade-exec-os](https://github.com/chaosblade-io/chaosblade-exec-os)，[chaosblade-exec-cri](https://github.com/chaosblade-io/chaosblade-exec-cri)
 等），使得用户可以在终端上执行 blade CLI，配合不同的命令和参数，对本地或者本地的容器环境执行故障注入。
 
 [chaosblade-operator](https://github.com/chaosblade-io/chaosblade-operator)
-于 [2019 年 11 月](https://github.com/chaosblade-io/chaosblade-operator/releases/tag/v0.4.0)开源，其中包含了一套 K8s CRD
+于 [2019 年 11 月](https://github.com/chaosblade-io/chaosblade-operator/releases/tag/v0.4.0) 开源，其中包含了一套 K8s CRD
 及其 Operator，使得用户可以创建针对 K8s Node/Pod/Container
 的实验。它是一个用 [operator-sdk](https://sdk.operatorframework.io/) 搭建的 operator 项目。
 
 [chaosblade-box](https://github.com/chaosblade-io/chaosblade-box)
 于 [2021 年 2 月](https://github.com/chaosblade-io/chaosblade-box/releases/tag/v0.1.0)
-开源，其中包含了一个混沌工程平台的前后端工程项目，使得用户可以自行搭建类似于[阿里云 AHAS Chaos](https://help.aliyun.com/zh/ahas/user-guide/faq-about-failure-drill/)
+开源，其中包含了一个混沌工程平台的前后端工程项目，使得用户可以自行搭建类似于 [阿里云 AHAS Chaos](https://help.aliyun.com/zh/ahas/user-guide/faq-about-failure-drill/)
 （一款遵循混沌工程实验原理并融合了阿里巴巴内部实践的产品，提供丰富故障场景，能够帮助分布式系统提升容错性和可恢复性。）的混沌工程平台，在网页上构建并运行混沌实验流程。chaosblade-box
 开源后，ChaosBlade 可以被真正地称为混沌工程平台产品，而不再是一个命令行工具。chaosblade-box 是一个用 Maven 组织的 Mono Java
 项目，包含了多个 Module。chaosblade-box
 中的前端页面源码则在另一个项目 [chaosblade-box-fe](https://github.com/chaosblade-io/chaosblade-box-fe) 中。
 
 下图出自官方
-Blog [《ChaosBlade-Box全新混沌工程平台 -- 助力企业混沌工程落地》](https://chaosblade.io/blog/2022/06/24/ChaosBlade-Box-a-New-Version-of-the-Chaos-Engineering-Platform-Has-Released-ch)
+Blog [《ChaosBlade-Box 全新混沌工程平台 -- 助力企业混沌工程落地》](https://chaosblade.io/blog/2022/06/24/ChaosBlade-Box-a-New-Version-of-the-Chaos-Engineering-Platform-Has-Released-ch)
 ，简单展示了引入 chaosblade-box 后系统的整体架构。其中 Agent 负责在目标机器/K8s 集群中与 chaosblade-box 进行交互，用来创建故障实验，调用
 blade CLI 或者创建 ChaosBlade custom resource。
 它在另一个项目 [chaosblade-box-agent](https://github.com/chaosblade-io/chaosblade-box-agent) 中。
@@ -97,24 +97,24 @@ ChaosBlade 项目里的命名不太清楚，可以发现很多东西都叫 “ch
 - ChaosBlade custom resource
   是指定义在 [chaosblade-operator/pkg/apis/chaosblade/v1alpha1](https://github.com/chaosblade-io/chaosblade-operator/tree/master/pkg/apis/chaosblade/v1alpha1)
   中的 [ChaosBlade custom resource](https://github.com/chaosblade-io/chaosblade-operator/blob/master/pkg/apis/chaosblade/v1alpha1/types.go#L168)
-  ，其中包含 `spec`和 `status` 2 个字段，`spec`中有实验的定义。笔者认为这个命名是最模糊的，`ChaosBlade` 根本不能将一个资源的含义表达清楚。
+  ，其中包含 `spec` 和 `status` 2 个字段，`spec` 中有实验的定义。笔者认为这个命名是最模糊的，`ChaosBlade` 根本不能将一个资源的含义表达清楚。
 
-根据 CNCF 官方的[统计数据](https://chaosblade.devstats.cncf.io/d/8/dashboards?orgId=1)，可以发现 ChaosBlade 在近一年都没有发布新的
+根据 CNCF 官方的 [统计数据](https://chaosblade.devstats.cncf.io/d/8/dashboards?orgId=1)，可以发现 ChaosBlade 在近一年都没有发布新的
 release 版本，GitHub Activity（包括 Commit，PR，issue，Release 等）比较少。
 
 ![image-20240710163434199](./assets/image-20240710163434199.png)
 
 ![image-20240710163945742](./assets/image-20240710163945742.png)
 
-> https://chaosblade.devstats.cncf.io/d/12/issues-opened-closed-by-repository-group?orgId=1&var-period=d&var-repogroup_name=All
+> https://chaosblade.devstats.cncf.io/d/12/issues-opened-closed-by-repository-group?orgId = 1&var-period = d&var-repogroup_name = All
 
 经过笔者半年多对 ChaosBlade 的观察和参与，发现项目的 owner 是阿里云的 @camix（GitHub username，下文中所有的 @username
 都是如此，不再解释），ta 会每隔一段时间上线处理一些 Issue 和 PR，近期 ta 还向 CNCF 提出了将项目升级为 incubating
-项目的[申请](https://github.com/cncf/toc/pull/1278)。maintainer 之一的 @tiny-x 在钉钉群中算是比较活跃的，但他几乎不会去处理
+项目的 [申请](https://github.com/cncf/toc/pull/1278)。maintainer 之一的 @tiny-x 在钉钉群中算是比较活跃的，但他几乎不会去处理
 Issue 和 PR。其他的 maintainer 如阿里云的 @xcaspar ，中国移动的 @Yuaninga 和 GitLab 中国的 @sunny0826 则不活跃。比较重要的
 Contributor 还有滴滴的 @binbin0325，他在钉钉群中透露过一些设计思路。
 
-作为中国最早开源的混沌工程项目，它有着同类项目中最大的用户基础和企业用户数量，其中不乏国内知名[大厂](https://github.com/chaosblade-io/chaosblade/issues/32)
+作为中国最早开源的混沌工程项目，它有着同类项目中最大的用户基础和企业用户数量，其中不乏国内知名 [大厂](https://github.com/chaosblade-io/chaosblade/issues/32)
 。从上面笔者对其社群的观察就能发现，ChaosBlade 也不免落入国内开源项目“重开源轻运营维护”的困境：内外两套代码，黑箱决策，没有完整的
 Issue-PR 讨论，维护停滞等。
 
@@ -122,8 +122,8 @@ Issue-PR 讨论，维护停滞等。
 
 根据公开资料显示，[Chaos Mesh](https://github.com/chaos-mesh)
 于 [2020 年 4 月](https://github.com/chaos-mesh/chaos-mesh/releases/tag/v0.8.0)
-开源，[2020 年 7 月](https://chaos-mesh.org/blog/chaos-mesh-join-cncf-sandbox-project/)成为 CNCF Sandbox
-项目，[2022 年 2 月](https://www.cncf.io/blog/2022/02/16/chaos-mesh-moves-to-the-cncf-incubator/)成为 CNCF Incubating
+开源，[2020 年 7 月](https://chaos-mesh.org/blog/chaos-mesh-join-cncf-sandbox-project/) 成为 CNCF Sandbox
+项目，[2022 年 2 月](https://www.cncf.io/blog/2022/02/16/chaos-mesh-moves-to-the-cncf-incubator/) 成为 CNCF Incubating
 项目。Chaos Mesh 是一个“纯正”的云原生项目，核心组件必须运行在 K8s 中，内部组件交互也全都是标准的 gRPC 和 JSON-RPC。
 
 [chaos-mesh](https://github.com/chaos-mesh/chaos-mesh) 是一个组织良好的 Mono Repo，其中包含以下主要组件。
@@ -152,23 +152,23 @@ Issue-PR 讨论，维护停滞等。
 
 尽管和 ChaosBlade 一样，Chaos Mesh 也进入了长期维护阶段，但从下列图表中可以看出项目还是保持着稳定的维护。目前项目的主要
 owner 是
-@STRRL，他去年还在[上海 KubeCon](https://kccncosschn2023.sched.com/event/1PTKK/chaos-meshdaeppei-huan-chaos-mesh-overview-practice-and-future-zhou-zhiqiang-individual-cwen-yin-pingcap-xianglin-gao-tencent)
+@STRRL，他去年还在 [上海 KubeCon](https://kccncosschn2023.sched.com/event/1PTKK/chaos-meshdaeppei-huan-chaos-mesh-overview-practice-and-future-zhou-zhiqiang-individual-cwen-yin-pingcap-xianglin-gao-tencent)
 上推广了 Chaos Mesh，主要负责日常维护的 maintainer 是 @g1eny0ung，Rust 组件的维护由仍在 PingCAP 的 @YangKeao 维持。
 
 ![image-20240710231147244](./assets/image-20240710231147244.png)
 
 ![image-20240710231240428](./assets/image-20240710231240428.png)
 
-> https://chaosmesh.devstats.cncf.io/d/12/issues-opened-closed-by-repository-group?orgId=1&var-period=d&var-repogroup_name=All
+> https://chaosmesh.devstats.cncf.io/d/12/issues-opened-closed-by-repository-group?orgId = 1&var-period = d&var-repogroup_name = All
 
 PingCAP 自称是一家 “业界领先的企业级开源分布式数据库企业”，笔者认为 Chaos Mesh 没有给公司“拖后腿”。虽然晚于 ChaosBlade
 几个月开源，但 Chaos Mesh 的项目组织和社区运营情况都比 ChaosBlade 好不少。由于云原生项目的性质，Chaos Mesh 的用户群体一定没有
 ChaosBlade
-多，但仍然吸引了包括腾讯、字节、小鹏汽车等[大厂](https://github.com/chaos-mesh/chaos-mesh/blob/master/ADOPTERS.md)使用，更吸引了
+多，但仍然吸引了包括腾讯、字节、小鹏汽车等 [大厂](https://github.com/chaos-mesh/chaos-mesh/blob/master/ADOPTERS.md) 使用，更吸引了
 Microsoft Azure 用其打造了自己的混沌实验产品 [chaos studio](https://learn.microsoft.com/en-us/azure/chaos-studio/)。
 Chaos Mesh 可以吸引来自国外的开发人员和组织参与贡献，这一点难能可贵。
 
-> 2025 年 5 月后记：Chaos Mesh 目前来看仅有主项目 Chaos Mesh 还有持久的更新迭代，2 个令Chaos Mesh ”突出重围“与众不同的“黑科技”项目
+> 2025 年 5 月后记：Chaos Mesh 目前来看仅有主项目 Chaos Mesh 还有持久的更新迭代，2 个令 Chaos Mesh ”突出重围“与众不同的“黑科技”项目
 > chaos-tproxy 和 toda 已经沦落到和 chaosblade 一样，有多人评论的共性问题 issue
 > 都长期无人应答了（比如：[[HELP] tproxy make network failed](https://github.com/chaos-mesh/chaos-tproxy/issues/67)）。我在
 > 2024 年年末尝试将 [chaos-tproxy](https://github.com/chaos-mesh/chaos-tproxy) 集成进 bcm-engine
@@ -177,7 +177,7 @@ Chaos Mesh 可以吸引来自国外的开发人员和组织参与贡献，这一
 #### 后起之秀—— ChaosMeta
 
 根据公开资料显示，[Chaos Meta](https://github.com/traas-stack/chaosmeta)
-于 [2023 年 5 月](https://mp.weixin.qq.com/s/bw8Emb_19hv3SIv6ScvYAg)开源，目前还处于快速迭代阶段。ChaosMeta 和 Chaos Mesh
+于 [2023 年 5 月](https://mp.weixin.qq.com/s/bw8Emb_19hv3SIv6ScvYAg) 开源，目前还处于快速迭代阶段。ChaosMeta 和 Chaos Mesh
 的架构相近，但它“云原生化”的程度更高，引入了 4 个独立的 operator 用于处理不同的实验相关的工作。
 
 1. chaosmeta-inject-operator 提供了故障注入调度能力：下发到目标机器 Agent 以及云原生注入能力，与 ChaosBlade 的
@@ -234,7 +234,7 @@ ChaosMeta 在架构设计上是最“优雅”的。它充分使用了 CRD 及 o
 Argo Workflows 的 workflow custom resource，编排工作就完成了，其余的编排实现，流程执行都不需要自己实现。Argo 是一个成熟的项目，2020
 年 3 月成为 CNCF incubating 项目，2022 年 12 月 Graduated 毕业。其中的 Argo Workflows 用于实现顺序多步骤或者 DAG
 的工作流编排，以支撑 Argo CD。像 Chaos Meta 这样直接使用 Argo Workflows
-的[项目](https://github.com/argoproj/argo-workflows/blob/main/USERS.md)
+的 [项目](https://github.com/argoproj/argo-workflows/blob/main/USERS.md)
 不在少数，笔者比较了解的是机器学习任务相关的 [KubeFlow](https://www.kubeflow.org/) 和 [MetaFlow](https://metaflow.org/)。
 
 抛开技术上的设计与实现不谈，来自蚂蚁的相关团队对混沌工程平台的理解，产品设计是三个项目里最完整的。如下图所示，他们对故障演练的认识非常充分。这些步骤和阶段与我们
@@ -263,7 +263,7 @@ Chaos Mesh 也是一个优秀的云原生项目，依托于 PingCAP 在开源社
 个项目都没有的自动化 [e2e 测试](https://github.com/chaos-mesh/chaos-mesh/tree/master/e2e-test) 模块和一套完整的基于
 GitHub Actions 的 [CI/CD 工作流](https://github.com/chaos-mesh/chaos-mesh/tree/master/.github)。
 
-![image-20240711154721508](./assets/image-20240711154721508.png)![image-20240710230154087](./assets/image-20240710230154087.png)
+![image-20240711154721508](./assets/image-20240711154721508.png) ![image-20240710230154087](./assets/image-20240710230154087.png)
 
 Chaos Mesh 与其他 2 个项目相比能够支持更多的实验类型。使用 Rust 开发的 chaos-tproxy 和 toda 十分“硬核”。ChaosBlade 的
 maintainer @tiny-x 在钉钉群里都曾向笔者推荐过参考 toda 来重新实现 ChaosBlade 不太好用的磁盘 I/O 故障注入。
@@ -439,7 +439,7 @@ paas 以及日志平台的相关同事的讨论，我们决定使用 log-agent �
 | ------------------------------------ | ------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
 | bcm-operator                         | stdout/stderr                                     | 输出日志文件到 /data/log/bcm-operator/\*。添加 log-agent 配置文件到容器内指定位置后，node 所在机器上的 log-agent 会采集指定目录下的日志。 |
 | (daemonset chaosblade-tool)bcm-blade | 输出日志文件到/opt/chaosblade/logs/chaosblade.log | 保持日志现状。添加 log-agent 配置文件到容器内指定位置后，node 所在机器上的 log-agent 会采集指定目录下的日志。                             |
-| (与bcm-agent 部署在一起的)bcm-blade  | 输出日志文件到/opt/chaosblade/logs/chaosblade.log | 保持日志现状。添加 log-agent 配置文件到机器上内指定位置后，机器上的 log-agent 会采集指定目录下的日志。                                    |
+| (与 bcm-agent 部署在一起的)bcm-blade | 输出日志文件到/opt/chaosblade/logs/chaosblade.log | 保持日志现状。添加 log-agent 配置文件到机器上内指定位置后，机器上的 log-agent 会采集指定目录下的日志。                                    |
 | bcm-agent                            | 输出日志文件到/data/log/bcm-agent/                | 保持日志现状。添加 log-agent 配置文件到机器上内指定位置后，机器上的 log-agent 会采集指定目录下的日志。                                    |
 
 其中，K8s node 所在机器上的 log-agent 会读取每一个容器中的 `LOG_COLLECTOR_CONF`
@@ -470,9 +470,9 @@ bcm-blade 成功执行 cri 实验后，会和 K8s 一样，folk 一个进程等�
 
 ![image-20240714171200821](./assets/image-20240714171200821.png)
 
-查看网络相关故障注入的恢复逻辑[源码](https://github.com/chaosblade-io/chaosblade-exec-os/blob/master/exec/network/tc/network_tc.go)
+查看网络相关故障注入的恢复逻辑 [源码](https://github.com/chaosblade-io/chaosblade-exec-os/blob/master/exec/network/tc/network_tc.go)
 后，我们找到了问题：tc 相关网络故障的销毁其实只需要 device 一个参数，直接将网卡上所有的 tc
-规则全部删除。所以后一个注入的故障会被前一个故障的定时恢复任务恢复。笔者翻阅了其他实验的恢复代码（CPU，内存，DNS等），发现几乎所有的恢复逻辑都会把“现场”彻底恢复原状，而不会考虑多个实验前后，单个实验中
+规则全部删除。所以后一个注入的故障会被前一个故障的定时恢复任务恢复。笔者翻阅了其他实验的恢复代码（CPU，内存，DNS 等），发现几乎所有的恢复逻辑都会把“现场”彻底恢复原状，而不会考虑多个实验前后，单个实验中
 K8s 实验到 CRI 实验前后的关联关系。
 
 ![image-20240714171907896](./assets/image-20240714171907896.png)
@@ -481,7 +481,7 @@ K8s 实验到 CRI 实验前后的关联关系。
 K8s client，Delete API 如果没有正确返回结果，就不会修改 custom resource 状态，触发 operator reconcile 去执行恢复逻辑。想要从根本上解决，需要在
 chaosblade/exec/cri/executor.go 中通过 UID 去校验实验状态，但由于 K8s 实验与 CRI 实验其实是不存在关联关系的（chaosblade 与
 chaosblade-operator 中都没有维护这个关系），在这里加状态校验逻辑会比较困难。笔者认为由于没有一个 apiserver
-并接入持久化存储（数据库等）以供所有 daemonset pod 上的 chaosblade-tools 去获取正确的实验状态和 K8s->CRI 实验关联关系，这里
+并接入持久化存储（数据库等）以供所有 daemonset pod 上的 chaosblade-tools 去获取正确的实验状态和 K8s-> CRI 实验关联关系，这里
 chaosblade CLI 的实现只能无条件地执行 destroy。
 
 ![image-20240716112425594](./assets/image-20240716112425594.png)
@@ -495,7 +495,7 @@ CRI 实验都是从 K8s 实验转化而来的。那我们简单地移除 CRI 实
 
 BCM 平台引入了“依赖应用不可用”这个实验，帮助用户找到依赖应用的所有实例 IP，拼接进 ChaosBlade 的网络故障注入实验参数中。2024
 年 5 月开始，有些面向 C 端的服务研发/测试开始使用 BCM
-平台测试他们的服务，偶尔会出现故障注入失败的问题。排查日志后发现注入过程中报"argument list too long"的错误。查看源码后发现，
+平台测试他们的服务，偶尔会出现故障注入失败的问题。排查日志后发现注入过程中报 "argument list too long" 的错误。查看源码后发现，
 chaosblade 的执行器本质上都是在目标 Pod/物理机上执行普通的 Linux 命令。在 tc 命令中，由于需要影响/豁免的 IP
 端口过多，导致用 && 连接的 tc add filter 命令过多，使得最终命令超过 `getconf ARG_MAX` 的限制，就会报 “argument list too
 long”。
@@ -507,9 +507,9 @@ tc，紧跟着的第一条命令不能以 tc 开头，后面通过 && 连接的�
 
 ### Bug 修复
 
-> 这一部分的内容是 2025 年 5 月加入的，初稿完成时候我还没有修复这些Bug。
+> 这一部分的内容是 2025 年 5 月加入的，初稿完成时候我还没有修复这些 Bug。
 
-ChaosBlade 是一个“缝缝补补”的项目，它一开始肯定是不支持在容器上进行故障注入的！在容器环境执行故障注入时出现了很多真正的BUG，且多年来社区都没有修复。
+ChaosBlade 是一个“缝缝补补”的项目，它一开始肯定是不支持在容器上进行故障注入的！在容器环境执行故障注入时出现了很多真正的 BUG，且多年来社区都没有修复。
 
 #### 正确支持容器环境的 CPU 负载演练
 
@@ -518,9 +518,9 @@ ChaosBlade 是一个“缝缝补补”的项目，它一开始肯定是不支持
 为什么这么说呢？因为我发现在社区中存在大量有关容器环境 CPU 负载实验结果不符预期的 issue：
 
 - [pod fullload cpu result incorrect](https://github.com/chaosblade-io/chaosblade-operator/issues/102)
-- [当我对容器CPU资源做了限制后，CPU满载实验的--cpu-percent参数限制好像有问题。](https://github.com/chaosblade-io/chaosblade/issues/463)
+- [当我对容器 CPU 资源做了限制后，CPU 满载实验的--cpu-percent 参数限制好像有问题。](https://github.com/chaosblade-io/chaosblade/issues/463)
 - [CPU not completely accurate](https://github.com/chaosblade-io/chaosblade/issues/805)
-- [对于cpu负载实验指定cpu-count后，cpu-percent指定了但无效](https://github.com/chaosblade-io/chaosblade/issues/928)
+- [对于 cpu 负载实验指定 cpu-count 后，cpu-percent 指定了但无效](https://github.com/chaosblade-io/chaosblade/issues/928)
 - ["cpu-percent" can not take effect in chaosblade.pod-cpu.fullload](https://github.com/chaosblade-io/chaosblade/issues/801)
 
 一看源码就发现了问题：当用户没有指定 CPU
@@ -535,14 +535,14 @@ ChaosBlade 是一个“缝缝补补”的项目，它一开始肯定是不支持
 ![image2024-11-5_17-44-48](./assets/image2024-11-5_17-44-48.png)
 
 受 https://github.com/uber-go/automaxprocs/tree/master/internal/cgroups 启发并结合相关资料，一个容器的 CPU
-Limit（Quota）应该是**容器目录下**的 `/sys/fs/cgroup/cpu/cpu.cfs_quota_us ÷ /sys/fs/cgroup/cpu/cpu.cfs_quota_us`。
+Limit（Quota）应该是 **容器目录下** 的 `/sys/fs/cgroup/cpu/cpu.cfs_quota_us ÷ /sys/fs/cgroup/cpu/cpu.cfs_quota_us`。
 
 > 没有相关知识背景的读者可以阅读以下参考资料：
 >
-> - [重学容器29: 容器资源限制之限制容器的CPU](https://blog.frognew.com/2021/07/relearning-container-29.html)
+> - [重学容器 29: 容器资源限制之限制容器的 CPU](https://blog.frognew.com/2021/07/relearning-container-29.html)
 > - [Is Your Go Application Really Using the Correct Number of CPU Cores?](https://nemre.medium.com/is-your-go-application-really-using-the-correct-number-of-cpu-cores-20915d2b6ccb)
-> - [重学容器06: 容器资源限制背后的技术cgroups](https://blog.frognew.com/2021/05/relearning-container-06.html)
-> - [重学容器10: 容器仅仅是一种特殊的进程](https://blog.frognew.com/2021/06/relearning-container-10.html)
+> - [重学容器 06: 容器资源限制背后的技术 cgroups](https://blog.frognew.com/2021/05/relearning-container-06.html)
+> - [重学容器 10: 容器仅仅是一种特殊的进程](https://blog.frognew.com/2021/06/relearning-container-10.html)
 
 上述资料和 uber-go 的 [automaxprocs](https://github.com/uber-go/automaxprocs) 解决了获取当前 Pod 容器的 CPU
 资源（request&limit）的问题，但我们的需求其实是**在一个拥有特权（privilege）的 daemonset pod 里去获取所在 Node 上某一个 Pod
@@ -553,7 +553,7 @@ Node 上的一个进程。那么我们可以通过宿主机的 `/proc/$pid/cgrou
 cpu 信息。而 Pod 容器 pid 是 chaosblade 代码中已经正确获取到的了。在这里不再赘述参考资料中的知识，直接列出如何通过 cgroup
 文件获取容器的 CPU 资源信息：
 
-- 通过`/proc/${pod-container-pid}/cgroup` 拿到子系统（cpu,cpuacct）的路径
+- 通过 `/proc/${pod-container-pid}/cgroup` 拿到子系统（cpu, cpuacct）的路径
   `/kubepods/burstable/podd74c5ead-a8ae-4b20-bc9d-8f006780db4a/8f60a0486d75d5f02d386869cb041800c896c4c2e79be64cf13cc3f334fe9823`
   - 通过 `/proc/${pod-container-pid}/mountinfo` 拿到
     `/kubepods/burstable/podd74c5ead-a8ae-4b20-bc9d-8f006780db4a/8f60a0486d75d5f02d386869cb041800c896c4c2e79be64cf13cc3f334fe9823`
@@ -561,12 +561,12 @@ cpu 信息。而 Pod 容器 pid 是 chaosblade 代码中已经正确获取到的
     - 在 daemonset pod 中，cgroup 子系统目录需要将 `/sys` 替换成 `/host-sys`（配置卷和挂载点时是这么配的）
       - 计算 `cpu.cfs_quota_us / cpu.cfs_quota_us` 的值，使用 `math.Ceil` 向上取整。
 
-具体的实现代码可以看这个PR [fix: get correct CPU quota in container runtime](https://github.com/chaosblade-io/chaosblade-exec-os/pull/177)
+具体的实现代码可以看这个 PR [fix: get correct CPU quota in container runtime](https://github.com/chaosblade-io/chaosblade-exec-os/pull/177)
 ，在拷贝 [automaxprocs internal cgroups 包](https://github.com/uber-go/automaxprocs/tree/master/internal/cgroups)
-的同时，拼接Pod 具体子目录的逻辑也有细微变化，不能直接使用 automaxprocs 的源码。
+的同时，拼接 Pod 具体子目录的逻辑也有细微变化，不能直接使用 automaxprocs 的源码。
 
 > 题外话：这个 issue 的修复让我很开心，因为在地球的另外一个角落，老哥 muhammed.tanir@flyingbutter
-> 对我发出了[殷切期盼](https://github.com/chaosblade-io/chaosblade/issues/1079#issuecomment-2623885167)
+> 对我发出了 [殷切期盼](https://github.com/chaosblade-io/chaosblade/issues/1079#issuecomment-2623885167)
 > ，希望我能帮助他解决问题。最后我也提交了 PR 并合入了主分支，但不知道老哥后面有没有解决重新分发 chaosblade-exec-os
 > 包的问题。![image-20250509163623530](./assets/image-20250509163623530.png)
 
@@ -578,11 +578,11 @@ cpu 信息。而 Pod 容器 pid 是 chaosblade 代码中已经正确获取到的
 杀死，导致用户无法模拟应用高内存水位的情形，使这个功能失去了原本的意义。
 
 > The OOM Killer 是内核中的一个进程，当系统出现严重内存不足时，它就会启用自己的算法去选择某一个进程并杀掉.
-> 之所以会发生这种情况，是因为Linux内核在给某个进程分配内存时，会比进程申请的内存多分配一些.
+> 之所以会发生这种情况，是因为 Linux 内核在给某个进程分配内存时，会比进程申请的内存多分配一些.
 > 这是为了保证进程在真正使用的时候有足够的内存，因为进程在申请内存后并不一定立即使用，当真正使用的时候，可能部分内存已经被回收了.
-> 比如 当一个进程申请2G内存时，内核可能会分配2.5G的内存给它.通常这不会导致什么问题.然而一旦系统内大量的进程在使用内存时，就会出现内存供不应求.很快就会导致内存耗尽这时就会触发这个oom
-> killer,它会选择性的杀掉某个进程以保证系统能够正常运行。The OOM Killer通过检查所有正在运行的进程，然后根据自己的算法给每个进程一个badness分数.拥有最高
-> badness分数的进程将会在内存不足时被杀掉.它打分的算法如下：某一个进程和它所有的子进程都占用了很多内存的将会打一个高分；优先选择进程号最小的那个进程；内核进程和其他较重要的进程会被打成相对较低的分。有
+> 比如 当一个进程申请 2G 内存时，内核可能会分配 2.5G 的内存给它.通常这不会导致什么问题.然而一旦系统内大量的进程在使用内存时，就会出现内存供不应求.很快就会导致内存耗尽这时就会触发这个 oom
+> killer, 它会选择性的杀掉某个进程以保证系统能够正常运行。The OOM Killer 通过检查所有正在运行的进程，然后根据自己的算法给每个进程一个 badness 分数.拥有最高
+> badness 分数的进程将会在内存不足时被杀掉.它打分的算法如下：某一个进程和它所有的子进程都占用了很多内存的将会打一个高分；优先选择进程号最小的那个进程；内核进程和其他较重要的进程会被打成相对较低的分。有
 > 3 个文件与之相关。
 >
 > `/proc/$pid/oom_score`：这个文件显示了进程的 OOM 分数。OOM 分数是一个整数值，表示该进程在内存不足时被 OOM Killer
@@ -591,7 +591,7 @@ cpu 信息。而 Pod 容器 pid 是 chaosblade 代码中已经正确获取到的
 > `/proc/$pid/oom_score_adj`：这个文件允许你调整进程的 OOM 分数。oom_score_adj 的值范围是从 -1000 到
 > 1000。值越小，进程被杀死的可能性越小；值越大，进程被杀死的可能性越大。可以通过写入这个文件来调整进程的 OOM 分。
 >
-> `/proc/$pid/oom_adj` 和上面那个一样，它的取值范围是 -17 到 15。但它已经被废弃，用于兼容老版本内核。`oom_score_adj`和
+> `/proc/$pid/oom_adj` 和上面那个一样，它的取值范围是 -17 到 15。但它已经被废弃，用于兼容老版本内核。`oom_score_adj` 和
 > `oom_adj` 任何一个变动，另一个也会自动跟着改动。
 >
 > 我们可以通过 `dmesg | egrep -i “killed process”` 来查看 oom killer 的工作情况。
@@ -618,14 +618,14 @@ flag 在容器环境并不能正确工作。一看源码就发现了问题：
 `chaos_os` 进程目录。导致 `chaos_os` 一旦占用内存爬高，很快就会被杀掉。**
 但用户的预期往往是故障注入进程应该把内存用完，导致正常运行的服务不能正常工作。**如果故障注入无法影响到真实的用户服务，那么演练将失去意义。
 
-借鉴 chaos-mesh 的[相关实现](https://github.com/chaos-mesh/chaos-mesh/blob/master/pkg/bpm/build_linux.go#L31-L51)，我们可以发现
+借鉴 chaos-mesh 的 [相关实现](https://github.com/chaos-mesh/chaos-mesh/blob/master/pkg/bpm/build_linux.go#L31-L51)，我们可以发现
 chaos-mesh 是在借助 nsexec 将故障注入进程挂入目标容器时加上了 choom
 命令。![image2024-11-20_15-50-50](./assets/image2024-11-20_15-50-50.png)
 
 ChaosBlade
 的层次结构导致了我们很难照搬这样的模式，我只能在执行故障注入的通用方法里加一段特殊逻辑，实属无奈：![image2024-11-20_16-7-8](./assets/image2024-11-20_16-7-8.png)
 
-`command.Process.Pid` 是 `nsexec` 进程的 pid，可以在 `/proc/$pid/task/$pid/childern` 找到它的子进程 `chaos_os`。相关PR
+`command.Process.Pid` 是 `nsexec` 进程的 pid，可以在 `/proc/$pid/task/$pid/childern` 找到它的子进程 `chaos_os`。相关 PR
 如下：[fix: process
 `avoid-being-killed` for mem exp](https://github.com/chaosblade-io/chaosblade-exec-cri/pull/23)，[fix: DO NOT process
 `avoid-being-killed` for executor with `NSExecChannel`](https://github.com/chaosblade-io/chaosblade-exec-os/pull/178)。
@@ -635,18 +635,18 @@ ChaosBlade
 > 原始技术文档写于 2025 年 1 月 13 日
 
 ChaosBlade
-有一个功能是[移除容器](https://chaosblade.io/docs/experiment-types/k8s/container/blade_create_k8s_container-container)
+有一个功能是 [移除容器](https://chaosblade.io/docs/experiment-types/k8s/container/blade_create_k8s_container-container)
 ，这种混沌实验一般是没人用的，但我们一用就出问题……
 
 > 我们今年开始利用它做一些骚操作，开展一些“业内独创的演练形式，这边暂时不方便多说。后面机会成熟以后我再写 blog。
 
 使用它移除容器后，发现 Pod 的状态和就绪容器数量没有任何变化，但主容器已经无法操作，会报错 container
-找不到。![image2025-1-13_11-37-28](./assets/image2025-1-13_11-37-28.png)到目标 Pod 所在 Node
+找不到。![image2025-1-13_11-37-28](./assets/image2025-1-13_11-37-28.png) 到目标 Pod 所在 Node
 上又能找到容器里的进程还在运行。这明显和我们期望的“移除容器”操作的结果不一致。
 
 ![image-20250509175724828](./assets/image-20250509175724828.png)
 
-维护公司 Kubernetes 的同事说移除容器“应该”使用 `crictl`，并用 `crictl stop $CONTAINER_ID`和 `crictl ``rm` `$CONTAINER_ID`
+维护公司 Kubernetes 的同事说移除容器“应该”使用 `crictl`，并用 `crictl stop $CONTAINER_ID` 和 `crictl ` `rm` `$CONTAINER_ID`
 向我证明公司 kubelet 并没有魔改什么以影响这部分功能。
 
 本人并没有 OCI Open Container Initiative、CRI Container Runtime Interface 相关研发工作经历，只是会使用相关工具。因此我没有第一时间看出
@@ -659,7 +659,7 @@ chaosblade 里 containerd client 的使用问题。既然 crictl 能够有效删
 
 client 是这样创建出来的：https://github.com/kubernetes-sigs/cri-tools/blob/master/cmd/crictl/main.go#L96-L117。
 
-![image2025-1-13_14-16-11](./assets/image2025-1-13_14-16-11.png)可以看到在没有指定容器运行时 ep 的情况下会和本地的 3
+![image2025-1-13_14-16-11](./assets/image2025-1-13_14-16-11.png) 可以看到在没有指定容器运行时 ep 的情况下会和本地的 3
 种容器运行时尝试连接：`containerd`，`crio`，`cri-dockerd`。结合 containerd
 的文档：[containerd#cri](https://github.com/containerd/containerd?tab=readme-ov-file#cri)，由此我们知道 crictl
 是在和本地的容器运行时的 cri 插件服务通信。![cri](./assets/cri.png)
@@ -668,7 +668,7 @@ containerd 整个 repo 存在 v1、v2 两个重大版本分支。经过确认，
 plugin 中，处理 RemoveContainer
 的代码如下：https://github.com/containerd/containerd/blob/v1.6.5/pkg/cri/server/container_remove.go#L34-L112
 
-![image2025-1-13_14-26-3](./assets/image2025-1-13_14-26-3.png)其中最关键的就是以下操作：
+![image2025-1-13_14-26-3](./assets/image2025-1-13_14-26-3.png) 其中最关键的就是以下操作：
 
 1. 如果容器状态是 RUNNING 或者 UNKNOWN，停止容器
    1. 处理 UNKNOWN 容器的残留 Task 和进程
@@ -681,13 +681,13 @@ plugin 中，处理 RemoveContainer
 再看看 chaosblade 里的相关代码，与之对比就能看出 chaosblade 遗漏了什么。
 
 chaosblade-exec-cri 为 containerd
-操作封装了一个结构体，对移除容器的[实现](https://github.com/chaosblade-io/chaosblade-exec-cri/blob/1d05c9e7821250820338bdc822fc5903e99410c5/exec/container/containerd/containerd_linux.go#L168-L179)
+操作封装了一个结构体，对移除容器的 [实现](https://github.com/chaosblade-io/chaosblade-exec-cri/blob/1d05c9e7821250820338bdc822fc5903e99410c5/exec/container/containerd/containerd_linux.go#L168-L179)
 如下：![image2025-1-13_15-27-53](./assets/image2025-1-13_15-27-53.png)
 
 可以明显看到，这里仅调用了 `ContainerService().Delete` 方法，这意味着它只会删去容器元信息，并不会处理容器相关进程。这就是为什么
 kubelet 无法获取到容器信息，但 Node 上容器进程依旧在正常运行，可以通过 `crictl` 停止并删除。
 
-在修复这个问题的时候，我在公司内部版本和[开源版本](https://github.com/chaosblade-io/chaosblade-exec-cri/pull/22)
+在修复这个问题的时候，我在公司内部版本和 [开源版本](https://github.com/chaosblade-io/chaosblade-exec-cri/pull/22)
 上做出了不同的实现。如果完全删除容器信息，它被杀死、重启的信息将无法再被查到，这在公司环境里是不能被接受的。因此，我们仅需将
 containerd task 杀死（表现是容器以 137 code 错误退出），随后借助公司容器平台标准配置的 livenessProbe
 来帮助我们实现移除容器的根本目标。这样一来这些操作就都留了痕迹。
@@ -697,7 +697,7 @@ containerd task 杀死（表现是容器以 137 code 错误退出），随后借
 ### 特性开发
 
 网络相关的故障注入是现阶段 B 站需求量最大的实验类型，上层平台 bcm-backend 会进一步封装 bcm-engine 提供的实验，帮助用户更方便地选择需要影响的目标
-IP:端口，网段 IP CIDR ，豁免的目标 IP:端口等。但 chaosblade-exec-os 中的实现仍然不能满足我们的需求，很容易造成不熟悉 TC
+IP: 端口，网段 IP CIDR ，豁免的目标 IP: 端口等。但 chaosblade-exec-os 中的实现仍然不能满足我们的需求，很容易造成不熟悉 TC
 的用户误操作，甚至还有一些 Bug。
 
 #### bilibili-network loss/delay
@@ -707,21 +707,21 @@ IP:端口，网段 IP CIDR ，豁免的目标 IP:端口等。但 chaosblade-exec
 ![image-20240714230450557](./assets/image-20240714230450557.png)
 
 我们最早想到要重新实现网络故障注入实现是因为上图这个场景。我们需要阻断目标 Pod 对一些 IP 网段的访问，同时阻断它请求某些特定的
-IP:Port， 另外还要豁免某些 IP:Port。ChaosBlade 的 network loss 的有关参数如下，其中的 `destination-ip`，`local-port`，
+IP: Port， 另外还要豁免某些 IP: Port。ChaosBlade 的 network loss 的有关参数如下，其中的 `destination-ip`，`local-port`，
 `remote-port` 分别与 linux tc filter 中的关键字 `match ip dst`，`match ip sport`，`match ip dport` 对应。（对不熟悉 TC
 或者网络基础知识不扎实的用户来说，这些参数有些晦涩了）
 
-> --destination-ip string 目标 IP. 支持通过子网掩码来指定一个网段的IP地址, 例如 192.168.1.0/24. 则 192.168.1.0~
+> --destination-ip string 目标 IP. 支持通过子网掩码来指定一个网段的 IP 地址, 例如 192.168.1.0/24. 则 192.168.1.0~
 > 192.168.1.255 都生效。你也可以指定固定的 IP，如 192.168.1.1 或者 192.168.1.1/32，也可以通过都号分隔多个参数，例如
 > 192.168.1.1,192.168.2.1。
 > --exclude-port string 排除掉的端口，默认会忽略掉通信的对端端口，目的是保留通信可用。可以指定多个，使用逗号分隔或者连接符表示范围，例如
 > 22,8000 或者 8000-8010。 这个参数不能与 --local-port 或者 --remote-port 参数一起使用
-> --exclude-ip string 排除受影响的 IP，支持通过子网掩码来指定一个网段的IP地址, 例如 192.168.1.0/24. 则 192.168.1.0~
+> --exclude-ip string 排除受影响的 IP，支持通过子网掩码来指定一个网段的 IP 地址, 例如 192.168.1.0/24. 则 192.168.1.0~
 > 192.168.1.255 都生效。你也可以指定固定的 IP，如 192.168.1.1 或者 192.168.1.1/32，也可以通过都号分隔多个参数，例如
 > 192.168.1.1,192.168.2.1。
 > --interface string 网卡设备，例如 eth0 (必要参数)
 > --local-port string 本地端口，一般是本机暴露服务的端口。可以指定多个，使用逗号分隔或者连接符表示范围，例如 80,8000-8080
-> --percent string 丢包百分比，取值在[0, 100]的正整数 (必要参数)
+> --percent string 丢包百分比，取值在 [0, 100] 的正整数 (必要参数)
 > --remote-port string 远程端口，一般是要访问的外部暴露服务的端口。可以指定多个，使用逗号分隔或者连接符表示范围，例如
 > 80,8000-8080
 > --force 强制覆盖已有的 tc 规则，请务必在明确之前的规则可覆盖的情况下使用
@@ -731,13 +731,13 @@ IP:Port， 另外还要豁免某些 IP:Port。ChaosBlade 的 network loss 的有
 如果使用 ChaosBlade 版本，经过实测，我们是无法在一次故障注入中完全满足上图所描述的需求的。分析源码后我们发现，`remote-port`
 会在外层循环中被遍历，与内层循环中的 `destination-port` 一起组合成 `match ip dst $IP match ip dport $port $portMask`
 ，这会导致只有目标 Pod 到目标 IP 网段中的部分端口的请求会受到影响，而端口的数量始终是有限给定的，总会有“漏网之鱼”。
-`exclude-ip` 却没有和 `exclude-port`的关联关系，它们 2 个会被分别处理，创建对应的 tc filter 规则。
+`exclude-ip` 却没有和 `exclude-port` 的关联关系，它们 2 个会被分别处理，创建对应的 tc filter 规则。
 
 如果按照上图方式传递参数，对 other blocked service pods 的影响仅限于指定的 IP CIDR 地址中对应 IP 的 6379 端口（也就是下面
-blocked cache 中 `--remote-port` 指定的 6379 端口）。如果出现极端状况，`exclude-port`中包含了`remote-port`，那么
-`remote-port`将失效。
+blocked cache 中 `--remote-port` 指定的 6379 端口）。如果出现极端状况，`exclude-port` 中包含了 `remote-port`，那么
+`remote-port` 将失效。
 
-在没有自研 bilibili-network loss 前，上层平台 bcm-backend 只能为 `destination-ip`添加常用的`remote-port`，比如 8000-9000 等
+在没有自研 bilibili-network loss 前，上层平台 bcm-backend 只能为 `destination-ip` 添加常用的 `remote-port`，比如 8000-9000 等
 HTTP/GRPC 服务常用的端口。经常有用户来投诉演练故障注入不生效，排查后发现用户的目标服务的端口不在我们给定的 `remote-port`
 内（比如 K8s apiserver 的 6443 端口），导致很多 case 无法验证，影响演练最终效果。
 
@@ -749,20 +749,20 @@ HTTP/GRPC 服务常用的端口。经常有用户来投诉演练故障注入不�
 
 > --deny-ips：需要阻断的 IP 地址（支持 CIDR 地址）。
 >
-> --deny-endpoints：区别于上面的 ip（往往是 CIDR 地址），需要阻断的 IP:Port，用于数据库，缓存等 endpoints。
+> --deny-endpoints：区别于上面的 ip（往往是 CIDR 地址），需要阻断的 IP: Port，用于数据库，缓存等 endpoints。
 >
 > --exclude-ips：需要豁免的 IP（支持 CIDR 地址）。
 >
-> --exclude-endpoints：需要豁免的 IP:Port，用于白名单应用 endpoints。
+> --exclude-endpoints：需要豁免的 IP: Port，用于白名单应用 endpoints。
 
 在实现上，4 个参数的处理相互独立，不再像之前那样有依赖关系。创建出来的 tc filter 的数量级从 O(m IP 数量 \* n 端口数量) 下降到了
 O(n endpoint 数量)。创建出来的 filter 也更符合我们的预期和直觉。
 
 解决问题往往不会一帆风顺，在 Chaos Mesh
-模拟网络故障的[文档](https://chaos-mesh.org/zh/docs/simulate-network-chaos-on-kubernetes/)中，其中一条注意事项就是：请在进行网络注入的过程中保证
+模拟网络故障的 [文档](https://chaos-mesh.org/zh/docs/simulate-network-chaos-on-kubernetes/) 中，其中一条注意事项就是：请在进行网络注入的过程中保证
 Controller Manager 与 Chaos Daemon 之间的连接通畅，否则将无法恢复。从用户的使用体验角度考虑，开发内部平台的我们绝对不能让用户自己去注意这些有风险的情况。我们不能让用户的
-`--deny-ips`把上层平台 bcm-backend 给影响到了，否则故障将无法在平台上手动恢复，界面上的实验状态也都会不正确。经过讨论后，我们决定让
-bcm-backend 对每一个网络故障注入都添加 `--exclude-endpoints`参数，将平台自身的 IP:Port 豁免。
+`--deny-ips` 把上层平台 bcm-backend 给影响到了，否则故障将无法在平台上手动恢复，界面上的实验状态也都会不正确。经过讨论后，我们决定让
+bcm-backend 对每一个网络故障注入都添加 `--exclude-endpoints` 参数，将平台自身的 IP: Port 豁免。
 
 然而在对物理机进行演练的过程中，我们又发现了新的问题，当用户填写的 `--deny-ips` 是 `0.0.0.0/0`
 时，所有的出入网请求都被影响了，这导致机器丢失，用户失去了观测实验目标的能力。因此，我们对 22（sshd），9100（node_exporter） 和
@@ -787,7 +787,7 @@ ChaosBlade network dns 篡改解析故障注入的实现过于简单，不能满
 chaosblade 的 DNS 篡改解析注入实现是这样的：
 
 1. 使用逗号分割请求的 domain(s)
-2. 使用 `grep -q  $IP $DOMAINS `来判断 /etc/hosts 中是否已经存在同样的 DNS
+2. 使用 `grep -q  $IP $DOMAINS ` 来判断 /etc/hosts 中是否已经存在同样的 DNS
    pair，如果有的话就报错（后来笔者将报错改成了返回注入成功，与恢复时候的判断逻辑保持一致）
 3. 使用 `echo $IP $DOMAINS` 将域名解析加入到文件末尾
 
@@ -802,7 +802,7 @@ chaosblade 的 DNS 篡改解析注入实现是这样的：
 
 1. 如果已经有了 `a.b.c.d foo.bar` 的解析（比如 paas 平台为容器添加的域名解析），如果这时候再往文件末尾添加解析，系统的重试机制会让注入达不到预期效果。（预期是用户给定的域名解析失败）
 2. 用 grep 来过滤 DNS pair 非常粗糙，一旦 domains 在数据传输过程中顺序发生变化，就可能导致实验无法恢复。比如
-   `127.0.0.1 foo.bar bar.baz #chaosblade`和 `127.0.0.1 bar.baz foo.bar #chaosblade`就是不同（不完全一致）的 DNS Pair，使用
+   `127.0.0.1 foo.bar bar.baz #chaosblade` 和 `127.0.0.1 bar.baz foo.bar #chaosblade` 就是不同（不完全一致）的 DNS Pair，使用
    grep 是比较不出来的。
 
 ##### 自研版本
@@ -810,8 +810,8 @@ chaosblade 的 DNS 篡改解析注入实现是这样的：
 ![bilibili-network dns](./assets/image2024-6-24_21-3-40.png)
 
 我们引入了 [goodhosts/hostfile](https://github.com/goodhosts/hostsfile) 库来帮助我们解析 hosts 文件。首先读取目标容器中的
-/etc/hosts 文件并输出到 stdout，再复制一份用于恢复。将stdout的结果输出到 node 上的临时文件，使用 hostsfile
-库解析它并添加新的解析。hostfile 库暴露了Add,Remove 和 Flush 3 个主要方法。其中 Add 和 Remove
+/etc/hosts 文件并输出到 stdout，再复制一份用于恢复。将 stdout 的结果输出到 node 上的临时文件，使用 hostsfile
+库解析它并添加新的解析。hostfile 库暴露了 Add, Remove 和 Flush 3 个主要方法。其中 Add 和 Remove
 的实现会先删除已有的解析，再添加新的解析，这满足我们的演练需求。处理完 hosts 文件内容后，将新的 hostsfile 覆盖 Pod 中的
 /etc/hosts 文件。恢复的时候仅需把备份文件重新覆盖回 /etc/hosts 即可。恢复文件以实验 UID 结尾，恢复到该实验生效前的版本，不会对
 /etc/hosts 文件产生额外的副作用。
@@ -833,7 +833,7 @@ bcm-agent，将 bcm-backend 传来的参数传给机器上的 blade，执行本�
 > 月份出了个 bug，查下来发现是平台拼好的 chaosblade 命令参数过长，导致 bcm-agent 拉起 chaosblade CLI
 > 的时候报了命令过长的错误。这让我们哭笑不得：平台数据库字段过长、拼装 tc 命令过长都解决了，结果 bcm-agent
 > 这个用了很多年的东西还出幺蛾子。短时间我们的解决办法是优化平台层面的业务逻辑，尽量避免拼出过长的 blade
-> 参数。长期来看，一个接收平台参数，直接创建 K8s CR 的服务是必不可少的。毕竟 HTTP Body size 可以调很大，但Linux max args
+> 参数。长期来看，一个接收平台参数，直接创建 K8s CR 的服务是必不可少的。毕竟 HTTP Body size 可以调很大，但 Linux max args
 > 很难调整。
 
 一是 chaosblade CLI 创建 custom resource 后的行为与一般的云原生项目 CLI （比如 kubectl，Argo CLI 等）不一致。形象地说，它的实现说将
@@ -849,7 +849,7 @@ bcm-agent，将 bcm-backend 传来的参数传给机器上的 blade，执行本�
 
 二是 chaosblade CLI 分散在演练目标机器以及 K8s 集群 daemonset pod 里，它会将实验记录都存在 SQLite
 中，这显然不适合在公司的生产环境里使用。显然我们没有也不会去开发收集这些里的数据的程序。这导致一旦出现了上文提到的“实验脱离平台管控“的问题以后，由于
-HTTP 请求超时，平台没有获得 blade CLI 的返回结果，实验 UID 就没有被存下来。用户 oncall 来了之后想要恢复实验，我们只能通过日志去分析，猜测当时执行的实验UID
+HTTP 请求超时，平台没有获得 blade CLI 的返回结果，实验 UID 就没有被存下来。用户 oncall 来了之后想要恢复实验，我们只能通过日志去分析，猜测当时执行的实验 UID
 是多少。特别是 K8s Node 上往往不太方便去装 sqlite3 来读取 chaosblade SQLite 文件。最糟糕的一次，我们只能让用户把 Pod 删了来恢复
 
 #### K8s 实验中替代 bcm-agent 与 chaosblade CLI
@@ -886,7 +886,7 @@ K8s 部分的代码，形成公共逻辑。
 
 最后，我们还希望能在未来解决现在所有混沌工程项目都没能解决的问题：动态感知演练目标（比如
 Pods）的变化，动态注入故障。比如当你使用 [label selector](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/)
-（ChaosBlade 里是 `sepc.experiments[*].matchers[*].name: labels`，Chaos Mesh 里是`spec.selector.labelSelectors`，Chaos Meta
+（ChaosBlade 里是 `sepc.experiments[*].matchers[*].name: labels`，Chaos Mesh 里是 `spec.selector.labelSelectors`，Chaos Meta
 里是 `spec.selector.label`）选择了一些 Pods 作为故障注入目标后，实验过程中如果有新增的符合要求的 Pod 出现，新 Pod
 不会被被注入故障。流量进入新的 Pod 后可能会导致用户不能得到符合预期的测试结果。
 
@@ -894,7 +894,7 @@ Pods）的变化，动态注入故障。比如当你使用 [label selector](http
 Mesh 的 maintainer @STRRL 介绍 Chaos Mesh 项目中的工程问题时就提到了这个问题。
 
 实现它的方法并不难想到：实现一个 watch Pod 的 controller，reconcile Pod 时判断它是否需要被正在进行中的实验注入故障，然后交给已有的
-operator 注入故障代码即可。但笔者认为难就难在如何判断 Pod是否需要被正在进行中的实验注入故障。混沌实验的参数往往都是以非关系型的方式存储的，如果要对
+operator 注入故障代码即可。但笔者认为难就难在如何判断 Pod 是否需要被正在进行中的实验注入故障。混沌实验的参数往往都是以非关系型的方式存储的，如果要对
 selector 相关信息进行快速检索，那么我们就需要将这些信息提前存到方便搜索的介质中。
 
 其次，在超大集群中，Pod 的数量成千上万，Pod 的变化量也很多。如何正确实现 reconcile 过程，使得整个服务没有性能瓶颈，很考验研发人员对

@@ -49,6 +49,7 @@
     "node": ">=18.0"
   },
   "lint-staged": {
+    "**/*.md": "make md-padding",
     "**/*": "prettier --write --ignore-unknown"
   }
 }
