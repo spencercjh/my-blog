@@ -111,8 +111,6 @@ release 版本，GitHub Activity（包括 Commit，PR，issue，Release 等）�
 
 ![image-20240710163945742](./assets/image-20240710163945742.png)
 
-> https://chaosblade.devstats.cncf.io/d/12/issues-opened-closed-by-repository-group?orgId = 1&var-period = d&var-repogroup_name = All
-
 经过笔者半年多对 ChaosBlade 的观察和参与，发现项目的 owner 是阿里云的 [@camix](https://github.com/MandssS)，ta 会每隔一段时间上线处理一些 Issue 和 PR，近期 ta 还向 CNCF 提出了将项目升级为 incubating
 项目的 [申请](https://github.com/cncf/toc/pull/1278)。maintainer 之一的 [@tiny-x](https://github.com/tiny-x) 在钉钉群中算是比较活跃的，但他几乎不会去处理
 Issue 和 PR。其他的 maintainer 如阿里云的 [@xcaspar](https://github.com/xcaspar) ，中国移动的 [@Yuaninga](https://github.com/Yuaninga) 和 GitLab 中国的 [@sunny0826](https://github.com/sunny0826) 则不活跃。比较重要的
@@ -122,7 +120,7 @@ Contributor 还有滴滴的 [@binbin0325](https://github.com/binbin0325)，他�
 。从上面笔者对其社群的观察就能发现，ChaosBlade 也不免落入国内开源项目“重开源轻运营维护”的困境：内外两套代码，黑箱决策，没有完整的
 Issue-PR 讨论，维护停滞等。
 
-> 本文初稿成文后的半年至今，上文提到的 [@camix](https://github.com/MandssS) 和 [@tiny-x](https://github.com/tiny-x) 已经完全从钉钉群里消失，目前仍会说话的仅剩 [@xcaspar](https://github.com/xcaspar)。[@camix](https://github.com/MandssS) 提的 CNCF incubating issue 也石沉大海了。但哪怕这样还是不断有新用户加入钉钉群，这个项目的影响力真的很夸张。
+> 2025 年 5 月后记：本文初稿成文后的半年至今，上文提到的 [@camix](https://github.com/MandssS) 和 [@tiny-x](https://github.com/tiny-x) 已经完全从钉钉群里消失，目前仍会说话的仅剩 [@xcaspar](https://github.com/xcaspar)。[@camix](https://github.com/MandssS) 提的 CNCF incubating issue 也石沉大海了。但哪怕这样还是不断有新用户加入钉钉群，这个项目的影响力真的很夸张。
 
 #### 云原生践行者—— Chaos Mesh
 
@@ -156,7 +154,7 @@ Issue-PR 讨论，维护停滞等。
 
 ![chaos-mesh-arch-1](./assets/chaos-mesh.png)
 
-尽管和 ChaosBlade 一样，Chaos Mesh 也进入了长期维护阶段，但从下列图表中可以看出项目还是保持着稳定的维护。目前项目的主要
+尽管和 ChaosBlade 一样，Chaos Mesh 也进入了长期维护阶段，但从下列 [图表](https://chaosmesh.devstats.cncf.io/d/12/issues-opened-closed-by-repository-group?orgId=1&var-period=d&var-repogroup_name=All) 中可以看出项目还是保持着稳定的维护。目前项目的主要
 owner 是
 [@STRRL](https://github.com/strrl)，他去年还在 [上海 KubeCon](https://kccncosschn2023.sched.com/event/1PTKK/chaos-meshdaeppei-huan-chaos-mesh-overview-practice-and-future-zhou-zhiqiang-individual-cwen-yin-pingcap-xianglin-gao-tencent)
 上推广了 Chaos Mesh，主要负责日常维护的 maintainer 是 [@g1eny0ung](https://github.com/g1eny0ung)，Rust 组件的维护由仍在 PingCAP 的 [@YangKeao](https://github.com/YangKeao) 维持。
@@ -164,8 +162,6 @@ owner 是
 ![image-20240710231147244](./assets/image-20240710231147244.png)
 
 ![image-20240710231240428](./assets/image-20240710231240428.png)
-
-> https://chaosmesh.devstats.cncf.io/d/12/issues-opened-closed-by-repository-group?orgId = 1&var-period = d&var-repogroup_name = All
 
 PingCAP 自称是一家 “业界领先的企业级开源分布式数据库企业”，笔者认为 Chaos Mesh 没有给公司“拖后腿”。虽然晚于 ChaosBlade
 几个月开源，但 Chaos Mesh 的项目组织和社区运营情况都比 ChaosBlade 好不少。由于云原生项目的性质，Chaos Mesh 的用户群体一定没有
