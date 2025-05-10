@@ -1,0 +1,7 @@
+chaos-engineering:
+  label: "chaos-engineering"
+  permalink: "/chaos-engineering"
+
+Kubernetes:
+  label: "kubernetes"
+  permalink: "/kubernetes"

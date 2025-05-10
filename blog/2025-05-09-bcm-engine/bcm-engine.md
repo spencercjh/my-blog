@@ -2,7 +2,7 @@
 title: bcm-engine —— 我们如何给 ChaosBlade 第二春
 description: 我如何在 bilibili 二开 ChaosBlade
 slug: bcm-engine
-tags: [chaos-engine, kubernetes, chaosblade]
+tags: [chaos-engineering, Kubernetes]
 hide_table_of_contents: false
 ---
 
@@ -26,7 +26,7 @@ bcm-engine 是我们 folk ChaosBlade 之后的项目名称，项目并没有开�
 
 ## 背景
 
-BCM，bilibili Chaos Manager 平台需要能够让用户在网页上对混沌演练进行全生命周期的管理，包括但不限于配置演练的目标、参数、观测指标、业务场景，执行、停止演练任务，编辑、查看演练报告等。
+bilibili Chaos Manager (BCM) 哔哩哔哩混沌管理平台需要能够让用户在网页上对混沌演练进行全生命周期的管理，包括但不限于配置演练的目标、参数、观测指标、业务场景，执行、停止演练任务，编辑、查看演练报告等。
 
 我们需要支持的故障注入类型多种多样，增加 CPU/内存/磁盘负载，影响网络数据包，篡改 DNS
 解析。作为一个平台，我们更需要帮助用户组合多种故障及其参数，完成更复杂的演练。时间紧，任务重，人力有限，知识储备更有限，从 0 到
@@ -36,7 +36,7 @@ BCM，bilibili Chaos Manager 平台需要能够让用户在网页上对混沌演
 
 混沌实验执行引擎的选型是个十分关键的问题，项目启动以后就很难再换，这是一条不归路。
 
-大家印象里， go 语言借着 Docker 容器和 K8s 编排引擎流行的历史洪流，开源生态发展迅猛，什么项目都能找到。出乎我们意料的是，2023
+大家印象里， go 语言借着 Docker 容器和 Kubernetes(K8s) 编排引擎流行的历史洪流，开源生态发展迅猛，什么项目都能找到。出乎我们意料的是，2023
 年 9 月技术选型时，许多 go 项目已经陷入了青黄不接的尴尬境地。以 CNCF
 基金会公布的情况来看，开源社群的总人数没有稳步提升，项目越来越多，但老项目的维护愈发成为问题。这里给读者分享 2 篇来自一位
 CNCF TOC（Technical Oversight Committee）的 Blog。
