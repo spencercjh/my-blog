@@ -11,6 +11,8 @@ authors: [spencercjh]
 
 > 这篇文章原本定稿于 2024 年 7 月 16 日，本以为老板要投稿到“哔哩哔哩技术”公众号上，后来却没有下文了。我认为这篇文章总结了我在
 > B 站很大一部分工作精华内容，包含了许多我的思考和有意思的技术细节。对“混沌工程”没有背景知识的读者不用担心读不懂，这篇文章主要讨论一些实际的系统实现问题。
+>
+> 因此，我将它作为博客的第一篇文章发布出来，供大家参考学习。我在将它修改成个人博客时新增了一些内容，调整了一些代码和链接的展示方式。最近添加的内容会有特别的标记，烦请读者留意。
 
 ## 前言
 
@@ -473,21 +475,47 @@ bcm-blade 成功执行 cri 实验后，会和 K8s 一样，folk 一个进程等�
 
 ![image-20240714171200821](./assets/image-20240714171200821.png)
 
-查看网络相关故障注入的恢复逻辑 [源码](https://github.com/chaosblade-io/chaosblade-exec-os/blob/master/exec/network/tc/network_tc.go)
+查看网络相关故障注入的恢复逻辑 [源码](https://github.com/chaosblade-io/chaosblade-exec-os/blob/52c677bf0d19b2f38df57c03869ba982db5208d7/exec/network/tc/network_tc.go#L370-L383)
 后，我们找到了问题：tc 相关网络故障的销毁其实只需要 device 一个参数，直接将网卡上所有的 tc
 规则全部删除。所以后一个注入的故障会被前一个故障的定时恢复任务恢复。笔者翻阅了其他实验的恢复代码（CPU，内存，DNS 等），发现几乎所有的恢复逻辑都会把“现场”彻底恢复原状，而不会考虑多个实验前后，单个实验中
 K8s 实验到 CRI 实验前后的关联关系。
 
-![image-20240714171907896](./assets/image-20240714171907896.png)
+```go title="chaosblade-exec-os/exec/network/tc/network_tc.go#stopNet"
+// stopNet
+func stopNet(ctx context.Context, netInterface string, cl spec.Channel) *spec.Response {
+	if os.Getuid() != 0 {
+		return spec.ReturnFail(spec.Forbidden, fmt.Sprintf("tc no permission"))
+	}
+	response := cl.Run(ctx, "tc", fmt.Sprintf(`filter show dev %s parent 1: prio 4`, netInterface))
+	if response.Success && response.Result != "" {
+		response = cl.Run(ctx, "tc", fmt.Sprintf(`filter del dev %s parent 1: prio 4`, netInterface))
+		if !response.Success {
+			log.Errorf(ctx, "tc del filter err, %s", response.Err)
+		}
+	}
+	return cl.Run(ctx, "tc", fmt.Sprintf(`qdisc del dev %s root`, netInterface))
+}
+```
 
-总结一下，产生这个 Bug 的关键缺陷的原因是由于 chaosblade CLI 销毁 CRI 实验时会无条件执行恢复逻辑，而销毁 K8s 实验的时候由于依赖
+总结一下，产生这个缺陷的原因是由于 chaosblade CLI 销毁 CRI 实验时会无条件执行恢复逻辑，而销毁 K8s 实验的时候由于依赖
 K8s client，Delete API 如果没有正确返回结果，就不会修改 custom resource 状态，触发 operator reconcile 去执行恢复逻辑。想要从根本上解决，需要在
-chaosblade/exec/cri/executor.go 中通过 UID 去校验实验状态，但由于 K8s 实验与 CRI 实验其实是不存在关联关系的（chaosblade 与
+[`chaosblade/exec/cri/executor.go`](https://github.com/chaosblade-io/chaosblade/blob/5c6002dc0251492a2c659c5c72662cb35f7b281f/exec/cri/executor.go#L42-L51) 中通过 UID 去校验实验状态，但由于 K8s 实验与 CRI 实验其实是不存在关联关系的（chaosblade 与
 chaosblade-operator 中都没有维护这个关系），在这里加状态校验逻辑会比较困难。笔者认为由于没有一个 apiserver
 并接入持久化存储（数据库等）以供所有 daemonset pod 上的 chaosblade-tools 去获取正确的实验状态和 K8s-> CRI 实验关联关系，这里
 chaosblade CLI 的实现只能无条件地执行 destroy。
 
-![image-20240716112425594](./assets/image-20240716112425594.png)
+```go title="chaosblade/exec/cri/executor.go#Exec"
+func (e *Executor) Exec(uid string, ctx context.Context, model *spec.ExpModel) *spec.Response {
+	key := exec.GetExecutorKey(model.Target, model.ActionName)
+	executor := e.executors[key]
+	if executor == nil {
+		log.Errorf(ctx, spec.CriExecNotFound.Sprintf(key))
+		return spec.ResponseFailWithFlags(spec.CriExecNotFound, key)
+	}
+	executor.SetChannel(channel.NewLocalChannel())
+	return executor.Exec(uid, ctx, model)
+}
+```
 
 因此笔者设计的解决方案也比较“简单粗暴”，能够以最小的代价完成止损。由于我们没有直接对机器上容器注入故障的需求（即在一台物理机上对本机上的容器注入故障），所有的
 CRI 实验都是从 K8s 实验转化而来的。那我们简单地移除 CRI 实验的定时销毁进程即可。
@@ -531,13 +559,27 @@ ChaosBlade 是一个“缝缝补补”的项目，它一开始肯定是不支持
 会将其设置为 `runtime.NumCPU()`。这是个显而易见的错误，`runtime.NumCPU()` 会直接获取宿主机的 CPU 数量。B 站集群中的 Node
 往往是几十个核的，无论取百分之多少的 CPU 负载，都会远远超过目标 Pod 的 CPU Limit。
 
-![image2024-11-5_17-24-8](./assets/image2024-11-5_17-24-8.png)
+```go title="chaosblade-exec-os/exec/cpu/cpu.go#Exec"
+// if cpu-list value is not empty, then the cpu-count flag is invalid
+var err error
+cpuCountStr := model.ActionFlags["cpu-count"]
+if cpuCountStr != "" {
+    cpuCount, err = strconv.Atoi(cpuCountStr)
+    if err != nil {
+        log.Errorf(ctx, "`%s`: cpu-count is illegal, cpu-count value must be a positive integer", cpuCountStr)
+        return spec.ResponseFailWithFlags(spec.ParameterIllegal, "cpu-count", cpuCountStr, "it must be a positive integer")
+    }
+}
+if cpuCount <= 0 || cpuCount > runtime.NumCPU() {
+    cpuCount = runtime.NumCPU()
+}
+```
 
 我在公司里也碰到这个问题后，和 ChaosBlade 的阿里云 maintainer 也确认了问题。
 
 ![image2024-11-5_17-44-48](./assets/image2024-11-5_17-44-48.png)
 
-受 https://github.com/uber-go/automaxprocs/tree/master/internal/cgroups 启发并结合相关资料，一个容器的 CPU
+受 [automaxprocs/internal/cgroups](https://github.com/uber-go/automaxprocs/tree/master/internal/cgroups) 启发并结合相关资料，一个容器的 CPU
 Limit（Quota）应该是 **容器目录下** 的 `/sys/fs/cgroup/cpu/cpu.cfs_quota_us ÷ /sys/fs/cgroup/cpu/cpu.cfs_quota_us`。
 
 > 没有相关知识背景的读者可以阅读以下参考资料：
@@ -603,16 +645,32 @@ cpu 信息。而 Pod 容器 pid 是 chaosblade 代码中已经正确获取到的
 
 ```
 ─ 目标 Pod 所在 Node DS Pod
-	└── 启动 chaosblade blade 进程: blade create cri mem load ...
-		└── 启动 nsexec 进程以进入目标容器: /opt/chaosblade/bin/nsexec -s -t 25255 -p -n -- /opt/chaosblade/bin/chaos_os ...
-			└── 在目标容器 namespace 内启动 chaos_os: /opt/chaosblade/bin/chaos_os create mem load --mode=ram --avoid-being-killed=true --cgroup-root=/host-sys/fs/cgroup/ --rate=100 --mem-percent=100 --uid=90dc070e2a32c12e --channel=nsexec --ns_target=25255 --ns_pid=true --ns_mnt=true
-
+  └── 启动 chaosblade blade 进程: blade create cri mem load ...
+	└── 启动 nsexec 进程以进入目标容器: /opt/chaosblade/bin/nsexec -s -t 25255 -p -n -- /opt/chaosblade/bin/chaos_os ...
+	  └── 在目标容器 namespace 内启动 chaos_os: /opt/chaosblade/bin/chaos_os create mem load --mode=ram --avoid-being-killed=true --cgroup-root=/host-sys/fs/cgroup/ --rate=100 --mem-percent=100 --uid=90dc070e2a32c12e --channel=nsexec --ns_target=25255 --ns_pid=true --ns_mnt=true
 ```
 
 chaosblade 引入了 `--avoid-being-killed` 参数来避免最后占用内存的 `chaos_os`（上面进程树中最后一个进程） 进程被杀死，但这个
 flag 在容器环境并不能正确工作。一看源码就发现了问题：
 
-![image2024-11-20_15-37-6](./assets/image2024-11-20_15-37-6.png)
+```go title="chaosblade-exec-os/exec/mem/mem.go#start"
+// adjust process oom_score_adj to avoid being killed
+if avoidBeingKilled {
+    // not works for the channel.NSExecChannel
+    if _, ok := cl.(*channel.NSExecChannel); !ok {
+        scoreAdjFile := fmt.Sprintf(processOOMAdj, os.Getpid())
+        if _, err := os.Stat(scoreAdjFile); err == nil || os.IsExist(err) {
+            if err := os.WriteFile(scoreAdjFile, []byte(oomMinAdj), 0644); err != nil { //nolint:gosec
+                log.Errorf(ctx, "run burn memory by %s mode failed, cannot edit the process oom_score_adj, %v", burnMemMode, err)
+            } else {
+                log.Infof(ctx, "write oom_adj %s to %s", oomMinAdj, scoreAdjFile)
+            }
+        } else {
+            log.Errorf(ctx, "score adjust file: %s not exists, %v", scoreAdjFile, err)
+        }
+    }
+}
+```
 
 在 [chaosblade-exec-os/exec/mem/mem.go#start](https://github.com/chaosblade-io/chaosblade-exec-os/blob/master/exec/mem/mem.go#L296-L306)
 中的这段代码在主机环境，或者说当 `memExecutor` 的 `spec.channel` 是 `LocalExecutor` 时候不会有问题，`os.Getpid()` 能够正确返回
@@ -655,15 +713,64 @@ ChaosBlade
 本人并没有 OCI Open Container Initiative、CRI Container Runtime Interface 相关研发工作经历，只是会使用相关工具。因此我没有第一时间看出
 chaosblade 里 containerd client 的使用问题。既然 crictl 能够有效删除容器，那我们看看它相关的源码是怎么做的。
 
-![image2025-1-13_12-7-53](./assets/image2025-1-13_12-7-53.png)
+```go title="crictl/container.go#RemoveContainer"
+// RemoveContainer sends a RemoveContainerRequest to the server, and parses
+// the returned RemoveContainerResponse.
+func RemoveContainer(ctx context.Context, client internalapi.RuntimeService, id string) error {
+	if id == "" {
+		return errors.New("ID cannot be empty")
+	}
+
+	logrus.Debugf("Removing container: %s", id)
+
+	if _, err := InterruptableRPC(ctx, func(ctx context.Context) (any, error) {
+		return nil, client.RemoveContainer(ctx, id)
+	}); err != nil {
+		return err
+	}
+
+	fmt.Println(id)
+
+	return nil
+}
+```
 
 [crictl#RemoveContainer](https://github.com/kubernetes-sigs/cri-tools/blob/master/cmd/crictl/container.go#L1017-L1029)
 和其他的 go 生态项目一样，crictl 这里只是初始化 grpc client 向本机的 CRI server 发请求。
 
-client 是这样创建出来的：https://github.com/kubernetes-sigs/cri-tools/blob/master/cmd/crictl/main.go#L96-L117。
+client 是这样 [创建](https://github.com/kubernetes-sigs/cri-tools/blob/619379e6e330c7006019ddc0ea8398cb7dcdc52e/cmd/crictl/main.go#L97-L122) 出来的：
 
-![image2025-1-13_14-16-11](./assets/image2025-1-13_14-16-11.png) 可以看到在没有指定容器运行时 ep 的情况下会和本地的 3
-种容器运行时尝试连接：`containerd`，`crio`，`cri-dockerd`。结合 containerd
+```go title="kubernetes-sigs/cri-tools/cmd/crictl/main.go"
+// If no EP set then use the default endpoint types
+if !RuntimeEndpointIsSet {
+    logrus.Warningf("runtime connect using default endpoints: %v. "+
+        "As the default settings are now deprecated, you should set the "+
+        "endpoint instead.", defaultRuntimeEndpoints)
+    logrus.Debug("Note that performance maybe affected as each default " +
+        "connection attempt takes n-seconds to complete before timing out " +
+        "and going to the next in sequence.")
+
+    for _, endPoint := range defaultRuntimeEndpoints {
+        logrus.Debugf("Connect using endpoint %q with %q timeout", endPoint, t)
+
+        res, err = remote.NewRemoteRuntimeService(endPoint, t, tp, &logger)
+        if err != nil {
+            logrus.Error(err)
+
+            continue
+        }
+
+        logrus.Debugf("Connected successfully using endpoint: %s", endPoint)
+
+        break
+    }
+
+    return res, err
+}
+```
+
+可以看到在没有指定容器运行时 ep 的情况下会和本地的 3
+种容器运行时尝试连接：`containerd`，`crio`，`cri-dockerd`（即变量 `defaultRuntimeEndpoints`）。结合 containerd
 的文档：[containerd#cri](https://github.com/containerd/containerd?tab=readme-ov-file#cri)，由此我们知道 crictl
 是在和本地的容器运行时的 cri 插件服务通信。![cri](./assets/cri.png)
 
@@ -685,7 +792,22 @@ plugin 中，处理 RemoveContainer
 
 chaosblade-exec-cri 为 containerd
 操作封装了一个结构体，对移除容器的 [实现](https://github.com/chaosblade-io/chaosblade-exec-cri/blob/1d05c9e7821250820338bdc822fc5903e99410c5/exec/container/containerd/containerd_linux.go#L168-L179)
-如下：![image2025-1-13_15-27-53](./assets/image2025-1-13_15-27-53.png)
+如下：
+
+```go title="chaosblade-exec-cri/exec/container/containerd/containerd_linux.go#RemoveContainer"
+func (c *Client) RemoveContainer(ctx context.Context, containerId string, force bool) error {
+	err := c.cclient.ContainerService().Delete(c.Ctx, containerId)
+	if err == nil {
+		return nil
+	}
+
+	if errdefs.IsNotFound(err) {
+		return nil
+	}
+
+	return err
+}
+```
 
 可以明显看到，这里仅调用了 `ContainerService().Delete` 方法，这意味着它只会删去容器元信息，并不会处理容器相关进程。这就是为什么
 kubelet 无法获取到容器信息，但 Node 上容器进程依旧在正常运行，可以通过 `crictl` 停止并删除。
@@ -717,18 +839,27 @@ IP: Port， 另外还要豁免某些 IP: Port。ChaosBlade 的 network loss 的�
 > --destination-ip string 目标 IP. 支持通过子网掩码来指定一个网段的 IP 地址, 例如 192.168.1.0/24. 则 192.168.1.0~
 > 192.168.1.255 都生效。你也可以指定固定的 IP，如 192.168.1.1 或者 192.168.1.1/32，也可以通过都号分隔多个参数，例如
 > 192.168.1.1,192.168.2.1。
+>
 > --exclude-port string 排除掉的端口，默认会忽略掉通信的对端端口，目的是保留通信可用。可以指定多个，使用逗号分隔或者连接符表示范围，例如
 > 22,8000 或者 8000-8010。 这个参数不能与 --local-port 或者 --remote-port 参数一起使用
+>
 > --exclude-ip string 排除受影响的 IP，支持通过子网掩码来指定一个网段的 IP 地址, 例如 192.168.1.0/24. 则 192.168.1.0~
 > 192.168.1.255 都生效。你也可以指定固定的 IP，如 192.168.1.1 或者 192.168.1.1/32，也可以通过都号分隔多个参数，例如
 > 192.168.1.1,192.168.2.1。
+>
 > --interface string 网卡设备，例如 eth0 (必要参数)
+>
 > --local-port string 本地端口，一般是本机暴露服务的端口。可以指定多个，使用逗号分隔或者连接符表示范围，例如 80,8000-8080
+>
 > --percent string 丢包百分比，取值在 [0, 100] 的正整数 (必要参数)
+>
 > --remote-port string 远程端口，一般是要访问的外部暴露服务的端口。可以指定多个，使用逗号分隔或者连接符表示范围，例如
 > 80,8000-8080
+>
 > --force 强制覆盖已有的 tc 规则，请务必在明确之前的规则可覆盖的情况下使用
+>
 > --ignore-peer-port 针对添加 --exclude-port 参数，报 ss 命令找不到的情况下使用，忽略排除端口
+>
 > --timeout string 设定运行时长，单位是秒，通用参数
 
 如果使用 ChaosBlade 版本，经过实测，我们是无法在一次故障注入中完全满足上图所描述的需求的。分析源码后我们发现，`remote-port`
@@ -841,14 +972,46 @@ bcm-agent，将 bcm-backend 传来的参数传给机器上的 blade，执行本�
 
 一是 chaosblade CLI 创建 custom resource 后的行为与一般的云原生项目 CLI （比如 kubectl，Argo CLI 等）不一致。形象地说，它的实现说将
 `kubectl create/apply ***` 和 `kubectl get *** -w`
-结合在了一起，不太符合用户的预期。阅读 [chaosblade/exec/kubernetes/executor.go#exec](https://github.com/chaosblade-io/chaosblade/blob/master/exec/kubernetes/executor.go#L121)
+结合在了一起，不太符合用户的预期。阅读 [chaosblade/exec/kubernetes/executor.go#exec](https://github.com/chaosblade-io/chaosblade/blob/5c6002dc0251492a2c659c5c72662cb35f7b281f/exec/kubernetes/executor.go#L162-L191)
 源码发现，`blade create k8s ***` 创建完 ChaosBlade custom resource 后，会开启默认 20s 的超时 context，并以 1s
 的间隔不断获取实验的最新状态，直到超时或者判断实验进入了终态或运行中才结束整个创建过程。我们将 blade CLI
 的调用放在了创建实验的链路中，一旦这里等待的时间过长，整个 HTTP
 请求就会超时，上层平台就认为实验创建失败，故障注入没有成功，但实际上实验早就成功了，实验“脱离”了平台的管控。blade CLI
 将原本应该异步的观测实验状态事项，放在了同步的创建实验的命令里，团队一致认为这样的设计和实现不太妥当。
 
-![image-20240716151157396](./assets/image-20240716151157396.png)
+```go title="chaosblade/exec/kubernetes/executor.go#Exec"
+// 创建 custom resource 后...
+
+var duration time.Duration
+waitingTime := expModel.ActionFlags[WaitingTimeFlag.Name]
+if waitingTime == "" {
+    waitingTime = DefaultWaitingTime
+}
+d, err := time.ParseDuration(waitingTime)
+if err != nil {
+    d, _ = time.ParseDuration(DefaultWaitingTime)
+}
+duration = d
+if duration > time.Second {
+    ctx, cancel := context.WithTimeout(ctx, duration)
+    defer cancel()
+    ticker := time.NewTicker(time.Second)
+TickerLoop:
+    for range ticker.C {
+        select {
+        case <-ctx.Done():
+            ticker.Stop()
+            break TickerLoop
+        default:
+            response, completed = QueryStatus(ctx, operation, config)
+            if completed {
+                return response
+            }
+        }
+    }
+}
+return response
+```
 
 二是 chaosblade CLI 分散在演练目标机器以及 K8s 集群 daemonset pod 里，它会将实验记录都存在 SQLite
 中，这显然不适合在公司的生产环境里使用。显然我们没有也不会去开发收集这些里的数据的程序。这导致一旦出现了上文提到的“实验脱离平台管控“的问题以后，由于
@@ -875,7 +1038,23 @@ custom resource，提交到目标集群后就返回 UID 结果。这样一来，
 此外，我们还可以修改 bcm-operator（chaosblade-operator）里修改 ChaosBlade custom resource 实验状态的逻辑，添加到
 chaosblade-apiserver 的 callback，随后 chaosblade-apiserver 再调用上层平台接口去修改上层业务状态。这样一来，平台上演练任务里节点的状态就能真正地和具体在运行的实验状态保持一致。
 
-![mermaid-diagram-2024-06-25-201600.png](assets/mermaid-diagram-2024-06-25-201600.png)
+```mermaid
+sequenceDiagram
+    participant bb as bcm-backend
+    participant ca as chaosblade-apiserver
+    participant bo as bcm-operator
+    participant ka as k8s-apiserver
+
+    note over bb,ka: 省略创建 chaosblade 过程
+    bo ->> ka: 调用 chaosblade-tool 进行故障注入
+    bo ->> ka: 更新 chaosblade 资源状态
+    par async
+        bo --> ca: 回调通知 chaosblade 资源状态变化
+    end
+    ca ->> ca: 持久化 blade 信息
+    ca ->> bb: 回调通知 chaosblade 资源状态变化
+    bb ->> bb: 更新 third_key 相关联的 activity task, exp task 状态
+```
 
 #### 物理机实验中替代 bcm-agent 与 chaosblade CLI
 
