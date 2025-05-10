@@ -113,15 +113,16 @@ release 版本，GitHub Activity（包括 Commit，PR，issue，Release 等）�
 
 > https://chaosblade.devstats.cncf.io/d/12/issues-opened-closed-by-repository-group?orgId = 1&var-period = d&var-repogroup_name = All
 
-经过笔者半年多对 ChaosBlade 的观察和参与，发现项目的 owner 是阿里云的 @camix（GitHub username，下文中所有的 @username
-都是如此，不再解释），ta 会每隔一段时间上线处理一些 Issue 和 PR，近期 ta 还向 CNCF 提出了将项目升级为 incubating
-项目的 [申请](https://github.com/cncf/toc/pull/1278)。maintainer 之一的 @tiny-x 在钉钉群中算是比较活跃的，但他几乎不会去处理
-Issue 和 PR。其他的 maintainer 如阿里云的 @xcaspar ，中国移动的 @Yuaninga 和 GitLab 中国的 @sunny0826 则不活跃。比较重要的
-Contributor 还有滴滴的 @binbin0325，他在钉钉群中透露过一些设计思路。
+经过笔者半年多对 ChaosBlade 的观察和参与，发现项目的 owner 是阿里云的 [@camix](https://github.com/MandssS)，ta 会每隔一段时间上线处理一些 Issue 和 PR，近期 ta 还向 CNCF 提出了将项目升级为 incubating
+项目的 [申请](https://github.com/cncf/toc/pull/1278)。maintainer 之一的 [@tiny-x](https://github.com/tiny-x) 在钉钉群中算是比较活跃的，但他几乎不会去处理
+Issue 和 PR。其他的 maintainer 如阿里云的 [@xcaspar](https://github.com/xcaspar) ，中国移动的 [@Yuaninga](https://github.com/Yuaninga) 和 GitLab 中国的 [@sunny0826](https://github.com/sunny0826) 则不活跃。比较重要的
+Contributor 还有滴滴的 [@binbin0325](https://github.com/binbin0325)，他在钉钉群中透露过一些设计思路。
 
 作为中国最早开源的混沌工程项目，它有着同类项目中最大的用户基础和企业用户数量，其中不乏国内知名 [大厂](https://github.com/chaosblade-io/chaosblade/issues/32)
 。从上面笔者对其社群的观察就能发现，ChaosBlade 也不免落入国内开源项目“重开源轻运营维护”的困境：内外两套代码，黑箱决策，没有完整的
 Issue-PR 讨论，维护停滞等。
+
+> 本文初稿成文后的半年至今，上文提到的 [@camix](https://github.com/MandssS) 和 [@tiny-x](https://github.com/tiny-x) 已经完全从钉钉群里消失，目前仍会说话的仅剩 [@xcaspar](https://github.com/xcaspar)。[@camix](https://github.com/MandssS) 提的 CNCF incubating issue 也石沉大海了。但哪怕这样还是不断有新用户加入钉钉群，这个项目的影响力真的很夸张。
 
 #### 云原生践行者—— Chaos Mesh
 
@@ -157,8 +158,8 @@ Issue-PR 讨论，维护停滞等。
 
 尽管和 ChaosBlade 一样，Chaos Mesh 也进入了长期维护阶段，但从下列图表中可以看出项目还是保持着稳定的维护。目前项目的主要
 owner 是
-@STRRL，他去年还在 [上海 KubeCon](https://kccncosschn2023.sched.com/event/1PTKK/chaos-meshdaeppei-huan-chaos-mesh-overview-practice-and-future-zhou-zhiqiang-individual-cwen-yin-pingcap-xianglin-gao-tencent)
-上推广了 Chaos Mesh，主要负责日常维护的 maintainer 是 @g1eny0ung，Rust 组件的维护由仍在 PingCAP 的 @YangKeao 维持。
+[@STRRL](https://github.com/strrl)，他去年还在 [上海 KubeCon](https://kccncosschn2023.sched.com/event/1PTKK/chaos-meshdaeppei-huan-chaos-mesh-overview-practice-and-future-zhou-zhiqiang-individual-cwen-yin-pingcap-xianglin-gao-tencent)
+上推广了 Chaos Mesh，主要负责日常维护的 maintainer 是 [@g1eny0ung](https://github.com/g1eny0ung)，Rust 组件的维护由仍在 PingCAP 的 [@YangKeao](https://github.com/YangKeao) 维持。
 
 ![image-20240710231147244](./assets/image-20240710231147244.png)
 
@@ -174,10 +175,12 @@ Microsoft Azure 用其打造了自己的混沌实验产品 [chaos studio](https:
 Chaos Mesh 可以吸引来自国外的开发人员和组织参与贡献，这一点难能可贵。
 
 > 2025 年 5 月后记：Chaos Mesh 目前来看仅有主项目 Chaos Mesh 还有持久的更新迭代，2 个令 Chaos Mesh ”突出重围“与众不同的“黑科技”项目
-> chaos-tproxy 和 toda 已经沦落到和 chaosblade 一样，有多人评论的共性问题 issue
+> chaos-tproxy 和 toda 已经沦落到和 ChaosBlade 一样，有多人评论的共性问题 issue
 > 都长期无人应答了（比如：[[HELP] tproxy make network failed](https://github.com/chaos-mesh/chaos-tproxy/issues/67)）。我在
 > 2024 年年末尝试将 [chaos-tproxy](https://github.com/chaos-mesh/chaos-tproxy) 集成进 bcm-engine
 > 中，但难以解决的主机网络失联问题让我最终放弃。好在相关需求最终被老板“挡住”了，不然黔驴技穷的我会很尴尬。
+>
+> 对这几个社区的观察让我发现长期坚持无偿维护开源社区并持续投入是这个世界上最难的事情之一。
 
 #### 后起之秀—— ChaosMeta
 
@@ -271,21 +274,21 @@ GitHub Actions 的 [CI/CD 工作流](https://github.com/chaos-mesh/chaos-mesh/tr
 ![image-20240711154721508](./assets/image-20240711154721508.png) ![image-20240710230154087](./assets/image-20240710230154087.png)
 
 Chaos Mesh 与其他 2 个项目相比能够支持更多的实验类型。使用 Rust 开发的 chaos-tproxy 和 toda 十分“硬核”。ChaosBlade 的
-maintainer @tiny-x 在钉钉群里都曾向笔者推荐过参考 toda 来重新实现 ChaosBlade 不太好用的磁盘 I/O 故障注入。
+maintainer [@tiny-x](https://github.com/tiny-x) 在钉钉群里都曾向笔者推荐过参考 toda 来重新实现 ChaosBlade 不太好用的磁盘 I/O 故障注入。
 
 ![image-20240714124540385](./assets/image-20240714124540385.png)
 
 Chaos Mesh 也有强大的流程编排能力，它参考了 Argo Workflows 的设计与实现，但它为了不和 Argo 强绑定，实现了自己的
 Workflow，定义起来和 Argo Workflows 无异。
 
-Chaos Mesh 也不是完美的。据 @STRRL 自己所说，Chaos Mesh 目前缺少公司组织来投入人力做特性开发（但维护状况也比 ChaosBlade
+Chaos Mesh 也不是完美的。据 [@STRRL](https://github.com/strrl) 自己所说，Chaos Mesh 目前缺少公司组织来投入人力做特性开发（但维护状况也比 ChaosBlade
 好一些）。相较于阿里云的 ChaosBlade 和蚂蚁集团的 ChaosMeta，这 2 个项目的核心成员还任职于本公司。Chaos Mesh 的 maintainer
 基本都已经离开了 PingCAP，公司不再向开源版本投入更多人力，这导致了 Chaos Mesh 无法再进行较大的版本更迭。
 
 此外，由于 Chaos Mesh 中实验的 Duration（ChaosBlade 里叫 timeout）的实现是在 operator 里完成的：倒计时结束且状态符合预期后，operator
 会向目标 daemonset pod server 发 grpc 请求执行恢复操作（ChaosBlade 是在目标 daemonset pod 里启动 nohup 进程，sleep
 一段时间后无条件执行 destroy 命令），这导致了实验可能因为恢复请求没有送达，或各种各样的原因没有如期执行恢复，导致实验最终都无法被恢复，只能删除
-Pod 来解决。@STRRL 举了一个极端的例子，当注入的文件 I/O 故障影响到了 TCP Socket FD 的时候，恢复请求就会受到影响。他认为
+Pod 来解决。[@STRRL](https://github.com/strrl) 举了一个极端的例子，当注入的文件 I/O 故障影响到了 TCP Socket FD 的时候，恢复请求就会受到影响。他认为
 Chaos Mesh 还存在大量的边缘情况没有测试清楚。（不知道 ChaosBlade 社区是如何思考这些事情的。）
 
 现在回过头来看，Chaos Mesh 在技术和产品需求上可以基本满足我们的要求。但选型时我们仍然放弃了它，主要考虑到以下问题。
@@ -610,7 +613,7 @@ cpu 信息。而 Pod 容器 pid 是 chaosblade 代码中已经正确获取到的
 ，在拷贝 [automaxprocs internal cgroups 包](https://github.com/uber-go/automaxprocs/tree/master/internal/cgroups)
 的同时，拼接 Pod 具体子目录的逻辑也有细微变化，不能直接使用 automaxprocs 的源码。
 
-> 题外话：这个 issue 的修复让我很开心，因为在地球的另外一个角落，老哥 muhammed.tanir@flyingbutter
+> 题外话：这个 issue 的修复让我很开心，因为在地球的另外一个角落，老哥 [@muhammed.tanir](https://github.com/flyingbutter)
 > 对我发出了 [殷切期盼](https://github.com/chaosblade-io/chaosblade/issues/1079#issuecomment-2623885167)
 > ，希望我能帮助他解决问题。最后我也提交了 PR 并合入了主分支，但不知道老哥后面有没有解决重新分发 chaosblade-exec-os
 > 包的问题。![image-20250509163623530](./assets/image-20250509163623530.png)
@@ -1073,7 +1076,7 @@ Pods）的变化，动态注入故障。比如当你使用 [label selector](http
 不会被被注入故障。流量进入新的 Pod 后可能会导致用户不能得到符合预期的测试结果。
 
 当然了，并不是所有用户都需要这个功能。笔者也曾经以为这是一个很特别的需求，只有大公司里才可能会出现。但在撰写本文时，Chaos
-Mesh 的 maintainer @STRRL 介绍 Chaos Mesh 项目中的工程问题时就提到了这个问题。
+Mesh 的 maintainer [@STRRL](https://github.com/strrl) 介绍 Chaos Mesh 项目中的工程问题时就提到了这个问题。
 
 实现它的方法并不难想到：实现一个 watch Pod 的 controller，reconcile Pod 时判断它是否需要被正在进行中的实验注入故障，然后交给已有的
 operator 注入故障代码即可。但笔者认为难就难在如何判断 Pod 是否需要被正在进行中的实验注入故障。混沌实验的参数往往都是以非关系型的方式存储的，如果要对
