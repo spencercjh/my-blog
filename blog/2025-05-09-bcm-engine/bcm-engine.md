@@ -21,7 +21,7 @@ authors: [spencercjh]
 
 本文不落俗套，我们不再介绍混沌工程的概念与发展历史。本文主要介绍如何挑选开源项目来满足公司内的故障演练需求，如何进行合理有效的二次开发以更好地适配公司环境，最后作出展望，提出进一步优化设计。
 
-bcm-engine 是我们 folk ChaosBlade 之后的项目名称，项目并没有开源。
+bcm-engine 是我们 fork ChaosBlade 之后的项目名称，项目并没有开源。
 
 对混沌工程还不太熟悉的读者可以阅读中国信通院混沌工程实验室发表的 [《中国混沌工程调查报告 （2021 年）》](http://www.caict.ac.cn/kxyj/qwfb/ztbg/202111/P020211115608682270800.pdf)。
 
@@ -368,7 +368,7 @@ chaos-mng 平台所用的 chaosblade operator。
 
 2024 年 H1，团队决定正式开启对 ChaosBlade 的改造和二次开发，新项目命名为 bcm-engine。
 
-### Folk ChaosBlade 到 bcm-engine
+### Fork ChaosBlade 到 bcm-engine
 
 原本的 ChaosBlade 项目结构大致如下，每个 module 作用见行尾注释。
 
@@ -377,12 +377,12 @@ $ tree -L 1
 .
 ├── chaosblade # 一个 cobra CLI 程序（下简称 blade），把所有的 exec module 串联起来，注册 cobra 命令。
 ├── chaosblade-box # 一个 Java Spring 服务用作引擎上层的平台产品，bcm-backend 参考了它的实现，不在本文的讨论范围。
-├── chaosblade-exec-cloud # 云服务相关故障注入执行器。没有相关需求，不 folk。
-├── chaosblade-exec-cplus # C++ 程序相关故障注入执行器，官方版本停留在了 1.5.0（目前最新版本是 1.7.3），猜测已经废弃。没有相关需求，不 folk。
+├── chaosblade-exec-cloud # 云服务相关故障注入执行器。没有相关需求，不 fork。
+├── chaosblade-exec-cplus # C++ 程序相关故障注入执行器，官方版本停留在了 1.5.0（目前最新版本是 1.7.3），猜测已经废弃。没有相关需求，不 fork。
 ├── chaosblade-exec-cri # cri 容器相关故障注入执行器，k8s 相关命令和 operator 依赖这个 module。但我们不会直接操作容器，都是从 K8s 向 Pod 容器注入故障。
-├── chaosblade-exec-docker # docker 容器相关故障注入执行器。没有相关需求，不 folk。
-├── chaosblade-exec-jvm # Java 程序相关故障注入执行器。没有相关需求，不 folk。
-├── chaosblade-exec-middleware # 中间件（mysql，redis，nginx 等）相关故障注入执行器。没有相关需求，不 folk。
+├── chaosblade-exec-docker # docker 容器相关故障注入执行器。没有相关需求，不 fork。
+├── chaosblade-exec-jvm # Java 程序相关故障注入执行器。没有相关需求，不 fork。
+├── chaosblade-exec-middleware # 中间件（mysql，redis，nginx 等）相关故障注入执行器。没有相关需求，不 fork。
 ├── chaosblade-exec-os # OS（CPU，Mem，Network，File 等）相关故障注入执行器。这是我们最核心关注并需要二开的 module 之一。
 ├── chaosblade-operator # operator，用于注入 K8s 上的故障。Helm chart 中还囊括了一个包含 blade CLI 的 daemonset。
 └── chaosblade-spec-go # 所有 module 都依赖的公共定义，工具类等。
@@ -415,9 +415,9 @@ chaosblade-operator 称作 bcm-operator，appid：infra.bcm.bcm-operator。
 
 #### 持续集成
 
-按照上述方法 Folk 了以后，我们就得重构原本项目自带的 Makefile。chaosblade 原本的 Makefile 中的构建规则会下载 GitHub 上依赖的
+按照上述方法 Fork 了以后，我们就得重构原本项目自带的 Makefile。chaosblade 原本的 Makefile 中的构建规则会下载 GitHub 上依赖的
 exec-\* repo 主分支源代码到本地临时目录，分别调用每个 repo 里的 Makefile 来构建出产物（二进制文件以及实验元信息定义 YAML
-文件）后再聚合到一个目录用于后续的打包。各个组件 Folk 到一起后，就不再需要外部依赖了。集成到公司 CI
+文件）后再聚合到一个目录用于后续的打包。各个组件 Fork 到一起后，就不再需要外部依赖了。集成到公司 CI
 平台后，只要执行一次构建命令，就可以确保整个项目所有的 module 的代码都可以通过编译，就不会再出现开源版本 chaosblade
 经常由于依赖组件主分支没有就绪而影响本体构建的问题。
 
@@ -467,10 +467,10 @@ reconcile 失败的 ChaosBlade custom resource。
 
 ![timeline](./assets/image2024-4-22_14-16-30.png)
 
-分析源码后，我们发现 bcm-blade 创建 ChaosBlade custom resource 后，会 folk 一个进程执行
+分析源码后，我们发现 bcm-blade 创建 ChaosBlade custom resource 后，会 fork 一个进程执行
 `nohup /bin/sh c 'sleep $timeout; blade destroy $k8s-exp-uid'`，用于实现定时销毁实验，恢复注入的故障。在 bcm-operator 中，会把
 K8s 实验转化成 CRI 实验，重新生成一个 CRI UID，并组装命令到指定 Pod 所在 Node 上的 Daemonset Pod 执行。Daemonset Pod 上的
-bcm-blade 成功执行 cri 实验后，会和 K8s 一样，folk 一个进程等待一段时间后销毁实验。整个过程如下图所示。
+bcm-blade 成功执行 cri 实验后，会和 K8s 一样，fork 一个进程等待一段时间后销毁实验。整个过程如下图所示。
 
 ![image-20240714171200821](./assets/image-20240714171200821.png)
 
@@ -1084,5 +1084,5 @@ Operator 开发的经验与能力。
 ## 总结
 
 BCM 团队在 ChaosBlade，Chaos Mesh 和 ChaosMeta 中选择了资历最老的 ChaosBlade 作为混沌实验工具，并以此为底座搭建了上层平台。本文介绍了上述
-3 个项目的情况，阐述了选择 ChaosBlade 与放弃其余 2 个项目的理由；详细解释了对 ChaosBlade folk 版本 bcm-engine
+3 个项目的情况，阐述了选择 ChaosBlade 与放弃其余 2 个项目的理由；详细解释了对 ChaosBlade fork 版本 bcm-engine
 的改造，修复与升级方案；并在最后说明了整个项目仍然存在的问题与可能的解决方案。
