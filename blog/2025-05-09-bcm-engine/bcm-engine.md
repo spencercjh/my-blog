@@ -261,7 +261,7 @@ Operator），但现在由于组织架构的关系，这样的运维问题需要
 #### Why not Chaos Mesh?
 
 ![Architecture](./assets/architecture-76301820de324f79d79db310b11b9246-20240711170402763.png)
-ç
+
 Chaos Mesh 也是一个优秀的云原生项目，依托于 PingCAP 在开源社区中良好的口碑和声誉，它拥有一个健康的社区，有着许多用户和国内外大型企业的背书，是三个项目中唯一一个走出国门的项目。其项目文档是
 3 个项目中最全面，准确和清晰的，也有其他 2
 个项目都没有的自动化 [e2e 测试](https://github.com/chaos-mesh/chaos-mesh/tree/master/e2e-test) 模块和一套完整的基于
