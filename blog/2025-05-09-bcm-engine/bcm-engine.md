@@ -156,7 +156,7 @@ Issue-PR 讨论，维护停滞等。
 
 尽管和 ChaosBlade 一样，Chaos Mesh 也进入了长期维护阶段，但从下列 [图表](https://chaosmesh.devstats.cncf.io/d/12/issues-opened-closed-by-repository-group?orgId=1&var-period=d&var-repogroup_name=All) 中可以看出项目还是保持着稳定的维护。目前项目的主要
 owner 是
-[@STRRL](https://github.com/strrl)，他去年还在 [上海 KubeCon](https://kccncosschn2023.sched.com/event/1PTKK/chaos-meshdaeppei-huan-chaos-mesh-overview-practice-and-future-zhou-zhiqiang-individual-cwen-yin-pingcap-xianglin-gao-tencent)
+[@STRRL](https://github.com/strrl)，他去年（后记：2023 年）还在 [上海 KubeCon](https://kccncosschn2023.sched.com/event/1PTKK/chaos-meshdaeppei-huan-chaos-mesh-overview-practice-and-future-zhou-zhiqiang-individual-cwen-yin-pingcap-xianglin-gao-tencent)
 上推广了 Chaos Mesh，主要负责日常维护的 maintainer 是 [@g1eny0ung](https://github.com/g1eny0ung)，Rust 组件的维护由仍在 PingCAP 的 [@YangKeao](https://github.com/YangKeao) 维持。
 
 ![image-20240710231147244](./assets/image-20240710231147244.png)
