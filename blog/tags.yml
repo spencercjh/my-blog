@@ -1,19 +1,8 @@
-facebook:
-  label: Facebook
-  permalink: /facebook
-  description: Facebook tag description
-
-hello:
-  label: Hello
-  permalink: /hello
-  description: Hello tag description
-
-docusaurus:
-  label: Docusaurus
-  permalink: /docusaurus
-  description: Docusaurus tag description
-
-hola:
-  label: Hola
-  permalink: /hola
-  description: Hola tag description
+chaos-engineering:
+  label: "chaos-engineering"
+  permalink: "/chaos-engineering"
+  description: "The discipline of experimenting on a system to build confidence in its ability to withstand turbulent conditions in production."
+Kubernetes:
+  label: "kubernetes"
+  permalink: "/kubernetes"
+  description: "Content related to Kubernetes, an open-source platform for managing containerized workloads and services."
