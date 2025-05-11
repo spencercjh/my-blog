@@ -59,6 +59,8 @@ chaos-mng 平台所用的 chaosblade operator。
 
 ![image-20240714141936189](./asserts/image-20240714141936189.png)
 
+> 2025 年 5 月后记：现在整个 BCM 平台支持了将近 200 多个服务做混沌工程故障演练。
+
 ## Fork ChaosBlade 并改造成 mono repo
 
 > 2025 年 5 月后记：这里其实说的是把 chaosblade CLI 和 chaosblade-operator 及其依赖的包 fork 下来改造成 mono
