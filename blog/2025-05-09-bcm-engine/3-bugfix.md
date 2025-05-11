@@ -85,10 +85,12 @@ cpu 信息。而 Pod 容器 pid 是 chaosblade 代码中已经正确获取到的
     - 在 daemonset pod 中，cgroup 子系统目录需要将 `/sys` 替换成 `/host-sys`（配置卷和挂载点时是这么配的）
       - 计算 `cpu.cfs_quota_us / cpu.cfs_quota_us` 的值，使用 `math.Ceil` 向上取整。
 
-具体的实现代码可以看这个
-PR [fix: get correct CPU quota in container runtime](https://github.com/chaosblade-io/chaosblade-exec-os/pull/177)
-，在拷贝 [automaxprocs internal cgroups 包](https://github.com/uber-go/automaxprocs/tree/master/internal/cgroups)
-的同时，拼接 Pod 具体子目录的逻辑也有细微变化，不能直接使用 automaxprocs 的源码。
+上述过程其实主要靠 [automaxprocs internal cgroups 包](https://github.com/uber-go/automaxprocs/tree/master/internal/cgroups) 完成，
+但我在调试的过程中发现还是需要作出一些改动的，拼接 Pod 具体子目录的逻辑有细微变化，还容易误打误撞把 daemonset pod 容器的 CPU quota 当作是目标 Pod 容器的。
+
+相关 PR 如下：
+
+- [fix: get correct CPU quota in container runtime](https://github.com/chaosblade-io/chaosblade-exec-os/pull/177)
 
 > 题外话：这个 issue 的修复让我很开心，因为在地球的另外一个角落，老哥 [@muhammed.tanir](https://github.com/flyingbutter)
 > 对我发出了 [殷切期盼](https://github.com/chaosblade-io/chaosblade/issues/1079#issuecomment-2623885167)
@@ -179,12 +181,50 @@ if expModel.Target == "mem" && expModel.ActionFlags["avoid-being-killed"] == "tr
     choomChildProcesses(ctx, command.Process.Pid)
   }
 }
+
+// ...
+
+func choomChildProcesses(ctx context.Context, pid int) {
+  childPids, err := getChildPids(pid)
+  if err != nil {
+    log.Errorf(ctx, "failed to get child pids for pid %d, %s", pid, err.Error())
+    return
+  }
+
+  for _, childPid := range childPids {
+    if err := exec.Command("choom", "-n", "-1000", "-p", strconv.Itoa(childPid)).Run(); err != nil { //nolint:gosec
+      log.Errorf(ctx, "choom failed for child pid %d, %s", childPid, err.Error())
+    } else {
+      log.Infof(ctx, "choom success for child pid %d", childPid)
+      choomChildProcesses(ctx, childPid)
+    }
+  }
+}
+
+func getChildPids(pid int) ([]int, error) {
+  procPath := fmt.Sprintf("/proc/%d/task/%d/children", pid, pid)
+  data, err := os.ReadFile(procPath)
+  if err != nil {
+  	return nil, err
+  }
+  childPidsStr := strings.Fields(string(data))
+  childPids := make([]int, len(childPidsStr))
+  for i, pidStr := range childPidsStr {
+	childPids[i], err = strconv.Atoi(pidStr)
+	if err != nil {
+      return nil, err
+    }
+  }
+  return childPids, nil
+}
 ```
 
-`command.Process.Pid` 是 `nsexec` 进程的 pid，可以在 `/proc/$pid/task/$pid/childern` 找到它的子进程 `chaos_os`。相关 PR
-如下：[fix: process
-`avoid-being-killed` for mem exp](https://github.com/chaosblade-io/chaosblade-exec-cri/pull/23)，[fix: DO NOT process
-`avoid-being-killed` for executor with `NSExecChannel`](https://github.com/chaosblade-io/chaosblade-exec-os/pull/178)。
+`command.Process.Pid` 是 `nsexec` 进程的 pid，可以在 `/proc/$pid/task/$pid/childern` 找到它的子进程 `chaos_os`。为了确保万无一失，我会对所有的子进程都进行 `choom` 操作。
+
+相关 PR 如下：
+
+- [fix: process `avoid-being-killed` for mem exp](https://github.com/chaosblade-io/chaosblade-exec-cri/pull/23)
+- [fix: DO NOT process `avoid-being-killed` for executor with `NSExecChannel`](https://github.com/chaosblade-io/chaosblade-exec-os/pull/178)
 
 ## 正确实现移除容器
 

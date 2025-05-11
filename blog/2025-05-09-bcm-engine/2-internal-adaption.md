@@ -144,7 +144,7 @@ func stopNet(ctx context.Context, netInterface string, cl spec.Channel) *spec.Re
     if !response.Success {
         log.Errorf(ctx, "tc del filter err, %s", response.Err)
     }
-}
+  }
   return cl.Run(ctx, "tc", fmt.Sprintf(`qdisc del dev %s root`, netInterface))
 }
 ```
