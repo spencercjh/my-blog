@@ -1,0 +1,34 @@
+---
+title: bcm-engine —— 我们如何给 ChaosBlade 第二春
+description: 我如何在 bilibili 二开 ChaosBlade
+slug: bcm-engine
+tags: [chaos-engineering, Kubernetes, open-source]
+hide_table_of_contents: false
+authors: [spencercjh]
+---
+
+# bcm-engine —— 我们如何给 ChaosBlade 第二春
+
+这篇文章原本定稿于 2024 年 7 月 16 日，本以为老板要投稿到“哔哩哔哩技术”公众号上，后来却没有下文了。我认为这篇文章总结了我在
+B 站很大一部分工作精华内容，包含了许多我的思考和有意思的技术细节。对“混沌工程”没有背景知识的读者不用担心读不懂，这篇文章主要讨论一些实际的系统实现问题。
+
+这篇文章经过翻新打磨和新增内容后，字数来到了 16000
+多字，读者反馈读起来非常费劲。为了让读者更轻松地阅读，我决定把这篇文章拆分成四篇。目录如下，读者可以根据需要直接跳转到自己感兴趣的部分：
+
+- [为什么 B 站还选择 ChaosBlade？](1-open-source-project-selection.md)
+- [如何改造 ChaosBlade 适应需求？](2-internal-adaption.md)
+- [修复 ChaosBlade 遗留多年的 Bug](3-bugfix.md)
+- [展望](4-future.md)
+
+**以下是原文的最后总结，目录里的 4 篇文章仍以这个顺序进行：**
+
+BCM 团队在 ChaosBlade，Chaos Mesh 和 ChaosMeta 中选择了资历最老的 ChaosBlade 作为混沌实验工具，并以此为底座搭建了上层平台。本文介绍了上述
+3 个项目的情况，阐述了选择 ChaosBlade 与放弃其余 2 个项目的理由；详细解释了对 ChaosBlade fork 版本 bcm-engine
+的改造，修复与升级方案；并在最后说明了整个项目仍然存在的问题与可能的解决方案。
+
+> 最后说一些扫兴的话，无论我做多大的努力，都改变不了一个事实：ChaosBlade 就是个典型的大厂“缝缝补补又三年，三年又三年”的屎山项目。
+> 除非把它当做 “忒修斯之船”，整个用现代化 K8s operator pattern 改造一通才行，那这样一来它还能叫 ChaosBlade 吗？
+> **相信读完全部文章的你会明白我的意思。**
+> 我在这些东西上面投入了那么多精力，最后也不过是为了在晋升报告里有些许谈资罢了。大模型大行其道的今天，研究这些玩意能给我的职业生涯带了什么更多帮助吗？
+
+<!-- truncate -->
