@@ -87,7 +87,7 @@ UID
 
 #### K8s 实验中替代 bcm-agent 与 chaosblade CLI
 
-![image-20240716155701191](asserts/image-20240716155701191.png)
+![image-20240716155701191](assets/image-20240716155701191.png)
 
 参考 [Argo Workflows 下的 /server](https://github.com/argoproj/argo-workflows/tree/main/server)，[KubeVela](https://github.com/kubevela/kubevela)
 下的 [VelaUX](https://github.com/kubevela/velaux)，Chaos Mesh 的 Chaos Dashboard，ChaosMeta 的 chaosmeta-platform 等
@@ -128,7 +128,7 @@ sequenceDiagram
 chaosblade-apiserver 适配物理机环境。与 K8s 中不同的是，这时需要将请求转化为 blade 命令在本机执行。物理机部分应该尽可能地复用
 K8s 部分的代码，形成公共逻辑。
 
-![image-20240716161439649](asserts/image-20240716161439649.png)
+![image-20240716161439649](assets/image-20240716161439649.png)
 
 ### 感知演练目标的变化，动态注入故障
 
@@ -148,3 +148,14 @@ selector 相关信息进行快速检索，那么我们就需要将这些信息�
 
 其次，在超大集群中，Pod 的数量成千上万，Pod 的变化量也很多。如何正确实现 reconcile 过程，使得整个服务没有性能瓶颈，很考验研发人员对
 Operator 开发的经验与能力。
+
+---
+
+全文完。
+
+最后再聊聊我对混沌工程的几点认识和看法：
+
+- 很多公司的混沌工程是测试团队搞的，（但接触过中国互联网公司测试的人都知道）他们其实很难有能力独立开展混沌实验。
+  把平台注入故障的过程做得跟点外卖一样容易并不能移除故障注入所需的心智门槛。可惜的是目前我们还没有能力让 LLM 成为用户的辅导老师。
+- 没有写测试能力和习惯的研发注定也不会借助浑沌工程平台来“主动”验证服务的可靠性。
+- HTTP 故障注入真的是个很痛的点，可惜了。
