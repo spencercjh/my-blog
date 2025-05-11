@@ -35,7 +35,7 @@ authors: [spencercjh]
 
 > 2025 年 5 月后记：这部分的工作我猜测大概在 2021-2022 年就被前人完成了。我只是接手了这些东西并作以技术分析。
 
-![image-20240716103947381](./asserts/image-20240716103947381.png)
+![image-20240716103947381](assets/image-20240716103947381.png)
 
 为了解决 [前文](1-open-source-project-selection.md) 中提到的跨地域网络问题，我们引入了一台物理机，上面部署了 bcm-agent 与
 chaosblade，以此替代原本集群中的
@@ -57,7 +57,7 @@ chaos-mng 平台所用的 chaosblade operator。
 虽然这看起来这很“粗糙”，请求链路被拉得很长，HTTP 请求中调用 CLI
 程序并不可靠，但这确实是当时最好的解决方案，既满足了产品的需求，又以最小的成本解决了网络连通性的问题。上线半年多以来，这样的架构支撑起了十余个重要平台服务，中间件的故障演练任务。
 
-![image-20240714141936189](./asserts/image-20240714141936189.png)
+![image-20240714141936189](assets/image-20240714141936189.png)
 
 > 2025 年 5 月后记：现在整个 BCM 平台支持了将近 200 多个服务做混沌工程故障演练。
 
@@ -98,14 +98,13 @@ chaosblade-operator。
 └── chaosblade-spec-go
 ```
 
-现在这个仓库是一个单 go mod，多目录的 go mono repo。每个目录下仍保留用于构建的 Makefile。这样一来，module 之间的依赖方式从“import
-github.com/chaosblade-io/xxx”变成了“import http://github.com/chaosblade-io/xxx”变成了“import
-bcm-engine/xxx”。在服务树等内部系统中，module chaosblade 称作 bcm-blade，appid：infra.bcm.bcm-blade；module
+现在这个仓库是一个单 go mod，多目录的 go mono repo。每个目录下仍保留用于构建的 Makefile。这样一来，module 之间的依赖方式从`import
+github.com/chaosblade-io/xxx `变成了` import bcm-engine/xxx`。在服务树等内部系统中，module chaosblade 称作 bcm-blade，appid：infra.bcm.bcm-blade；module
 chaosblade-operator 称作 bcm-operator，appid：infra.bcm.bcm-operator。
 
 重新命名后，新的架构图如下所示。
 
-![image-20240716142400084](./asserts/image-20240716142400084.png)
+![image-20240716142400084](assets/image-20240716142400084.png)
 
 ## 社区不认可的改造
 
@@ -118,14 +117,14 @@ chaosblade-operator 称作 bcm-operator，appid：infra.bcm.bcm-operator。
 在一个演练任务中，有些用户会对同一个 Pod
 容器顺序地注入不同的网络故障，有时候他们会发现后注入的故障会突然被恢复。结合日志、源码和用户提供的信息，排除了容器重启导致的故障恢复后，最终确认被异常恢复的实验是被它前序的实验的恢复操作恢复了。时间线如下图所示。
 
-![timeline](./asserts/image2024-4-22_14-16-30.png)
+![timeline](assets/image2024-4-22_14-16-30.png)
 
 分析源码后，我们发现 bcm-blade 创建 ChaosBlade custom resource 后，会 fork 一个进程执行
 `nohup /bin/sh c 'sleep $timeout; blade destroy $k8s-exp-uid'`，用于实现定时销毁实验，恢复注入的故障。在 bcm-operator 中，会把
 K8s 实验转化成 CRI 实验，重新生成一个 CRI UID，并组装命令到指定 Pod 所在 Node 上的 Daemonset Pod 执行。Daemonset Pod 上的
 bcm-blade 成功执行 cri 实验后，会和 K8s 一样，fork 一个进程等待一段时间后销毁实验。整个过程如下图所示。
 
-![image-20240714171200821](./asserts/image-20240714171200821.png)
+![image-20240714171200821](assets/image-20240714171200821.png)
 
 查看网络相关故障注入的恢复逻辑 [源码](https://github.com/chaosblade-io/chaosblade-exec-os/blob/52c677bf0d19b2f38df57c03869ba982db5208d7/exec/network/tc/network_tc.go#L370-L383)
 后，我们找到了问题：tc 相关网络故障的销毁其实只需要 device 一个参数，直接将网卡上所有的 tc
@@ -136,17 +135,17 @@ K8s 实验到 CRI 实验前后的关联关系。
 ```go title="chaosblade-exec-os/exec/network/tc/network_tc.go#stopNet"
 // stopNet
 func stopNet(ctx context.Context, netInterface string, cl spec.Channel) *spec.Response {
-	if os.Getuid() != 0 {
-		return spec.ReturnFail(spec.Forbidden, fmt.Sprintf("tc no permission"))
-	}
-	response := cl.Run(ctx, "tc", fmt.Sprintf(`filter show dev %s parent 1: prio 4`, netInterface))
-	if response.Success && response.Result != "" {
-		response = cl.Run(ctx, "tc", fmt.Sprintf(`filter del dev %s parent 1: prio 4`, netInterface))
-		if !response.Success {
-			log.Errorf(ctx, "tc del filter err, %s", response.Err)
-		}
-	}
-	return cl.Run(ctx, "tc", fmt.Sprintf(`qdisc del dev %s root`, netInterface))
+  if os.Getuid() != 0 {
+    return spec.ReturnFail(spec.Forbidden, fmt.Sprintf("tc no permission"))
+  }
+  response := cl.Run(ctx, "tc", fmt.Sprintf(`filter show dev %s parent 1: prio 4`, netInterface))
+  if response.Success && response.Result != "" {
+    response = cl.Run(ctx, "tc", fmt.Sprintf(`filter del dev %s parent 1: prio 4`, netInterface))
+    if !response.Success {
+        log.Errorf(ctx, "tc del filter err, %s", response.Err)
+    }
+}
+  return cl.Run(ctx, "tc", fmt.Sprintf(`qdisc del dev %s root`, netInterface))
 }
 ```
 
@@ -161,21 +160,21 @@ chaosblade CLI 的实现只能无条件地执行 destroy。
 
 ```go title="chaosblade/exec/cri/executor.go#Exec"
 func (e *Executor) Exec(uid string, ctx context.Context, model *spec.ExpModel) *spec.Response {
-	key := exec.GetExecutorKey(model.Target, model.ActionName)
-	executor := e.executors[key]
-	if executor == nil {
-		log.Errorf(ctx, spec.CriExecNotFound.Sprintf(key))
-		return spec.ResponseFailWithFlags(spec.CriExecNotFound, key)
-	}
-	executor.SetChannel(channel.NewLocalChannel())
-	return executor.Exec(uid, ctx, model)
+  key := exec.GetExecutorKey(model.Target, model.ActionName)
+  executor := e.executors[key]
+  if executor == nil {
+    log.Errorf(ctx, spec.CriExecNotFound.Sprintf(key))
+    return spec.ResponseFailWithFlags(spec.CriExecNotFound, key)
+  }
+  executor.SetChannel(channel.NewLocalChannel())
+  return executor.Exec(uid, ctx, model)
 }
 ```
 
 因此笔者设计的解决方案也比较“简单粗暴”，能够以最小的代价完成止损。由于我们没有直接对机器上容器注入故障的需求（即在一台物理机上对本机上的容器注入故障），所有的
 CRI 实验都是从 K8s 实验转化而来的。那我们简单地移除 CRI 实验的定时销毁进程即可。
 
-![image2024-4-22_16-12-37.png](./asserts/image2024-4-22_16-12-37.png)
+![image2024-4-22_16-12-37.png](assets/image2024-4-22_16-12-37.png)
 
 ### 网络实验中目标 IP 过多导致故障注入失败
 
@@ -189,7 +188,7 @@ long”。
 解决方案也比较简单粗暴。既然是拼接命令执行，那我们可以把一条命令拆分成多条命令。无非就是要注意执行命令的时候 script 是
 tc，紧跟着的第一条命令不能以 tc 开头，后面通过 && 连接的命令照旧。
 
-![image2024-6-19_21-17-52](./asserts/image2024-6-19_21-17-52.png)
+![image2024-6-19_21-17-52](assets/image2024-6-19_21-17-52.png)
 
 > 2025 年 5 月后记：你以为问题就这么解决了吗？
 > 读到这里的读者如果仔细阅读了前面一节《适配公司网络环境》，
@@ -215,7 +214,7 @@ IP: 端口，网段 IP CIDR ，豁免的目标 IP: 端口等。但 chaosblade-ex
 
 先来看看使用 chaosblade network loss/delay 时遇到的问题。
 
-![image-20240714230450557](asserts/image-20240714230450557.png)
+![image-20240714230450557](assets/image-20240714230450557.png)
 
 我们最早想到要重新实现网络故障注入实现是因为上图这个场景。我们需要阻断目标 Pod 对一些 IP 网段的访问，同时阻断它请求某些特定的
 IP: Port， 另外还要豁免某些 IP: Port。ChaosBlade 的 network loss 的有关参数如下，其中的 `destination-ip`，`local-port`，
@@ -264,7 +263,7 @@ HTTP/GRPC 服务常用的端口。经常有用户来投诉演练故障注入不�
 
 #### 自研版本
 
-![image-20240714231608304](asserts/image-20240714231608304.png)
+![image-20240714231608304](assets/image-20240714231608304.png)
 
 我们创造了 bilibili-network loss/delay，引入了一套与上层平台的封装需求完全一致的参数，也能供大部分用户直接使用。
 
@@ -289,7 +288,7 @@ bcm-backend 对每一个网络故障注入都添加 `--exclude-endpoints` 参数
 时，所有的出入网请求都被影响了，这导致机器丢失，用户失去了观测实验目标的能力。因此，我们对 22（sshd），9100（node_exporter） 和
 19557（bcm-agent）端口添加了 dport，sport 双向豁免规则。
 
-![image-20240714233758385](asserts/image-20240714233758385.png)
+![image-20240714233758385](assets/image-20240714233758385.png)
 
 大公司内部的需求总是复杂多变的。在对堡垒机（即上图的 relay um-shell）进行物理机演练的过程中，我们发现对 22
 端口的双向豁免又影响到了预期中的故障注入。用户当时就是希望无法 ssh 连上某一个 IP CIDR 网段内的机器，尽管上层平台已经指定了
@@ -328,7 +327,7 @@ chaosblade 的 DNS 篡改解析注入实现是这样的：
 
 #### 自研版本
 
-![bilibili-network dns](asserts/image2024-6-24_21-3-40.png)
+![bilibili-network dns](assets/image2024-6-24_21-3-40.png)
 
 我们引入了 [goodhosts/hostfile](https://github.com/goodhosts/hostsfile) 库来帮助我们解析 hosts 文件。首先读取目标容器中的
 /etc/hosts 文件并输出到 stdout，再复制一份用于恢复。将 stdout 的结果输出到 node 上的临时文件，使用 hostsfile
@@ -342,7 +341,7 @@ chaosblade 的 DNS 篡改解析注入实现是这样的：
 > 2025 年 5 月后记：ChaosBlade 的所谓 DNS 故障和 chaos-mesh
 > 的 [模拟 DNS 故障](https://chaos-mesh.org/zh/docs/simulate-dns-chaos-on-kubernetes/)
 > 相比差太多了，差距就好比初等数学和高等数学（狗头）。ChaosBlade 的实现像小学生版本，我的修改像中学生版本。
-> CoreDNS 提供了优雅的方式实现功能拓展，而 B 站内部的 DNS、服务发现模块并没有，因为我们只能对容器内的解析文件动脑筋。
+> CoreDNS 提供了优雅的方式实现功能拓展，而 B 站内部的 DNS、服务发现模块并没有，因此我们只能对容器内的解析文件动脑筋。
 > B 站根本不用 [kube-dns](https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/)
 > 和 [CoreDNS](https://github.com/coredns/coredns)
 > ，[k8s_dns_chaos](https://github.com/chaos-mesh/k8s_dns_chaos)

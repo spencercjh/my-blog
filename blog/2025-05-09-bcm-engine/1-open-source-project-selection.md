@@ -104,24 +104,24 @@ Blog [《ChaosBlade-Box 全新混沌工程平台 -- 助力企业混沌工程落�
 blade CLI 或者创建 ChaosBlade custom resource。
 它在另一个项目 [chaosblade-box-agent](https://github.com/chaosblade-io/chaosblade-box-agent) 中。
 
-![](./asserts/chaosblade-architecture-c93f9b66e1926270e5683952a1109828.png)
+![](assets/chaosblade-architecture-c93f9b66e1926270e5683952a1109828.png)
 
 ChaosBlade 项目里的命名不太清楚，可以发现很多东西都叫 “chaosblade”，很容易引起歧义，本文在此做一次解释，后文不再赘述。
 
 - ChaosBlade 是指整个 ChaosBlade 项目，即 https://github.com/chaosblade-io 下的所有项目。
-- chaosblade 是指 https://github.com/chaosblade-io/chaosblade，它的产物包括 blade CLI 等可执行程序。笔者认为这个 repo 应该叫
+- chaosblade 是指 https://github.com/chaosblade-io/chaosblade ，它的产物包括 blade CLI 等可执行程序。笔者认为这个 repo 应该叫
   chaosblade-cli，以和组织（chaosblade-io），品牌加以区分。
 - ChaosBlade custom resource
   是指定义在 [chaosblade-operator/pkg/apis/chaosblade/v1alpha1](https://github.com/chaosblade-io/chaosblade-operator/tree/master/pkg/apis/chaosblade/v1alpha1)
   中的 [ChaosBlade custom resource](https://github.com/chaosblade-io/chaosblade-operator/blob/master/pkg/apis/chaosblade/v1alpha1/types.go#L168)
-  ，其中包含 `spec` 和 `status` 2 个字段，`spec` 中有实验的定义。笔者认为这个命名是最模糊的，`ChaosBlade` 根本不能将一个资源的含义表达清楚。
+  ，其中包含 `spec` 和 `status` 2 个字段，`spec` 中有实验的定义。笔者认为这个命名是最模糊的，`ChaosBlade` 根本不能将一个资源的含义表达清楚。（后记，这个 CRD 应该叫 `experiment`）
 
 根据 CNCF 官方的 [统计数据](https://chaosblade.devstats.cncf.io/d/8/dashboards?orgId=1)，可以发现 ChaosBlade 在近一年都没有发布新的
 release 版本，GitHub Activity（包括 Commit，PR，issue，Release 等）比较少。
 
-![image-20240710163434199](./asserts/image-20240710163434199.png)
+![image-20240710163434199](assets/image-20240710163434199.png)
 
-![image-20240710163945742](./asserts/image-20240710163945742.png)
+![image-20240710163945742](assets/image-20240710163945742.png)
 
 经过笔者半年多对 ChaosBlade 的观察和参与，发现项目的 owner 是阿里云的 [@camix](https://github.com/MandssS)，ta
 会每隔一段时间上线处理一些 Issue 和 PR，近期 ta 还向 CNCF 提出了将项目升级为 incubating
@@ -172,7 +172,7 @@ Issue-PR 讨论，维护停滞等。
 
 上述 2 个 Rust 项目由于本身项目文档不足，笔者能力有限以及不甚了解具体的领域知识，在此就不作过多介绍了。
 
-![chaos-mesh-arch-1](./asserts/chaos-mesh.png)
+![chaos-mesh-arch-1](assets/chaos-mesh.png)
 
 尽管和 ChaosBlade 一样，Chaos Mesh
 也进入了长期维护阶段，但从下列 [图表](https://chaosmesh.devstats.cncf.io/d/12/issues-opened-closed-by-repository-group?orgId=1&var-period=d&var-repogroup_name=All)
@@ -183,9 +183,9 @@ owner 是
 上推广了 Chaos Mesh，主要负责日常维护的 maintainer 是 [@g1eny0ung](https://github.com/g1eny0ung)，Rust 组件的维护由仍在
 PingCAP 的 [@YangKeao](https://github.com/YangKeao) 维持。
 
-![image-20240710231147244](./asserts/image-20240710231147244.png)
+![image-20240710231147244](assets/image-20240710231147244.png)
 
-![image-20240710231240428](./asserts/image-20240710231240428.png)
+![image-20240710231240428](assets/image-20240710231240428.png)
 
 PingCAP 自称是一家 “业界领先的企业级开源分布式数据库企业”，笔者认为 Chaos Mesh 没有给公司“拖后腿”。虽然晚于 ChaosBlade
 几个月开源，但 Chaos Mesh 的项目组织和社区运营情况都比 ChaosBlade 好不少。由于云原生项目的性质，Chaos Mesh 的用户群体一定没有
@@ -218,12 +218,12 @@ Chaos Mesh 可以吸引来自国外的开发人员和组织参与贡献，这一
 
 其他组件和 Chaos Mesh 都有一一对应。
 
-![img](./asserts/componentlink.png)
+![img](assets/componentlink.png)
 
 ChaosMeta 的社区和 ChaosBlade 一样，主要依托钉钉群，但他们做得比较好的是会把钉钉群中的问题及时同步到 GitHub Issue
 中。还在快速迭代的产品没有经历过大量用户的实际使用测试，钉钉群里活跃的人不算多，但开发人员回复的速度非常快，这一点值得称赞。
 
-![image-20240711002625227](./asserts/image-20240711002625227.png)
+![image-20240711002625227](assets/image-20240711002625227.png)
 
 > 2025 年 5 月 9 日后记：这个项目也凉凉了，一两个月才有人在群里说句话，开源社区完全没有开放贡献。
 
@@ -250,7 +250,7 @@ ChaosBlade），不暴露公网的话总体风险仍然可控。
 
 #### Why not ChaosMeta?
 
-![architecture.png](./asserts/architecture.png)
+![architecture.png](assets/architecture.png)
 
 随着 K8s CRD 开发的配套设施（kubebuilder 等项目脚手架，以及相关文档资料等）日趋完善，以及云原生开发的理念在国内慢慢被各大公司接受，近几年才立项，去年才公布开源的
 ChaosMeta 在架构设计上是最“优雅”的。它充分使用了 CRD 及 operator 来实现项目自身几乎所有的业务逻辑：实验的定义，编排实验，执行实验，实验观测方式的定义等等。CRUD
@@ -268,7 +268,7 @@ Argo Workflows 的 workflow custom resource，编排工作就完成了，其余�
 抛开技术上的设计与实现不谈，来自蚂蚁的相关团队对混沌工程平台的理解，产品设计是三个项目里最完整的。如下图所示，他们对故障演练的认识非常充分。这些步骤和阶段与我们
 BCM 平台实际使用情况基本一致。
 
-![lifecycle_cn.png](./asserts/lifecycle_cn.png)
+![lifecycle_cn.png](assets/lifecycle_cn.png)
 
 但 ChaosMeta 仍然存在一些缺陷，导致我们无法选择它。在做技术选型的时候， ChaosMeta
 仍处于起步阶段，刚刚开源不到半年，真实使用过的用户数量都没有公布（直到现在他们也没有创建 Adopters Issue）。这个项目内部潜在的
@@ -284,20 +284,20 @@ Operator），但现在由于组织架构的关系，这样的运维问题需要
 
 #### Why not Chaos Mesh?
 
-![Architecture](./asserts/architecture-76301820de324f79d79db310b11b9246-20240711170402763.png)
+![Architecture](assets/architecture-76301820de324f79d79db310b11b9246-20240711170402763.png)
 
 Chaos Mesh 也是一个优秀的云原生项目，依托于 PingCAP 在开源社区中良好的口碑和声誉，它拥有一个健康的社区，有着许多用户和国内外大型企业的背书，是三个项目中唯一一个走出国门的项目。其项目文档是
 3 个项目中最全面，准确和清晰的，也有其他 2
 个项目都没有的自动化 [e2e 测试](https://github.com/chaos-mesh/chaos-mesh/tree/master/e2e-test) 模块和一套完整的基于
 GitHub Actions 的 [CI/CD 工作流](https://github.com/chaos-mesh/chaos-mesh/tree/master/.github)。
 
-![image-20240711154721508](./asserts/image-20240711154721508.png) ![image-20240710230154087](./asserts/image-20240710230154087.png)
+![image-20240711154721508](assets/image-20240711154721508.png) ![image-20240710230154087](assets/image-20240710230154087.png)
 
 Chaos Mesh 与其他 2 个项目相比能够支持更多的实验类型。使用 Rust 开发的 chaos-tproxy 和 toda 十分“硬核”。ChaosBlade 的
 maintainer [@tiny-x](https://github.com/tiny-x) 在钉钉群里都曾向笔者推荐过参考 toda 来重新实现 ChaosBlade 不太好用的磁盘
 I/O 故障注入。
 
-![image-20240714124540385](./asserts/image-20240714124540385.png)
+![image-20240714124540385](assets/image-20240714124540385.png)
 
 Chaos Mesh 也有强大的流程编排能力，它参考了 Argo Workflows 的设计与实现，但它为了不和 Argo 强绑定，实现了自己的
 Workflow，定义起来和 Argo Workflows 无异。
@@ -358,11 +358,11 @@ B 站对混沌工程的实践由来已久。2019 年 EP 团队在 Hassan 平台�
 和网络故障注入。2021 年 SRE 团队推出了混沌实验平台 chaos-mng，打通了公司内部的服务树和周边平台，增加了实验管理、场景实验等能力，简化了用户的操作流程。前面有过
 2 个平台的集成使用，我们对用过的项目有“路径依赖”心理是完全合理的。
 
-![chaos-mng](./asserts/chaos-mng.png)
+![chaos-mng](assets/chaos-mng.png)
 
 ##### 改造成本低
 
-![image-20240716103947381](./asserts/image-20240716103947381.png)
+![image-20240716103947381](assets/image-20240716103947381.png)
 
 ChaosBlade 虽然也自称是“云原生“项目，但它不像 CRD 开发时常见的 apiserver+operator
 的架构（比如 [Argo Workflows 下的 /server](https://github.com/argoproj/argo-workflows/tree/main/server)，[KubeVela](https://github.com/kubevela/kubevela)

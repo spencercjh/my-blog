@@ -87,7 +87,7 @@ UID
 
 #### K8s 实验中替代 bcm-agent 与 chaosblade CLI
 
-![image-20240716155701191](asserts/image-20240716155701191.png)
+![image-20240716155701191](assets/image-20240716155701191.png)
 
 参考 [Argo Workflows 下的 /server](https://github.com/argoproj/argo-workflows/tree/main/server)，[KubeVela](https://github.com/kubevela/kubevela)
 下的 [VelaUX](https://github.com/kubevela/velaux)，Chaos Mesh 的 Chaos Dashboard，ChaosMeta 的 chaosmeta-platform 等
@@ -128,7 +128,7 @@ sequenceDiagram
 chaosblade-apiserver 适配物理机环境。与 K8s 中不同的是，这时需要将请求转化为 blade 命令在本机执行。物理机部分应该尽可能地复用
 K8s 部分的代码，形成公共逻辑。
 
-![image-20240716161439649](asserts/image-20240716161439649.png)
+![image-20240716161439649](assets/image-20240716161439649.png)
 
 ### 感知演练目标的变化，动态注入故障
 

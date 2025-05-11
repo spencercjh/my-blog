@@ -42,20 +42,20 @@ cgroupv1 版本。cgroup 这个问题可以说是 ChaosBlade 社区里的“经�
 var err error
 cpuCountStr := model.ActionFlags["cpu-count"]
 if cpuCountStr != "" {
-    cpuCount, err = strconv.Atoi(cpuCountStr)
-    if err != nil {
-        log.Errorf(ctx, "`%s`: cpu-count is illegal, cpu-count value must be a positive integer", cpuCountStr)
-        return spec.ResponseFailWithFlags(spec.ParameterIllegal, "cpu-count", cpuCountStr, "it must be a positive integer")
-    }
+  cpuCount, err = strconv.Atoi(cpuCountStr)
+  if err != nil {
+    log.Errorf(ctx, "`%s`: cpu-count is illegal, cpu-count value must be a positive integer", cpuCountStr)
+    return spec.ResponseFailWithFlags(spec.ParameterIllegal, "cpu-count", cpuCountStr, "it must be a positive integer")
+  }
 }
 if cpuCount <= 0 || cpuCount > runtime.NumCPU() {
-    cpuCount = runtime.NumCPU()
+  cpuCount = runtime.NumCPU()
 }
 ```
 
 我在公司里也碰到这个问题后，和 ChaosBlade 的阿里云 maintainer 也确认了问题。
 
-![image2024-11-5_17-44-48](asserts/image2024-11-5_17-44-48.png)
+![image2024-11-5_17-44-48](assets/image2024-11-5_17-44-48.png)
 
 受 [automaxprocs/internal/cgroups](https://github.com/uber-go/automaxprocs/tree/master/internal/cgroups) 启发并结合相关资料，一个容器的
 CPU
@@ -93,7 +93,7 @@ PR [fix: get correct CPU quota in container runtime](https://github.com/chaosbla
 > 题外话：这个 issue 的修复让我很开心，因为在地球的另外一个角落，老哥 [@muhammed.tanir](https://github.com/flyingbutter)
 > 对我发出了 [殷切期盼](https://github.com/chaosblade-io/chaosblade/issues/1079#issuecomment-2623885167)
 > ，希望我能帮助他解决问题。最后我也提交了 PR 并合入了主分支，但不知道老哥后面有没有解决重新分发 chaosblade-exec-os
-> 包的问题。![image-20250509163623530](asserts/image-20250509163623530.png)
+> 包的问题。![image-20250509163623530](assets/image-20250509163623530.png)
 
 ## 正确支持容器环境的内存负载演练
 
@@ -127,9 +127,9 @@ PR [fix: get correct CPU quota in container runtime](https://github.com/chaosbla
 
 ```
 ─ 目标 Pod 所在 Node DS Pod
-  └── 启动 chaosblade blade 进程: blade create cri mem load ...
-	└── 启动 nsexec 进程以进入目标容器: /opt/chaosblade/bin/nsexec -s -t 25255 -p -n -- /opt/chaosblade/bin/chaos_os ...
-	  └── 在目标容器 namespace 内启动 chaos_os: /opt/chaosblade/bin/chaos_os create mem load --mode=ram --avoid-being-killed=true --cgroup-root=/host-sys/fs/cgroup/ --rate=100 --mem-percent=100 --uid=90dc070e2a32c12e --channel=nsexec --ns_target=25255 --ns_pid=true --ns_mnt=true
+└── 启动 chaosblade blade 进程: blade create cri mem load ...
+  └── 启动 nsexec 进程以进入目标容器: /opt/chaosblade/bin/nsexec -s -t 25255 -p -n -- /opt/chaosblade/bin/chaos_os ...
+    └── 在目标容器 namespace 内启动 chaos_os: /opt/chaosblade/bin/chaos_os create mem load --mode=ram --avoid-being-killed=true --cgroup-root=/host-sys/fs/cgroup/ --rate=100 --mem-percent=100 --uid=90dc070e2a32c12e --channel=nsexec --ns_target=25255 --ns_pid=true --ns_mnt=true
 ```
 
 chaosblade 引入了 `--avoid-being-killed` 参数来避免最后占用内存的 `chaos_os`（上面进程树中最后一个进程） 进程被杀死，但这个
@@ -138,19 +138,19 @@ flag 在容器环境并不能正确工作。一看源码就发现了问题：
 ```go title="chaosblade-exec-os/exec/mem/mem.go#start"
 // adjust process oom_score_adj to avoid being killed
 if avoidBeingKilled {
-    // not works for the channel.NSExecChannel
-    if _, ok := cl.(*channel.NSExecChannel); !ok {
-        scoreAdjFile := fmt.Sprintf(processOOMAdj, os.Getpid())
-        if _, err := os.Stat(scoreAdjFile); err == nil || os.IsExist(err) {
-            if err := os.WriteFile(scoreAdjFile, []byte(oomMinAdj), 0644); err != nil { //nolint:gosec
-                log.Errorf(ctx, "run burn memory by %s mode failed, cannot edit the process oom_score_adj, %v", burnMemMode, err)
-            } else {
-                log.Infof(ctx, "write oom_adj %s to %s", oomMinAdj, scoreAdjFile)
-            }
-        } else {
-            log.Errorf(ctx, "score adjust file: %s not exists, %v", scoreAdjFile, err)
-        }
+  // not works for the channel.NSExecChannel
+  if _, ok := cl.(*channel.NSExecChannel); !ok {
+    scoreAdjFile := fmt.Sprintf(processOOMAdj, os.Getpid())
+    if _, err := os.Stat(scoreAdjFile); err == nil || os.IsExist(err) {
+      if err := os.WriteFile(scoreAdjFile, []byte(oomMinAdj), 0644); err != nil { //nolint:gosec
+        log.Errorf(ctx, "run burn memory by %s mode failed, cannot edit the process oom_score_adj, %v", burnMemMode, err)
+      } else {
+        log.Infof(ctx, "write oom_adj %s to %s", oomMinAdj, scoreAdjFile)
+      }
+    } else {
+      log.Errorf(ctx, "score adjust file: %s not exists, %v", scoreAdjFile, err)
     }
+  }
 }
 ```
 
@@ -164,7 +164,7 @@ if avoidBeingKilled {
 借鉴 chaos-mesh 的 [相关实现](https://github.com/chaos-mesh/chaos-mesh/blob/master/pkg/bpm/build_linux.go#L31-L51)
 ，我们可以发现
 chaos-mesh 是在借助 `nsexec` 将故障注入进程挂入目标容器时加上了 `choom`
-命令。![image2024-11-20_15-50-50](asserts/image2024-11-20_15-50-50.png)
+命令。![image2024-11-20_15-50-50](assets/image2024-11-20_15-50-50.png)
 
 ChaosBlade
 的层次结构导致了我们很难照搬这样的模式，我只能在执行故障注入的通用方法里加一段 [特殊逻辑](https://github.com/chaosblade-io/chaosblade-exec-cri/blob/fa3736287f1c1049ece48e2481988688f81c0952/exec/executor_common_linux.go#L265-L272)
@@ -172,12 +172,12 @@ ChaosBlade
 
 ```go title="chaosblade-exec-cri/exe/executor_common_linux.go#execForHangAction"
 if expModel.Target == "mem" && expModel.ActionFlags["avoid-being-killed"] == "true" {
-    if err := exec.Command("choom", "-n", "-1000", "-p", strconv.Itoa(command.Process.Pid)).Run(); err != nil { //nolint:gosec
-        log.Errorf(ctx, "choom failed, %s", err.Error())
-    } else {
-        log.Infof(ctx, "choom success, target pid: %v, current pid: %v", command.Process.Pid, os.Getpid())
-        choomChildProcesses(ctx, command.Process.Pid)
-    }
+  if err := exec.Command("choom", "-n", "-1000", "-p", strconv.Itoa(command.Process.Pid)).Run(); err != nil { //nolint:gosec
+    log.Errorf(ctx, "choom failed, %s", err.Error())
+  } else {
+    log.Infof(ctx, "choom success, target pid: %v, current pid: %v", command.Process.Pid, os.Getpid())
+    choomChildProcesses(ctx, command.Process.Pid)
+  }
 }
 ```
 
@@ -197,10 +197,10 @@ ChaosBlade
 > 我们今年开始利用它做一些骚操作，开展一些“业内独创的演练形式，这边暂时不方便多说。后面机会成熟以后我再写 blog。
 
 使用它移除容器后，发现 Pod 的状态和就绪容器数量没有任何变化，但主容器已经无法操作，会报错 container
-找不到。![image2025-1-13_11-37-28](asserts/image2025-1-13_11-37-28.png) 到目标 Pod 所在 Node
+找不到。![image2025-1-13_11-37-28](assets/image2025-1-13_11-37-28.png) 到目标 Pod 所在 Node
 上又能找到容器里的进程还在运行。这明显和我们期望的“移除容器”操作的结果不一致。
 
-![image-20250509175724828](asserts/image-20250509175724828.png)
+![image-20250509175724828](assets/image-20250509175724828.png)
 
 维护公司 Kubernetes 的同事说移除容器“应该”使用 `crictl`，并用 `crictl stop $CONTAINER_ID` 和 `crictl ` `rm`
 `$CONTAINER_ID`
@@ -213,21 +213,21 @@ chaosblade 里 containerd client 的使用问题。既然 crictl 能够有效删
 // RemoveContainer sends a RemoveContainerRequest to the server, and parses
 // the returned RemoveContainerResponse.
 func RemoveContainer(ctx context.Context, client internalapi.RuntimeService, id string) error {
-	if id == "" {
-		return errors.New("ID cannot be empty")
-	}
+  if id == "" {
+    return errors.New("ID cannot be empty")
+  }
 
-	logrus.Debugf("Removing container: %s", id)
+  logrus.Debugf("Removing container: %s", id)
 
-	if _, err := InterruptableRPC(ctx, func(ctx context.Context) (any, error) {
-		return nil, client.RemoveContainer(ctx, id)
-	}); err != nil {
-		return err
-	}
+  if _, err := InterruptableRPC(ctx, func(ctx context.Context) (any, error) {
+    return nil, client.RemoveContainer(ctx, id)
+  }); err != nil {
+    return err
+  }
 
-	fmt.Println(id)
+  fmt.Println(id)
 
-	return nil
+  return nil
 }
 ```
 
@@ -241,42 +241,42 @@ client
 ```go title="kubernetes-sigs/cri-tools/cmd/crictl/main.go"
 // If no EP set then use the default endpoint types
 if !RuntimeEndpointIsSet {
-    logrus.Warningf("runtime connect using default endpoints: %v. "+
-        "As the default settings are now deprecated, you should set the "+
-        "endpoint instead.", defaultRuntimeEndpoints)
-    logrus.Debug("Note that performance maybe affected as each default " +
-        "connection attempt takes n-seconds to complete before timing out " +
-        "and going to the next in sequence.")
+  logrus.Warningf("runtime connect using default endpoints: %v. "+
+      "As the default settings are now deprecated, you should set the "+
+      "endpoint instead.", defaultRuntimeEndpoints)
+  logrus.Debug("Note that performance maybe affected as each default " +
+      "connection attempt takes n-seconds to complete before timing out " +
+      "and going to the next in sequence.")
 
-    for _, endPoint := range defaultRuntimeEndpoints {
-        logrus.Debugf("Connect using endpoint %q with %q timeout", endPoint, t)
+  for _, endPoint := range defaultRuntimeEndpoints {
+    logrus.Debugf("Connect using endpoint %q with %q timeout", endPoint, t)
 
-        res, err = remote.NewRemoteRuntimeService(endPoint, t, tp, &logger)
-        if err != nil {
-            logrus.Error(err)
+    res, err = remote.NewRemoteRuntimeService(endPoint, t, tp, &logger)
+    if err != nil {
+      logrus.Error(err)
 
-            continue
-        }
-
-        logrus.Debugf("Connected successfully using endpoint: %s", endPoint)
-
-        break
+      continue
     }
 
-    return res, err
+    logrus.Debugf("Connected successfully using endpoint: %s", endPoint)
+
+    break
+  }
+
+  return res, err
 }
 ```
 
 可以看到在没有指定容器运行时 ep 的情况下会和本地的 3
 种容器运行时尝试连接：`containerd`，`crio`，`cri-dockerd`（即变量 `defaultRuntimeEndpoints`）。结合 containerd
 的文档：[containerd#cri](https://github.com/containerd/containerd?tab=readme-ov-file#cri)，由此我们知道 crictl
-是在和本地的容器运行时的 cri 插件服务通信。![cri](asserts/cri.png)
+是在和本地的容器运行时的 cri 插件服务通信。![cri](assets/cri.png)
 
 containerd 整个 repo 存在 v1、v2 两个重大版本分支。经过确认，公司使用的 containerd 版本是 1.6.5。containerd 1.6.5 的 cri
 plugin 中，处理 RemoveContainer
 的代码如下：https://github.com/containerd/containerd/blob/v1.6.5/pkg/cri/server/container_remove.go#L34-L112
 
-![image2025-1-13_14-26-3](asserts/image2025-1-13_14-26-3.png) 其中最关键的就是以下操作：
+![image2025-1-13_14-26-3](assets/image2025-1-13_14-26-3.png) 其中最关键的就是以下操作：
 
 1. 如果容器状态是 RUNNING 或者 UNKNOWN，停止容器
    1. 处理 UNKNOWN 容器的残留 Task 和进程
@@ -294,16 +294,16 @@ chaosblade-exec-cri 为 containerd
 
 ```go title="chaosblade-exec-cri/exec/container/containerd/containerd_linux.go#RemoveContainer"
 func (c *Client) RemoveContainer(ctx context.Context, containerId string, force bool) error {
-	err := c.cclient.ContainerService().Delete(c.Ctx, containerId)
-	if err == nil {
-		return nil
-	}
+  err := c.cclient.ContainerService().Delete(c.Ctx, containerId)
+  if err == nil {
+    return nil
+  }
 
-	if errdefs.IsNotFound(err) {
-		return nil
-	}
+  if errdefs.IsNotFound(err) {
+    return nil
+  }
 
-	return err
+  return err
 }
 ```
 
@@ -315,7 +315,7 @@ kubelet 无法获取到容器信息，但 Node 上容器进程依旧在正常运
 containerd task 杀死（表现是容器以 137 code 错误退出），随后借助公司容器平台标准配置的 livenessProbe
 来帮助我们实现移除容器的根本目标。这样一来这些操作就都留了痕迹。
 
-![image2025-1-14_20-58-39](asserts/image2025-1-14_20-58-39.png)
+![image2025-1-14_20-58-39](assets/image2025-1-14_20-58-39.png)
 
 ---
 
