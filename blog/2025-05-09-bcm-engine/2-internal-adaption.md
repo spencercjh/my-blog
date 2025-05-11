@@ -347,3 +347,9 @@ chaosblade 的 DNS 篡改解析注入实现是这样的：
 > 和 [CoreDNS](https://github.com/coredns/coredns)
 > ，[k8s_dns_chaos](https://github.com/chaos-mesh/k8s_dns_chaos)
 > 对 B 站来说完全不合适。感兴趣的读者可以阅读 chaos-mesh 的相关组件 [源码](https://github.com/chaos-mesh/k8s_dns_chaos)。
+
+---
+
+本段完。
+
+请看下集，真·Bug 修复：[修复 ChaosBlade 遗留多年的 Bug](./3-bugfix.md)！
