@@ -72,7 +72,7 @@ Limit（Quota）应该是 **容器目录下** 的 `/sys/fs/cgroup/cpu/cpu.cfs_qu
 资源（request&limit）的问题，但我们的需求其实是**在一个拥有特权（privilege）的 daemonset pod 里去获取所在 Node 上某一个 Pod
 容器的 CPU 资源**。
 
-由于公司机器全都仅支持 cgroup1，接下来的修复实现里不需要考虑 cgroup1 和 cgroup2 的差异。不管是 Docker 还是 K8s，容器终究是
+**由于公司机器全都仅支持 cgroupv1，接下来的修复实现里没有考虑 cgroupv1 和 cgroupv2 的差异，仅实现了 cgroupv1 版本**。不管是 Docker 还是 K8s，容器终究是
 Node 上的一个进程。那么我们可以通过宿主机的 `/proc/$pid/cgroup` 和 `/proc/$pid/mountinfo` 从宿主机上获取容器的 cgroup 子系统
 cpu 信息。而 Pod 容器 pid 是 chaosblade 代码中已经正确获取到的了。在这里不再赘述参考资料中的知识，直接列出如何通过 cgroup
 文件获取容器的 CPU 资源信息：
@@ -160,8 +160,8 @@ if avoidBeingKilled {
 中的这段代码在主机环境，或者说当 `memExecutor` 的 `spec.channel` 是 `LocalExecutor` 时候不会有问题，`os.Getpid()` 能够正确返回
 `chaos_os` 的当前进程号，完成对 `oom adj` 文件的修改。但一旦运行在容器环境，`os.Getpid()` 只会展示容器的 pid namespace
 里的进程号，它和 daemonset pod 里的，也就是宿主机上的 pid namespace 存在一个映射关系，这时候我们将无法通过错误的 PID 找到预期的
-`chaos_os` 进程目录。导致 `chaos_os` 一旦占用内存爬高，很快就会被杀掉。**
-但用户的预期往往是故障注入进程应该把内存用完，导致正常运行的服务不能正常工作。**如果故障注入无法影响到真实的用户服务，那么演练将失去意义。
+`chaos_os` 进程目录。导致 `chaos_os` 一旦占用内存爬高，很快就会被杀掉。
+**但用户的预期往往是故障注入进程应该把内存用完，导致正常运行的服务不能正常工作**。如果故障注入无法影响到真实的用户服务，那么演练将失去意义。
 
 借鉴 chaos-mesh 的 [相关实现](https://github.com/chaos-mesh/chaos-mesh/blob/master/pkg/bpm/build_linux.go#L31-L51)
 ，我们可以发现
