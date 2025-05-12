@@ -117,7 +117,7 @@ const config: Config = {
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} CC BY-NC 4.0. Built with Docusaurus.`,
+      copyright: `Copyright © ${new Date().getFullYear()} by <a href="https://github.com/spencercjh" target="_blank">@spencercjh</a> is licensed under <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_black">CC BY-NC 4.0</a>. Built with Docusaurus.`,
     },
     prism: {
       theme: prismThemes.github,
