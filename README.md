@@ -1,41 +1,41 @@
-# Website
+# 个人博客
 
-This website is built using [Docusaurus](https://docusaurus.io/), a modern static website generator.
+这是我的个人博客网站，基于 [Docusaurus](https://docusaurus.io/) 构建，一个现代化的静态网站生成器。如果你对选题或者已有的内容有任何评论、建议或意见，请随时创建 issues 与我沟通。
 
-### Installation
+## 项目简介
 
-```
-$ yarn
-```
+本博客用于分享个人想法、技术文章和项目经验。使用 Docusaurus 作为框架，具有以下特性：
 
-### Local Development
+- 🚀 快速的内容加载和浏览体验
+- 📱 响应式设计，适配多种设备
+- 🔍 良好的 SEO 支持
+- 📝 Markdown 支持，便于内容创作
+- 🌙 支持亮色/暗色主题切换
 
-```
-$ yarn start
-```
+## toolchain
 
-This command starts a local development server and opens up a browser window. Most changes are reflected live without having to restart the server.
-
-### Build
+### 安装
 
 ```
-$ yarn build
+$ npm install
 ```
 
-This command generates static content into the `build` directory and can be served using any static contents hosting service.
-
-### Deployment
-
-Using SSH:
+### 本地开发
 
 ```
-$ USE_SSH=true yarn deploy
+$ npm run start
 ```
 
-Not using SSH:
+此命令会启动本地开发服务器并打开浏览器窗口。大多数更改无需重启服务器即可实时生效。
+
+### 构建
 
 ```
-$ GIT_USER=<Your GitHub username> yarn deploy
+$ npm run build
 ```
 
-If you are using GitHub pages for hosting, this command is a convenient way to build the website and push to the `gh-pages` branch.
+此命令会在 `build` 目录中生成静态内容，可以使用任何静态内容托管服务进行部署。
+
+### 部署
+
+该项目已经链接到 cloudflare，特性分支和主分支都会自动构建并部署到对应环境。
