@@ -1,7 +1,7 @@
 .PHONY: md-padding list-md
 
-# Find all Markdown files, excluding the node_modules directory
-MD_FILES := $(shell find . -name "*.md" -not -path "./node_modules/*")
+# Find all Markdown and MDX files, excluding the node_modules and build directory
+MD_FILES := $(shell find . \( -name "*.md" -o -name "*.mdx" \) -not -path "./node_modules/*" -not -path "./build/*")
 
 # 主命令：格式化所有 Markdown 文件
 md-padding:

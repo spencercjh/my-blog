@@ -37,7 +37,7 @@ authors: [spencercjh]
 
 ![image-20240716103947381](assets/image-20240716103947381.png)
 
-为了解决 [前文](1-open-source-project-selection.md) 中提到的跨地域网络问题，我们引入了一台物理机，上面部署了 bcm-agent 与
+为了解决 [前文](1-open-source-project-selection.mdx) 中提到的跨地域网络问题，我们引入了一台物理机，上面部署了 bcm-agent 与
 chaosblade，以此替代原本集群中的
 chaosblade-box-agent。这样一来我们只要为单独的这一台物理机设置网络安全组就能解决所有的网络连同性问题。bcm-agent 摘取了部分
 chaosblade-box-agent 中的代码，它是一个 HTTP Service，用来接受来自上层 bcm-backend 平台的请求（Create/Destroy/Query），将请求作为参数拼接在
@@ -129,8 +129,8 @@ bcm-blade 成功执行 cri 实验后，会和 K8s 一样，fork 一个进程等�
 查看网络相关故障注入的恢复逻辑 [源码](https://github.com/chaosblade-io/chaosblade-exec-os/blob/52c677bf0d19b2f38df57c03869ba982db5208d7/exec/network/tc/network_tc.go#L370-L383)
 后，我们找到了问题：tc 相关网络故障的销毁其实只需要 device 一个参数，直接将网卡上所有的 tc
 规则全部删除。所以后一个注入的故障会被前一个故障的定时恢复任务恢复。笔者翻阅了其他实验的恢复代码（CPU，内存，DNS
-等），发现几乎所有的恢复逻辑都会把“现场”彻底恢复原状，而不会考虑多个实验前后，单个实验中
-K8s 实验到 CRI 实验前后的关联关系。
+等），发现几乎所有的恢复逻辑都会把“现场”彻底恢复原状，**而不会考虑多个实验前后，单个实验中
+K8s 实验到 CRI 实验前后的关联关系**。
 
 ```go title="chaosblade-exec-os/exec/network/tc/network_tc.go#stopNet"
 // stopNet
@@ -138,6 +138,7 @@ func stopNet(ctx context.Context, netInterface string, cl spec.Channel) *spec.Re
   if os.Getuid() != 0 {
     return spec.ReturnFail(spec.Forbidden, fmt.Sprintf("tc no permission"))
   }
+  // highlight-start
   response := cl.Run(ctx, "tc", fmt.Sprintf(`filter show dev %s parent 1: prio 4`, netInterface))
   if response.Success && response.Result != "" {
     response = cl.Run(ctx, "tc", fmt.Sprintf(`filter del dev %s parent 1: prio 4`, netInterface))
@@ -146,6 +147,7 @@ func stopNet(ctx context.Context, netInterface string, cl spec.Channel) *spec.Re
     }
   }
   return cl.Run(ctx, "tc", fmt.Sprintf(`qdisc del dev %s root`, netInterface))
+  // highlight-end
 }
 ```
 
@@ -349,6 +351,6 @@ chaosblade 的 DNS 篡改解析注入实现是这样的：
 
 ---
 
-本段完。
+本章完。
 
-请看下集，真·Bug 修复：[修复 ChaosBlade 遗留多年的 Bug](./3-bugfix.md)！
+请看下一章，真·Bug 修复：[修复 ChaosBlade 遗留多年的 Bug](3-bugfix.mdx)！
