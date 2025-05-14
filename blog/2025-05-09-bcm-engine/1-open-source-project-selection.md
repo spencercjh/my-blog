@@ -76,6 +76,8 @@ CNCF TOC（Technical Oversight Committee）的 Blog。
 （由 [MayaData](https://www.linkedin.com/company/mayadata/) 开源） 和 [Krkn](https://github.com/krkn-chaos/krkn)（由 RedHat
 开源），他们都有比较清晰的中文文档，功能也更加强大和完整，我们还有机会在线下与 maintainer 进行沟通交流。
 
+> 2025 年 5 月后记：选择开源项目不可避免地还要看看 star：![Star History Chart](./assets/star-history-2025514.png)
+
 #### 国内先驱者—— ChaosBlade
 
 根据公开资料显示，[ChaosBlade](https://github.com/chaosblade-io/chaosblade)
