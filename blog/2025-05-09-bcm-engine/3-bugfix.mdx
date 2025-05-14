@@ -48,9 +48,11 @@ if cpuCountStr != "" {
     return spec.ResponseFailWithFlags(spec.ParameterIllegal, "cpu-count", cpuCountStr, "it must be a positive integer")
   }
 }
+// highlight-start
 if cpuCount <= 0 || cpuCount > runtime.NumCPU() {
   cpuCount = runtime.NumCPU()
 }
+// highlight-end
 ```
 
 我在公司里也碰到这个问题后，和 ChaosBlade 的阿里云 maintainer 也确认了问题。
@@ -142,6 +144,7 @@ flag 在容器环境并不能正确工作。一看源码就发现了问题：
 if avoidBeingKilled {
   // not works for the channel.NSExecChannel
   if _, ok := cl.(*channel.NSExecChannel); !ok {
+    // highlight-next-line
     scoreAdjFile := fmt.Sprintf(processOOMAdj, os.Getpid())
     if _, err := os.Stat(scoreAdjFile); err == nil || os.IsExist(err) {
       if err := os.WriteFile(scoreAdjFile, []byte(oomMinAdj), 0644); err != nil { //nolint:gosec
@@ -174,6 +177,7 @@ ChaosBlade
 
 ```go title="chaosblade-exec-cri/exe/executor_common_linux.go#execForHangAction"
 if expModel.Target == "mem" && expModel.ActionFlags["avoid-being-killed"] == "true" {
+  // highlight-next-line
   if err := exec.Command("choom", "-n", "-1000", "-p", strconv.Itoa(command.Process.Pid)).Run(); err != nil { //nolint:gosec
     log.Errorf(ctx, "choom failed, %s", err.Error())
   } else {
@@ -192,6 +196,7 @@ func choomChildProcesses(ctx context.Context, pid int) {
   }
 
   for _, childPid := range childPids {
+    // highlight-next-line
     if err := exec.Command("choom", "-n", "-1000", "-p", strconv.Itoa(childPid)).Run(); err != nil { //nolint:gosec
       log.Errorf(ctx, "choom failed for child pid %d, %s", childPid, err.Error())
     } else {
@@ -202,6 +207,7 @@ func choomChildProcesses(ctx context.Context, pid int) {
 }
 
 func getChildPids(pid int) ([]int, error) {
+  // highlight-next-line
   procPath := fmt.Sprintf("/proc/%d/task/%d/children", pid, pid)
   data, err := os.ReadFile(procPath)
   if err != nil {
@@ -260,6 +266,7 @@ func RemoveContainer(ctx context.Context, client internalapi.RuntimeService, id 
   logrus.Debugf("Removing container: %s", id)
 
   if _, err := InterruptableRPC(ctx, func(ctx context.Context) (any, error) {
+    // highlight-next-line
     return nil, client.RemoveContainer(ctx, id)
   }); err != nil {
     return err
@@ -288,6 +295,7 @@ if !RuntimeEndpointIsSet {
       "connection attempt takes n-seconds to complete before timing out " +
       "and going to the next in sequence.")
 
+  // highlight-next-line
   for _, endPoint := range defaultRuntimeEndpoints {
     logrus.Debugf("Connect using endpoint %q with %q timeout", endPoint, t)
 
@@ -334,6 +342,7 @@ chaosblade-exec-cri 为 containerd
 
 ```go title="chaosblade-exec-cri/exec/container/containerd/containerd_linux.go#RemoveContainer"
 func (c *Client) RemoveContainer(ctx context.Context, containerId string, force bool) error {
+  // highlight-next-line
   err := c.cclient.ContainerService().Delete(c.Ctx, containerId)
   if err == nil {
     return nil
