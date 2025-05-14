@@ -37,7 +37,7 @@ authors: [spencercjh]
 
 ![image-20240716103947381](assets/image-20240716103947381.png)
 
-为了解决 [前文](1-open-source-project-selection.md) 中提到的跨地域网络问题，我们引入了一台物理机，上面部署了 bcm-agent 与
+为了解决 [前文](1-open-source-project-selection.mdx) 中提到的跨地域网络问题，我们引入了一台物理机，上面部署了 bcm-agent 与
 chaosblade，以此替代原本集群中的
 chaosblade-box-agent。这样一来我们只要为单独的这一台物理机设置网络安全组就能解决所有的网络连同性问题。bcm-agent 摘取了部分
 chaosblade-box-agent 中的代码，它是一个 HTTP Service，用来接受来自上层 bcm-backend 平台的请求（Create/Destroy/Query），将请求作为参数拼接在
@@ -349,6 +349,6 @@ chaosblade 的 DNS 篡改解析注入实现是这样的：
 
 ---
 
-本段完。
+本章完。
 
-请看下集，真·Bug 修复：[修复 ChaosBlade 遗留多年的 Bug](./3-bugfix.md)！
+请看下一章，真·Bug 修复：[修复 ChaosBlade 遗留多年的 Bug](3-bugfix.mdx)！
