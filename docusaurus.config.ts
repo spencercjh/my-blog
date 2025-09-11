@@ -37,9 +37,15 @@ const config: Config = {
       {
         docs: false,
         blog: {
+          blogSidebarCount: 0,
           showReadingTime: true,
-          readingTime: ({ content, frontMatter, defaultReadingTime }) =>
-            defaultReadingTime({ content, options: { wordsPerMinute: 1000 } }),
+          readingTime: ({ content, locale, frontMatter, defaultReadingTime }) =>
+            defaultReadingTime({
+              content,
+              locale,
+              frontMatter,
+              options: { wordsPerMinute: 1000 },
+            }),
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           editUrl: "https://github.com/spencercjh/my-blog/tree/main",
