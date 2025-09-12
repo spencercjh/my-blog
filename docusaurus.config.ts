@@ -37,7 +37,7 @@ const config: Config = {
       {
         docs: false,
         blog: {
-          blogSidebarCount: 0,
+          blogSidebarCount: "ALL",
           showReadingTime: true,
           readingTime: ({ content, locale, frontMatter, defaultReadingTime }) =>
             defaultReadingTime({
