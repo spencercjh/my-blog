@@ -240,7 +240,7 @@ ChaosBlade
 有一个功能是 [移除容器](https://chaosblade.io/docs/experiment-types/k8s/container/blade_create_k8s_container-container)
 ，这种混沌实验一般是没人用的，但我们一用就出问题……
 
-> 我们今年开始利用它做一些骚操作，开展一些“业内独创”的演练形式，这边暂时不方便多说。后面机会成熟以后我再写 blog。
+> 移除容器有什么用？看看我的另一篇博客 [《业内首创！服务启动期间注入故障的混沌工程实践》](../2025-09-11-service-startup-exp/startup-exp.mdx)
 
 使用它移除容器后，发现 Pod 的状态和就绪容器数量没有任何变化，但主容器已经无法操作，会报错 container
 找不到。![image2025-1-13_11-37-28](assets/image2025-1-13_11-37-28.png) 到目标 Pod 所在 Node
