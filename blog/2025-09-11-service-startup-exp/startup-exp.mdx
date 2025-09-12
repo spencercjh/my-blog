@@ -60,6 +60,8 @@ authors: [spencercjh]
 
 下面用一张时序图概括该“假设方案”的端到端交互流程：
 
+_下面这张时序图由 GitHub Copilot Agent 使用 GPT-5 模型生成。_
+
 ```mermaid
 sequenceDiagram
     autonumber
@@ -69,7 +71,7 @@ sequenceDiagram
     participant K8s as Kubernetes API Server
     participant Pod as Pod（同一 Network Namespace）
     participant Init as Init Container
-    participant NS as Network Namespace（tc 规则）
+    participant NS as Network Namespace
     participant Main as 主容器
 
     U ->> CEP: 发起“启动依赖演练”请求
