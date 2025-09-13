@@ -10,3 +10,7 @@ open-source:
   label: "open-source"
   permalink: "/open-source"
   description: "Content related to open-source software, which is software with source code that anyone can inspect, modify, and enhance."
+Linux:
+  label: "linux"
+  permalink: "/linux"
+  description: "Content related to Linux, an open-source operating system kernel used in a variety of computing environments."
