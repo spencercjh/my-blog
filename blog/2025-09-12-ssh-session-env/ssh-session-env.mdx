@@ -343,7 +343,7 @@ $ strace -f -e trace=write,read,execve -p 284
 错误: "YOU CAN't echo here\n" + [正确的 SFTP 响应]
       ↑被解释为长度字段
 # ASCII "YOU " = 0x594F5520 = 1498371360
-# 这就是 "packet too long 1498371360" �� 来源！
+# 这就是 "packet too long 1498371360" 的来源！
 ```
 
 综上，只要在 SFTP 工作的过程中系统有任何意外输出，都会破坏其二进制协议，导致报错 get sftp client: packet too long。
