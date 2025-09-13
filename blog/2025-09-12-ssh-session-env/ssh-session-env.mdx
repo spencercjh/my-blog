@@ -243,7 +243,6 @@ fi
 1. SSH 会话可以分成 4 种类型：login + interactive、login + non-interactive、non-login + interactive、non-login + non-interactive。
 2. `ssh your-name@your-host` 会加载 `/etc/environment`、`/etc/profile`（以及 `/etc/profile.d` 下的脚本）、`/etc/bash.bashrc`、`~/.bash_profile`、`~/.bash_login`（如果 `~/.bash_profile` 不存在）、`~/.profile`（如果 `~/.bash_profile` 和 `~/.bash_login` 都不存在）。
 3. `ssh your-name@your-host -- $CMD` 会加载 `/etc/environment`、`/etc/bash.bashrc`、`~/.bashrc`。
-4. 为了避免 SFTP 等 SSH 子协议被污染，`/etc/environment`、`/etc/bash.bashrc`、`~/.bashrc` 中不能有任何输出语句。
 
 ## 后记：环境脚本还会影响 SFTP 的工作
 
