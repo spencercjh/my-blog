@@ -33,14 +33,14 @@ _全文经过 GPT-5 的润色，与 strace 结果分析有关内容由 Claude So
 
 “我的脚本通过堡垒机登录到机器上后可以正常执行，为什么用你的平台就会报错，**环境变量怎么都找不到了呢？**”
 
-## @flowblok 的结论
+## [@flowblok](https://blog.flowblok.id.au/) 的结论
 
 > 感谢 [@Julia Evans] 的漫画小册子
 > [《The Secret Rules of the Terminal》](https://jvns.ca/blog/2025/06/24/new-zine--the-secret-rules-of-the-terminal/)，
 > 其中提到了一篇博客：[《Shell startup scripts》](https://blog.flowblok.id.au/2013-02/shell-startup-scripts.html)
 > 作为资料来补充说明 `.bashrc` 和 `.bash_profile` 的区别。
 
-@flowblok 在 [《Shell startup scripts》](https://blog.flowblok.id.au/2013-02/shell-startup-scripts.html) 里画的图实在太复杂了，他说他通读了各路资料，不明觉厉啊！
+[@flowblok](https://blog.flowblok.id.au/) 在 [《Shell startup scripts》](https://blog.flowblok.id.au/2013-02/shell-startup-scripts.html) 里画的图实在太复杂了，他说他通读了各路资料，不明觉厉啊！
 
 ![complete-graph](assets/complete-graph.png)
 
@@ -49,9 +49,11 @@ _全文经过 GPT-5 的润色，与 strace 结果分析有关内容由 Claude So
 - 是否是登录 Shell（login shell）？这一点可以通过 Bash 执行 `shopt login_shell` 来判断。
 - 是否是交互式 Shell（interactive shell）？这一点可以通过 Bash 执行 `tty` 来判断。
 
+本人精力有限，本文只会探讨 bash shell 的行为，其他 shell（如 zsh、fish）不在本文讨论范围内。欢迎大家给我分享其他 shell 有意思的表现。
+
 ## 验证实验
 
-让我们来验证一下 @flowblok 的结论。
+让我们来验证一下 [@flowblok](https://blog.flowblok.id.au/) 的结论。
 
 实验环境：
 
@@ -149,14 +151,14 @@ sshd (PID 284) - 主 SSH 守护进程
 
 在下面的文件中增加 `export ENV_XXXX="this is XXXX"` 的环境变量：
 
-- `/etc/environment`（这是 @flowblok 没有提到的全局环境文件）
+- `/etc/environment`（这是 [@flowblok](https://blog.flowblok.id.au/) 没有提到的全局环境文件）
 - `/etc/profile`
+- `/etc/profile.d/custom.sh`（这是 [@flowblok](https://blog.flowblok.id.au/) 没有提到的自定义脚本）
 - `/etc/bash.bashrc`
 - `/root/.profile`
 - `/root/.bash_login`
 - `/root/.bash_profile`
 - `/root/.bashrc`
-- `/etc/profile.d/custom.sh`（这是 @flowblok 没有提到的自定义脚本）
 
 然后分别执行开头提到的 2 个命令：
 
@@ -167,13 +169,13 @@ $ env | grep ENV
 $ ssh $username@$hostname -- 'env | grep ENV'
 ```
 
-结果与 @flowblok 写得八九不离十了。
+结果与 [@flowblok](https://blog.flowblok.id.au/) 写得八九不离十了。
 
 ![exp-result-1](assets/exp-result-1.png)
 
 #### 登录交互会话
 
-首先 @flowblok 没有提到 `/etc/environment` 文件，这是两种会话都会加载的。
+首先 [@flowblok](https://blog.flowblok.id.au/) 没有提到 `/etc/environment` 文件，这是两种会话都会加载的。
 
 可以发现 login + interactive 会话会加载紫色线路上的文件。查看 `/etc/profile` 的内容可以发现：
 
@@ -216,7 +218,7 @@ fi
 
 ![home-profile-work](assets/home-profile-work.png)
 
-这一点在 `man bash` 中的 `INVOCATION` 里已经有所提及（可能 @flowblok 也写了而我没仔细读……）。
+这一点在 `man bash` 中的 `INVOCATION` 里已经有所提及（可能 [@flowblok](https://blog.flowblok.id.au/) 也写了而我没仔细读……）。
 
 > When `bash` is invoked as an interactive login shell, or as a non-interactive shell with the `--login` option, it
 > first reads and executes commands from the file `/etc/profile`, if that file exists. After reading that file, it looks
@@ -244,7 +246,7 @@ fi
 2. `ssh your-name@your-host` 会加载 `/etc/environment`、`/etc/profile`（以及 `/etc/profile.d` 下的脚本）、`/etc/bash.bashrc`、`~/.bash_profile`、`~/.bash_login`（如果 `~/.bash_profile` 不存在）、`~/.profile`（如果 `~/.bash_profile` 和 `~/.bash_login` 都不存在）。
 3. `ssh your-name@your-host -- $CMD` 会加载 `/etc/environment`、`/etc/bash.bashrc`、`~/.bashrc`。
 
-## 后记：环境脚本还会影响 SFTP 的工作
+## 后记 1：环境脚本还会影响 SFTP 的工作
 
 维护作业平台的时候我还经常被用户扔过来这样的日志：
 
@@ -348,7 +350,7 @@ $ strace -f -e trace=write,read,execve -p 284
 
 综上，只要在 SFTP 工作的过程中系统有任何意外输出，都会破坏其二进制协议，导致报错 get sftp client: packet too long。
 
-## 后记：厘清 tty 相关概念
+## 后记 2：厘清 tty 相关概念
 
 - TTY: Teletypewriter
 - PTY: Pseudo Terminal
@@ -361,3 +363,16 @@ Terminal Emulator ←→ PTY Slave ←→ TTY Driver ←→ PTY Master ←→ Pr
 正如 Julia Evans 所言，终端有关的知识太零散了。感兴趣的朋友可以阅读：[《The Secret Rules of the Terminal》](https://jvns.ca/blog/2025/06/24/new-zine--the-secret-rules-of-the-terminal/)。
 
 **下一篇文章将会继续和 tty 有关，详解 `kubectl exec`，尽情期待。**
+
+## 后记 3：为什么会有这样的 SSH 任务平台存在，而不是直接用 Ansible？
+
+个人愚见：
+
+1. 公司堡垒机项目年久失修，连现在算法工程师大规模使用的 vscode remote SSH 开发都不支持，更何况 Ansible。
+2. （感觉）全公司上上下下会 Ansible 的人越来越少。至少我是不会 Ansible 的，真遗憾……
+3. 大公司内倾向于造新轮子，从而实现 ClickOps，而非使用 GitOps 范式，使用命令行工具。（当然你可以说这是 [Developer Portal](https://www.cncf.io/projects/backstage/)
+4. 开发平台才能解决 Ansible 解决不了的问题。
+
+## 后记4
+
+感谢 [cherry-studio](https://github.com/CherryHQ/cherry-studio)。
