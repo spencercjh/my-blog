@@ -61,7 +61,7 @@ if cpuCount <= 0 || cpuCount > runtime.NumCPU() {
 
 受 [automaxprocs/internal/cgroups](https://github.com/uber-go/automaxprocs/tree/master/internal/cgroups) 启发并结合相关资料，一个容器的
 CPU
-Limit（Quota）应该是 **容器目录下** 的 `/sys/fs/cgroup/cpu/cpu.cfs_quota_us ÷ /sys/fs/cgroup/cpu/cpu.cfs_quota_us`。
+Limit（Quota）应该是 **容器目录下** 的 `/sys/fs/cgroup/cpu/cpu.cfs_quota_us ÷ /sys/fs/cgroup/cpu/cpu.cfs_period_us`。
 
 > 没有相关知识背景的读者可以阅读以下参考资料：
 >
@@ -85,7 +85,7 @@ cpu 信息。而 Pod 容器 pid 是 chaosblade 代码中已经正确获取到的
     `/kubepods/burstable/podd74c5ead-a8ae-4b20-bc9d-8f006780db4a/8f60a0486d75d5f02d386869cb041800c896c4c2e79be64cf13cc3f334fe9823`
     的挂载点 `/sys/fs/cgroup/cpu,cpuacct`
     - 在 daemonset pod 中，cgroup 子系统目录需要将 `/sys` 替换成 `/host-sys`（配置卷和挂载点时是这么配的）
-      - 计算 `cpu.cfs_quota_us / cpu.cfs_quota_us` 的值，使用 `math.Ceil` 向上取整。
+      - 计算 `cpu.cfs_quota_us / cpu.cfs_period_us` 的值，使用 `math.Ceil` 向上取整。
 
 上述过程其实主要靠 [automaxprocs internal cgroups 包](https://github.com/uber-go/automaxprocs/tree/master/internal/cgroups) 完成，
 但我在调试的过程中发现还是需要作出一些改动的，拼接 Pod 具体子目录的逻辑有细微变化，还容易误打误撞把 daemonset pod 容器的 CPU quota 当作是目标 Pod 容器的。
@@ -225,7 +225,7 @@ func getChildPids(pid int) ([]int, error) {
 }
 ```
 
-`command.Process.Pid` 是 `nsexec` 进程的 pid，可以在 `/proc/$pid/task/$pid/childern` 找到它的子进程 `chaos_os`。为了确保万无一失，我会对所有的子进程都进行 `choom` 操作。
+`command.Process.Pid` 是 `nsexec` 进程的 pid，可以在 `/proc/$pid/task/$pid/children` 找到它的子进程 `chaos_os`。为了确保万无一失，我会对所有的子进程都进行 `choom` 操作。
 
 相关 PR 如下：
 
