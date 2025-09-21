@@ -98,7 +98,7 @@ sequenceDiagram
 
 _这个错误其实更考察 kubelet 侧的排障能力，我那阵子正好在学习 CKA 中的证书部分，所以很快查到了问题。_
 
-在 Kubernetes 中全局搜索 `unable to upgrade connection` 可以发现其位置在 [`staging/src/k8s.io/apimachinery/pkg/util/httpstream/spdy/roundtripper.go`](https://github.com/kubernetes/kubernetes/blob/3f188e5d86b35993c79d23dbcdfb264af0141241/staging/src/k8s.io/apimachinery/pkg/util/httpstream/spdy/roundtripper.go). 阅读上下文发现是 `kube-apiserver` 到 `kubelet` 的 SPDY 连接失败了。unauthorized 指引我前往 kublet 侧排查，最后我发现是机器初始化时证书配置错误，且仅影响 `kube-apiserver` 请求 `kubelet`，不影响 `kubelet` 上报状态。
+在 Kubernetes 中全局搜索 `unable to upgrade connection` 可以发现其位置在 [`staging/src/k8s.io/apimachinery/pkg/util/httpstream/spdy/roundtripper.go`](https://github.com/kubernetes/kubernetes/blob/3f188e5d86b35993c79d23dbcdfb264af0141241/staging/src/k8s.io/apimachinery/pkg/util/httpstream/spdy/roundtripper.go). 阅读上下文发现是 `kube-apiserver` 到 `kubelet` 的 SPDY 连接失败了。unauthorized 指引我前往 `kubelet` 侧排查，最后我发现是机器初始化时证书配置错误，且仅影响 `kube-apiserver` 请求 `kubelet`，不影响 `kubelet` 上报状态。
 
 ### kubelet ↔️ containerd-shim
 
@@ -255,7 +255,7 @@ shim 内部用库 go-runc 调用 runc（二进制进程）；为了完整表达 
 >
 > Example(Linux): https://github.com/opencontainers/runtime-spec/blob/main/config.md#example-linux-1
 
-因此，文件是用来传递给 runc 进程详细信息 的，当系统盘完全无法写入时，`kubectl exec` 会报错。
+因此，文件是用来传递给 `runc` 进程详细信息的，当系统盘完全无法写入时，`kubectl exec` 会报错。
 
 ## 为什么业务不能依赖 `pods/exec`？
 
@@ -280,7 +280,7 @@ _`chaosblade-operator` -> Daemonset `chaosblade-tools` 这一跳借助 `pods/exe
 
 笔者自诩有一点 SRE 经验，也耳濡目染学习了 B 站 SRE 团队治理服务，提升稳定性的一些思路和经验。我认为这种“**徒增依赖**”的设计是非常危险的。在平时的开发过程中，如果某一个三方组件很重要但关键时候老出问题，若不能推着它提升稳定性，那就只能把它从系统里踢出去了。`pods/exec` 帮助 ChaosBlade 实现了 CLI 四处使用，不用额外的客户端和服务端就能适配 Kubernetes 的使用环境。相当于是公司有个团队出了个万金油组件，又能做运维操作，还能搭便车执行故障注入脚本。 坏处就是上了 `pods/exec` 的“贼船”，把自己的服务稳定性寄托在这条链路上。
 
-**我不是说在服务里启动进程就一定是错的！** 这 `kubectl exec` 链路中也不是没有执行命令，最后容器上的进程也是靠 `exec --process <临时文件>` 启动的，启动进程必然需要在靠近目标容器的地方需要起进程。**关键是有没有必要，需求到底是什么？** `pods/exec` 层层转发 stdin/stdout/stderr 流，错误处理恰当。而 ChaosBlade 仅仅为了执行故障注入就用如此牛刀，还没有做好错误处理，限制了许多特性的进一步迭代。
+**我不是说在服务里启动进程就一定是错的！** 这 `kubectl exec` 链路中也不是没有执行命令，最后容器上的进程也是靠 `exec --process <临时文件>` 启动的，启动进程必然需要在靠近目标容器的地方起进程。**关键是有没有必要，需求到底是什么？** `pods/exec` 层层转发 stdin/stdout/stderr 流，错误处理恰当。而 ChaosBlade 仅仅为了执行故障注入就用如此牛刀，还没有做好错误处理，限制了许多特性的进一步迭代。
 
 在混沌工程领域，[chaos-mesh](https://github.com/chaos-mesh/chaos-mesh) 已经做出了良好示范，operator 和 daemonset 之间用 gRPC 交互，传递故障注入参数。云原生项目不是用 `kube-apiserver` 跑业务逻辑啊，ChaosBlade 疑似有些太极端了！
 
