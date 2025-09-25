@@ -5,7 +5,7 @@ import type * as Preset from "@docusaurus/preset-classic";
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
 const config: Config = {
-  title: "My Site",
+  title: "spencercjh's blog",
   tagline: "Dinosaurs are cool",
   favicon: "img/favicon.ico",
 
@@ -73,13 +73,14 @@ const config: Config = {
     // Replace with your project's social card
     image: "img/docusaurus-social-card.jpg",
     navbar: {
-      title: "My Site",
+      title: "spencercjh",
       logo: {
-        alt: "My Site Logo",
+        alt: "spencercjh's blog logo",
         src: "img/logo.svg",
       },
       items: [
         { to: "/blog", label: "Blog", position: "left" },
+        { to: "/blog/tags", label: "Tags", position: "left" },
         {
           href: "https://github.com/spencercjh/my-blog",
           label: "GitHub",
@@ -95,32 +96,19 @@ const config: Config = {
       style: "dark",
       links: [
         {
-          title: "Community",
+          title: "About Me",
           items: [
-            {
-              label: "Stack Overflow",
-              href: "https://stackoverflow.com/questions/tagged/docusaurus",
-            },
-            {
-              label: "Discord",
-              href: "https://discordapp.com/invite/docusaurus",
-            },
             {
               label: "X",
-              href: "https://x.com/docusaurus",
+              href: "https://x.com/bore_quality_ai",
             },
-          ],
-        },
-        {
-          title: "More",
-          items: [
             {
-              label: "Blog",
-              to: "/blog",
+              label: "LinkedIn",
+              href: "https://www.linkedin.com/in/spencercjh/",
             },
             {
               label: "GitHub",
-              href: "https://github.com/facebook/docusaurus",
+              href: "https://github.com/spencercjh",
             },
           ],
         },
