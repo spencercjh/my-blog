@@ -8,6 +8,9 @@
   text-align: center;
   position: relative;
   overflow: hidden;
+  /* 覆盖主题（通常是绿色）的背景，使用更中性的渐变 */
+  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+  color: #0f172a; /* 深色文字，保证对比 */
 }
 
 @media screen and (max-width: 996px) {
@@ -16,24 +19,243 @@
   }
 }
 
-.buttons {
+/* 新增：hero 两栏布局 */
+.heroInner {
+  display: grid;
+  grid-template-columns: 1fr 420px; /* 右侧更大，用于展示更大图 */
+  gap: 2rem;
+  align-items: center;
+  max-width: 1100px;
+  margin: 0 auto;
+  text-align: left;
+}
+
+@media screen and (max-width: 860px) {
+  .heroInner {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+  .avatar {
+    max-width: 320px;
+    margin: 0 auto;
+  }
+}
+
+.heroLeft {
+  padding-right: 1rem;
+}
+
+.heroTitle {
+  font-size: 2.4rem;
+  line-height: 1.05;
+  margin: 0 0 0.6rem 0;
+  color: #0f172a;
+}
+
+.heroLead {
+  font-size: 1.05rem;
+  color: #374151;
+  margin: 0 0 1rem 0;
+}
+
+.avatar {
+  width: 100%;
+  max-width: 420px;
+  height: auto; /* 高度由图片按比例撑开 */
+  border-radius: 12px;
+  background: linear-gradient(135deg, #eef2ff 0%, #e6f6ff 100%);
+  display: block;
+  overflow: hidden; /* 避免图片溢出 */
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.06);
+}
+
+/* avatar img */
+.avatarImage {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+@media screen and (max-width: 860px) {
+  .heroInner {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+  .avatar {
+    max-width: 320px;
+    margin: 0 auto;
+  }
+}
+
+@media screen and (max-width: 420px) {
+  .avatar {
+    max-width: 280px;
+  }
+}
+
+/* 新增：社交链接样式 */
+.socialSection {
+  padding: 2rem 0 3rem;
+  text-align: center;
+}
+
+.socialLinks {
   display: flex;
+  gap: 1.25rem;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
+.socialLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 4px 10px rgba(16, 24, 40, 0.06);
+  transition:
+    transform 160ms ease,
+    box-shadow 160ms ease,
+    background 160ms ease;
+  text-decoration: none;
+  color: inherit;
+}
+
+.socialLink:hover,
+.socialLink:focus {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 10px 20px rgba(16, 24, 40, 0.12);
+  outline: none;
+}
+
+/* 让图标在 hover/focus 时变色 */
+.socialLink:hover .socialIcon,
+.socialLink:focus .socialIcon {
+  color: #0b74de; /* 悬停高亮色（蓝色） */
+  transition: color 160ms ease;
+}
+
+.socialIcon {
+  width: 36px;
+  height: 36px;
+  display: block;
+  color: #111827; /* 作为 currentColor 的来源 */
+  fill: currentColor; /* 让 path 默认使用 currentColor */
+  stroke: currentColor; /* 让 stroke 也使用 currentColor（支持使用 stroke 的图标） */
+}
+
+@media screen and (max-width: 420px) {
+  .socialLink {
+    width: 56px;
+    height: 56px;
+  }
+  .socialIcon {
+    width: 28px;
+    height: 28px;
+  }
+}
+
+/* 新增：兴趣爱好卡片区 */
+.hobbies {
+  display: flex;
+  gap: 1rem;
+  align-items: stretch;
+  justify-content: center;
+  margin-top: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.hobbyCard {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 1.15rem;
+  width: 300px;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+  text-align: left;
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease;
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+}
+
+.hobbyCard:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 14px 28px rgba(15, 23, 42, 0.12);
+}
+
+.hobbyIcon {
+  width: 56px;
+  height: 56px;
+  flex: 0 0 56px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #eef2ff 0%, #f0f9ff 100%);
+  display: inline-flex;
   align-items: center;
   justify-content: center;
 }
 
-.introduction {
-  padding: 2rem 0;
-  text-align: center;
+.hobbyIcon svg {
+  width: 32px;
+  height: 32px;
+  display: block;
 }
 
-.introduction h2 {
-  font-size: 2rem;
-  margin-bottom: 1rem;
+.hobbyContent {
+  flex: 1 1 auto;
 }
 
-.introduction p {
-  font-size: 1.2rem;
-  line-height: 1.6;
-  color: #555;
+.hobbyTitle {
+  font-size: 1.05rem;
+  margin: 0 0 0.25rem 0;
+  color: #111827;
+  font-weight: 600;
+}
+
+.hobbyDesc {
+  margin: 0;
+  color: #4b5563;
+  line-height: 1.45;
+  font-size: 0.97rem;
+}
+
+@media screen and (max-width: 860px) {
+  .hobbyCard {
+    width: calc(50% - 1rem);
+  }
+}
+
+@media screen and (max-width: 520px) {
+  .hobbyCard {
+    width: 100%;
+  }
+  .hobbyIcon {
+    width: 48px;
+    height: 48px;
+    flex: 0 0 48px;
+  }
+  .hobbyIcon svg {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+/* 新增：emoji 样式 */
+.hobbyEmoji {
+  font-size: 28px;
+  line-height: 1;
+  display: block;
+}
+
+@media screen and (max-width: 520px) {
+  .hobbyEmoji {
+    font-size: 22px;
+  }
 }

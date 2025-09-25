@@ -1,44 +1,44 @@
-import { themes as prismThemes } from "prism-react-renderer";
-import type { Config } from "@docusaurus/types";
-import type * as Preset from "@docusaurus/preset-classic";
+import { themes as prismThemes } from 'prism-react-renderer';
+import type { Config } from '@docusaurus/types';
+import type * as Preset from '@docusaurus/preset-classic';
 
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
 let copyright = `Copyright © ${new Date().getFullYear()} by <a href="https://github.com/spencercjh" target="_blank">@spencercjh</a> is licensed under <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_black">CC BY-NC 4.0</a>. Built with Docusaurus.`;
 const config: Config = {
   title: "spencercjh's blog",
-  tagline: "Dinosaurs are cool",
-  favicon: "img/favicon.ico",
+  tagline: 'Dinosaurs are cool',
+  favicon: 'img/favicon.ico',
 
   // Set the production url of your site here
-  url: "https://spencercjh.me",
+  url: 'https://spencercjh.me',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
-  baseUrl: "/",
+  baseUrl: '/',
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
-  organizationName: "spencercjh", // Usually your GitHub org/user name.
-  projectName: "my-blog", // Usually your repo name.
+  organizationName: 'spencercjh', // Usually your GitHub org/user name.
+  projectName: 'my-blog', // Usually your repo name.
 
-  onBrokenLinks: "throw",
-  onBrokenMarkdownLinks: "warn",
+  onBrokenLinks: 'throw',
+  onBrokenMarkdownLinks: 'warn',
 
   // Even if you don't use internationalization, you can use this field to set
   // useful metadata like html lang. For example, if your site is Chinese, you
   // may want to replace "en" with "zh-Hans".
   i18n: {
-    defaultLocale: "zh-Hans",
-    locales: ["zh-Hans"],
+    defaultLocale: 'zh-Hans',
+    locales: ['zh-Hans'],
   },
 
   presets: [
     [
-      "classic",
+      'classic',
       {
         docs: false,
         blog: {
-          blogSidebarCount: "ALL",
+          blogSidebarCount: 'ALL',
           showReadingTime: true,
           readingTime: ({ content, locale, frontMatter, defaultReadingTime }) =>
             defaultReadingTime({
@@ -49,52 +49,46 @@ const config: Config = {
             }),
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
-          editUrl: "https://github.com/spencercjh/my-blog/tree/main",
+          editUrl: 'https://github.com/spencercjh/my-blog/tree/main',
           // Useful options to enforce blogging best practices
-          onInlineTags: "warn",
-          onInlineAuthors: "warn",
-          onUntruncatedBlogPosts: "warn",
+          onInlineTags: 'warn',
+          onInlineAuthors: 'warn',
+          onUntruncatedBlogPosts: 'warn',
           feedOptions: {
-            type: "all",
+            type: 'all',
             title: "spencercjh's blog",
-            description: "feedId:190258116822410240+userId:163433656836464640",
+            description: 'feedId:190258116822410240+userId:163433656836464640',
             copyright: copyright,
           },
         },
         theme: {
-          customCss: "./src/css/custom.css",
+          customCss: './src/css/custom.css',
         },
       } satisfies Preset.Options,
     ],
   ],
 
-  themes: ["@docusaurus/theme-mermaid"],
+  themes: ['@docusaurus/theme-mermaid'],
 
   markdown: {
     mermaid: true,
   },
 
-  plugins: ["docusaurus-plugin-zooming"],
+  plugins: ['docusaurus-plugin-zooming'],
 
   themeConfig: {
     // Replace with your project's social card
-    image: "img/docusaurus-social-card.jpg",
+    image: 'img/docusaurus-social-card.jpg',
     navbar: {
       hideOnScroll: true,
-      title: "spencercjh",
+      title: 'spencercjh',
       logo: {
         alt: "spencercjh's blog logo",
-        src: "img/logo.svg",
+        src: 'img/logo.svg',
       },
       items: [
-        { to: "/blog", label: "Blog", position: "left" },
-        { to: "/blog/tags", label: "Tags", position: "left" },
-        { to: "/about", label: "关于我", position: "left" },
-        {
-          href: "https://github.com/spencercjh/my-blog",
-          label: "GitHub",
-          position: "right",
-        },
+        { to: '/blog', label: 'Blog', position: 'left' },
+        { to: '/blog/tags', label: 'Tags', position: 'left' },
       ],
     },
     tableOfContents: {
@@ -102,7 +96,7 @@ const config: Config = {
       maxHeadingLevel: 5,
     },
     footer: {
-      style: "dark",
+      style: 'dark',
       copyright: copyright,
     },
     prism: {
@@ -110,11 +104,11 @@ const config: Config = {
       darkTheme: prismThemes.dracula,
     },
     zooming: {
-      selector: ".markdown img",
+      selector: '.markdown img',
       delay: 500,
       background: {
-        light: "rgba(101,108,133,0.8)",
-        dark: "rgba(9,10,17,0.8)",
+        light: 'rgba(101,108,133,0.8)',
+        dark: 'rgba(9,10,17,0.8)',
       },
       options: {
         // See the docs of zooming for all available options: https://github.com/francoischalifour/medium-zoom#usage
