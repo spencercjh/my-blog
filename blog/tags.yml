@@ -1,16 +1,16 @@
 chaos-engineering:
-  label: "chaos-engineering"
+  label: "chaos engineering"
   permalink: "/chaos-engineering"
-  description: "The discipline of experimenting on a system to build confidence in its ability to withstand turbulent conditions in production."
+  description: "混沌工程相关实践与思考"
 Kubernetes:
-  label: "kubernetes"
+  label: "Kubernetes"
   permalink: "/kubernetes"
-  description: "Content related to Kubernetes, an open-source platform for managing containerized workloads and services."
+  description: "对 Kubernetes 的一些理解与实践"
 open-source:
-  label: "open-source"
+  label: "open source"
   permalink: "/open-source"
-  description: "Content related to open-source software, which is software with source code that anyone can inspect, modify, and enhance."
+  description: "我对开源世界的小小贡献"
 Linux:
-  label: "linux"
+  label: "Linux"
   permalink: "/linux"
-  description: "Content related to Linux, an open-source operating system kernel used in a variety of computing environments."
+  description: "对 Linux 的一点拙见"

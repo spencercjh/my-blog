@@ -80,6 +80,7 @@ const config: Config = {
       },
       items: [
         { to: "/blog", label: "Blog", position: "left" },
+        { to: "/blog/tags", label: "Tags", position: "left" },
         {
           href: "https://github.com/spencercjh/my-blog",
           label: "GitHub",
