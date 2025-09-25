@@ -1,0 +1,28 @@
+# Ignore artifacts
+node_modules/
+build/
+.cache/
+.DS_Store
+/public/
+/dist/
+
+# Ignore static assets
+static/
+img/
+
+# Generated files
+coverage/
+
+# Logs
+logs
+*.log
+
+# Lockfiles
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Misc
+.vscode/
+.idea/
+
