@@ -73,6 +73,7 @@ const config: Config = {
     // Replace with your project's social card
     image: "img/docusaurus-social-card.jpg",
     navbar: {
+      hideOnScroll: true,
       title: "spencercjh",
       logo: {
         alt: "spencercjh's blog logo",
@@ -81,6 +82,7 @@ const config: Config = {
       items: [
         { to: "/blog", label: "Blog", position: "left" },
         { to: "/blog/tags", label: "Tags", position: "left" },
+        { to: "/about", label: "关于我", position: "left" },
         {
           href: "https://github.com/spencercjh/my-blog",
           label: "GitHub",
@@ -94,25 +96,6 @@ const config: Config = {
     },
     footer: {
       style: "dark",
-      links: [
-        {
-          title: "About Me",
-          items: [
-            {
-              label: "X",
-              href: "https://x.com/bore_quality_ai",
-            },
-            {
-              label: "LinkedIn",
-              href: "https://www.linkedin.com/in/spencercjh/",
-            },
-            {
-              label: "GitHub",
-              href: "https://github.com/spencercjh",
-            },
-          ],
-        },
-      ],
       copyright: `Copyright © ${new Date().getFullYear()} by <a href="https://github.com/spencercjh" target="_blank">@spencercjh</a> is licensed under <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_black">CC BY-NC 4.0</a>. Built with Docusaurus.`,
     },
     prism: {
