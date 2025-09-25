@@ -4,6 +4,7 @@ import type * as Preset from "@docusaurus/preset-classic";
 
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
+let copyright = `Copyright © ${new Date().getFullYear()} by <a href="https://github.com/spencercjh" target="_blank">@spencercjh</a> is licensed under <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_black">CC BY-NC 4.0</a>. Built with Docusaurus.`;
 const config: Config = {
   title: "spencercjh's blog",
   tagline: "Dinosaurs are cool",
@@ -53,6 +54,12 @@ const config: Config = {
           onInlineTags: "warn",
           onInlineAuthors: "warn",
           onUntruncatedBlogPosts: "warn",
+          feedOptions: {
+            type: "all",
+            title: "spencercjh's blog",
+            description: "feedId:190258116822410240+userId:163433656836464640",
+            copyright: copyright,
+          },
         },
         theme: {
           customCss: "./src/css/custom.css",
@@ -96,7 +103,7 @@ const config: Config = {
     },
     footer: {
       style: "dark",
-      copyright: `Copyright © ${new Date().getFullYear()} by <a href="https://github.com/spencercjh" target="_blank">@spencercjh</a> is licensed under <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_black">CC BY-NC 4.0</a>. Built with Docusaurus.`,
+      copyright: copyright,
     },
     prism: {
       theme: prismThemes.github,
