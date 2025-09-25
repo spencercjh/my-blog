@@ -95,32 +95,19 @@ const config: Config = {
       style: "dark",
       links: [
         {
-          title: "Community",
+          title: "About Me",
           items: [
-            {
-              label: "Stack Overflow",
-              href: "https://stackoverflow.com/questions/tagged/docusaurus",
-            },
-            {
-              label: "Discord",
-              href: "https://discordapp.com/invite/docusaurus",
-            },
             {
               label: "X",
-              href: "https://x.com/docusaurus",
+              href: "https://x.com/bore_quality_ai",
             },
-          ],
-        },
-        {
-          title: "More",
-          items: [
             {
-              label: "Blog",
-              to: "/blog",
+              label: "LinkedIn",
+              href: "https://www.linkedin.com/in/spencercjh/",
             },
             {
               label: "GitHub",
-              href: "https://github.com/facebook/docusaurus",
+              href: "https://github.com/spencercjh",
             },
           ],
         },
