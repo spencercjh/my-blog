@@ -186,3 +186,14 @@ _由于太过简单，我没有把这个 bugfix 记录在 [《修复 ChaosBlade 
 
 - [容器重启策略](https://kubernetes.io/zh-cn/docs/concepts/workloads/pods/pod-lifecycle/#restart-policy)：有些用户反映演练过程中新的容器无法再启动了。实际上这是由于指数级回退延迟机制，kubelet 会等待一段时间后才会重启容器。这往往出现在容器由于注入的网络故障，长时间无法启动的场景。
 - kubelet 拉取镜像也有类似的机制，但有一个超时时间：在 1.24 前是 kubelet 的 `--image-pull-progress-deadline` 参数，默认 1 分钟；后来该功能迁移到容器运行时，containerd `config.toml` 的相关参数是 `image_pull_progress_timeout`，默认 5 分钟。
+
+---
+
+<SponsorIframe
+  src="https://github.com/sponsors/spencercjh/card"
+  title="Sponsor spencercjh"
+  width={600}
+  height={225}
+  style={{ borderRadius: 6, overflow: 'hidden' }}
+  allow="payment *; clipboard-read; clipboard-write"
+/>
