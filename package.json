@@ -50,7 +50,7 @@
     ]
   },
   "engines": {
-    "node": ">=18.0"
+    "node": ">=20.0.0"
   },
   "lint-staged": {
     "**/*.md": "make md-padding",
