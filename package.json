@@ -30,7 +30,7 @@
   },
   "devDependencies": {
     "@docusaurus/module-type-aliases": "^3.9.0",
-    "@docusaurus/tsconfig": "^3.9.0",
+    "@docusaurus/tsconfig": "^3.9.1",
     "@docusaurus/types": "^3.9.1",
     "husky": "^9.1.7",
     "lint-staged": "^15.5.2",
