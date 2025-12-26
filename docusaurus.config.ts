@@ -39,10 +39,10 @@ const config: Config = {
         blog: {
           blogSidebarCount: 'ALL',
           showReadingTime: true,
-          readingTime: ({ content, locale, frontMatter, defaultReadingTime }) =>
+          readingTime: ({ content, frontMatter, defaultReadingTime }) =>
             defaultReadingTime({
+              locale: 'zh-Hans',
               content,
-              locale,
               frontMatter,
               options: { wordsPerMinute: 1000 },
             }),
@@ -72,7 +72,7 @@ const config: Config = {
   markdown: {
     mermaid: true,
     hooks: {
-      onBrokenMarkdownLinks: 'throw',
+      onBrokenMarkdownImages: 'throw',
     },
   },
 
