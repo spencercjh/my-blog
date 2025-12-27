@@ -72,6 +72,7 @@ const config: Config = {
   markdown: {
     mermaid: true,
     hooks: {
+      onBrokenMarkdownLinks: 'throw',
       onBrokenMarkdownImages: 'throw',
     },
   },
