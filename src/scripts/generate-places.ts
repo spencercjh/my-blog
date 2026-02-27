@@ -14,14 +14,33 @@ export interface Place {
   description?: string; // 备注描述（可选）
 }
 
+// 国家代码映射（中文国家名 -> ISO 3166-1 alpha-2 代码）
+const countryCodeMap: Record<string, string> = {
+  泰国: 'TH',
+  韩国: 'KR',
+  新加坡: 'SG',
+  印度尼西亚: 'ID',
+  马尔代夫: 'MV',
+  日本: 'JP',
+  香港: 'HK',
+  中国: 'CN',
+};
+
+// 获取国家代码
+function getCountryCode(countryName?: string): string | undefined {
+  if (!countryName) return undefined;
+  return countryCodeMap[countryName];
+}
+
 // 使用 OpenStreetMap 的 Nominatim API 进行地理编码（免费，无需 API Key）
 async function geocode(
   placeName: string,
   preferredCountry?: string
 ): Promise<{ lat: number; lng: number; country: string }> {
+  const countryCode = getCountryCode(preferredCountry);
   const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
     placeName
-  )}&addressdetails=1&limit=1`;
+  )}&addressdetails=1&limit=1${countryCode ? `&countrycode=${countryCode}` : ''}`;
 
   const response = await fetch(url, {
     headers: {
@@ -64,6 +83,8 @@ function inferEnglishName(name: string): string | undefined {
     西安市: "Xi'an",
     重庆市: 'Chongqing',
     天津市: 'Tianjin',
+    甲米: 'Krabi',
+    攀牙湾: 'Phang Nga Bay',
   };
   return commonNames[name];
 }
@@ -91,8 +112,10 @@ async function generatePlaces(): Promise<void> {
     try {
       console.log(` 正在获取坐标: ${item.name}...`);
 
-      const { lat, lng, country } = await geocode(item.name, item.country);
       const nameEn = inferEnglishName(item.name);
+      // 使用英文名称查询（如果存在），更准确
+      const searchName = nameEn || item.name;
+      const { lat, lng, country } = await geocode(searchName, item.country);
 
       // 将日期格式化为 YYYY-MM 或 YYYY-MM-DD
       const inputDate = item.firstVisitDate;

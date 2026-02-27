@@ -218,8 +218,8 @@ export const PLACES: Place[] = [
   {
     name: '香港',
     country: '中国',
-    lat: 22.3492155,
-    lng: 114.1857978,
+    lat: 22.2792968,
+    lng: 114.1628907,
     firstVisitDate: '2024-03',
     description: '第一次出境',
   },
@@ -304,8 +304,8 @@ export const PLACES: Place[] = [
   {
     name: '热海',
     country: '日本',
-    lat: 35.1040951,
-    lng: 139.0778148,
+    lat: 35.1038519,
+    lng: 139.0781167,
     firstVisitDate: '2025-06',
   },
   {
@@ -373,16 +373,18 @@ export const PLACES: Place[] = [
   },
   {
     name: '甲米',
+    nameEn: 'Krabi',
     country: '泰国',
-    lat: 27.4398024,
-    lng: 101.0648739,
+    lat: 8.1111653,
+    lng: 99.1097298,
     firstVisitDate: '2026-02',
   },
   {
     name: '攀牙湾',
+    nameEn: 'Phang Nga Bay',
     country: '泰国',
-    lat: 21.4008996,
-    lng: 100.371894,
+    lat: 8.2916672,
+    lng: 98.5527728,
     firstVisitDate: '2026-02',
   },
 ];
