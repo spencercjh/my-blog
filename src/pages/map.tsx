@@ -9,7 +9,7 @@ export default function MapPage(): React.JSX.Element {
       <main className="container margin-top--lg margin-bottom--xl">
         <div className="row">
           <div className="col col--12">
-            <h1>我走过的地方</h1>
+            <h1>行万里路</h1>
             <p>这是我去过的地方，点击标记可以看到访问时间和备注。</p>
           </div>
         </div>
