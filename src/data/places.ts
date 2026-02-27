@@ -4,7 +4,7 @@ export interface Place {
   country: string; // 国家
   lat: number; // 纬度
   lng: number; // 经度
-  firstVisitDate: string; // 初次访问时间（ISO 格式：2024-05-01）
+  firstVisitDate: string; // 初次访问时间（ISO 格式：2024-05 或 2024-05-01）
   description?: string; // 备注描述（可选）
 }
 
@@ -15,8 +15,7 @@ export const PLACES: Place[] = [
     country: '中国',
     lat: 31.2312707,
     lng: 121.4700152,
-    firstVisitDate: '2024-05-01',
-    description: '2024年5月上海之行',
+    firstVisitDate: '2024-05',
   },
   {
     name: '北京市',
@@ -24,7 +23,7 @@ export const PLACES: Place[] = [
     country: '中国',
     lat: 39.9057136,
     lng: 116.3912972,
-    firstVisitDate: '2023-10-15',
+    firstVisitDate: '2019-08',
   },
   {
     name: '广州市',

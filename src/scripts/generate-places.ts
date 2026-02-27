@@ -10,7 +10,7 @@ export interface Place {
   country: string; // 国家
   lat: number; // 纬度
   lng: number; // 经度
-  firstVisitDate: string; // 初次访问时间（ISO 格式：2024-05-01）
+  firstVisitDate: string; // 初次访问时间（ISO 格式：2024-05 或 2024-05-01）
   description?: string; // 备注描述（可选）
 }
 
@@ -90,9 +90,17 @@ async function generatePlaces(): Promise<void> {
       const { lat, lng, country } = await geocode(item.name);
       const nameEn = inferEnglishName(item.name);
 
-      // 将日期格式化为 YYYY-MM-DD
-      const visitDate = new Date(item.firstVisitDate);
-      const formattedDate = visitDate.toISOString().split('T')[0];
+      // 将日期格式化为 YYYY-MM 或 YYYY-MM-DD
+      const inputDate = item.firstVisitDate;
+      // 如果已经是 YYYY-MM 或 YYYY-MM-DD 格式，直接使用
+      let formattedDate: string;
+      if (/^\d{4}-\d{2}(-\d{2})?$/.test(inputDate)) {
+        formattedDate = inputDate;
+      } else {
+        // 否则通过 Date 对象格式化
+        const visitDate = new Date(inputDate);
+        formattedDate = visitDate.toISOString().split('T')[0];
+      }
 
       const place: Place = {
         name: item.name,
@@ -126,7 +134,7 @@ async function generatePlaces(): Promise<void> {
   country: string; // 国家
   lat: number; // 纬度
   lng: number; // 经度
-  firstVisitDate: string; // 初次访问时间（ISO 格式：2024-05-01）
+  firstVisitDate: string; // 初次访问时间（ISO 格式：2024-05 或 2024-05-01）
   description?: string; // 备注描述（可选）
 }
 

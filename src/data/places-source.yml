@@ -2,11 +2,10 @@
 # 只需输入名称、初次访问日期和备注，坐标将通过构建脚本自动获取
 
 - name: 上海市
-  firstVisitDate: 2024-05-01
-  description: 2024年5月上海之行
+  firstVisitDate: 2024-05
 
 - name: 北京市
-  firstVisitDate: 2023-10-15
+  firstVisitDate: 2019-08
 
 - name: 广州市
   firstVisitDate: 2023-08-20

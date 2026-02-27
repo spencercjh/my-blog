@@ -43,11 +43,11 @@ This is a personal blog built with Docusaurus 3.7.0, configured for Chinese lang
 
 ```yaml
 - name: 上海市
-  firstVisitDate: 2024-05-01
+  firstVisitDate: 2024-05-01 # 或 2024-05（精确到月）
   description: 2024年5月上海之行
 
 - name: 北京市
-  firstVisitDate: 2023-10-15
+  firstVisitDate: 2023-10
 ```
 
 **说明**:
