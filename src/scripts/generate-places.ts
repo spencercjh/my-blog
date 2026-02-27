@@ -5,13 +5,13 @@ import yaml from 'js-yaml';
 
 // Place 接口定义（与原 places.ts 保持一致）
 export interface Place {
-  name: string;
-  nameEn?: string;
-  country: string;
-  lat: number;
-  lng: number;
-  visitedDate: string;
-  description?: string;
+  name: string; // 地点名称（如：上海市）
+  nameEn?: string; // 英文名称（可选）
+  country: string; // 国家
+  lat: number; // 纬度
+  lng: number; // 经度
+  visitedDate: string; // 访问时间（ISO 格式：2024-05-01）
+  description?: string; // 备注描述（可选）
 }
 
 // 使用 OpenStreetMap 的 Nominatim API 进行地理编码（免费，无需 API Key）
@@ -85,7 +85,7 @@ async function generatePlaces(): Promise<void> {
 
   for (const item of placesSource) {
     try {
-      console.log(`  正在获取坐标: ${item.name}...`);
+      console.log(` 正在获取坐标: ${item.name}...`);
 
       const { lat, lng, country } = await geocode(item.name);
       const nameEn = inferEnglishName(item.name);
@@ -110,8 +110,12 @@ async function generatePlaces(): Promise<void> {
       // 避免 API 请求过快
       await new Promise(resolve => setTimeout(resolve, 1000));
     } catch (error) {
-      console.error(`  ✗ ${item.name}: ${error}`);
-      throw error;
+      console.error(`  ✗ ${item.name}: ${error.message}`);
+      // 跳过该地点，继续处理后续地点
+      if (error instanceof TypeError && error.message.includes('JSON.parse')) {
+        console.warn(`    ⚠️  跳过 ${item.name}: API 解析错误，可能是限流`);
+        continue;
+      }
     }
   }
 
