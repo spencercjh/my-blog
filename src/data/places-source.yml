@@ -1,12 +1,12 @@
 # 地点数据源文件
-# 只需输入名称、访问日期和备注，坐标将通过构建脚本自动获取
+# 只需输入名称、初次访问日期和备注，坐标将通过构建脚本自动获取
 
 - name: 上海市
-  visitedDate: 2024-05-01
+  firstVisitDate: 2024-05-01
   description: 2024年5月上海之行
 
 - name: 北京市
-  visitedDate: 2023-10-15
+  firstVisitDate: 2023-10-15
 
 - name: 广州市
-  visitedDate: 2023-08-20
+  firstVisitDate: 2023-08-20

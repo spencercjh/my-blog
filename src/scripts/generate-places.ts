@@ -10,7 +10,7 @@ export interface Place {
   country: string; // 国家
   lat: number; // 纬度
   lng: number; // 经度
-  visitedDate: string; // 访问时间（ISO 格式：2024-05-01）
+  firstVisitDate: string; // 初次访问时间（ISO 格式：2024-05-01）
   description?: string; // 备注描述（可选）
 }
 
@@ -75,7 +75,7 @@ async function generatePlaces(): Promise<void> {
   const sourceContent = readFileSync(sourcePath, 'utf8');
   const placesSource = yaml.load(sourceContent) as Array<{
     name: string;
-    visitedDate: string;
+    firstVisitDate: string;
     description?: string;
   }>;
 
@@ -91,7 +91,7 @@ async function generatePlaces(): Promise<void> {
       const nameEn = inferEnglishName(item.name);
 
       // 将日期格式化为 YYYY-MM-DD
-      const visitDate = new Date(item.visitedDate);
+      const visitDate = new Date(item.firstVisitDate);
       const formattedDate = visitDate.toISOString().split('T')[0];
 
       const place: Place = {
@@ -100,7 +100,7 @@ async function generatePlaces(): Promise<void> {
         country,
         lat,
         lng,
-        visitedDate: formattedDate,
+        firstVisitDate: formattedDate,
         description: item.description,
       };
 
@@ -126,7 +126,7 @@ async function generatePlaces(): Promise<void> {
   country: string; // 国家
   lat: number; // 纬度
   lng: number; // 经度
-  visitedDate: string; // 访问时间（ISO 格式：2024-05-01）
+  firstVisitDate: string; // 初次访问时间（ISO 格式：2024-05-01）
   description?: string; // 备注描述（可选）
 }
 
@@ -140,7 +140,7 @@ ${places
     country: '${p.country}',
     lat: ${p.lat},
     lng: ${p.lng},
-    visitedDate: '${p.visitedDate}',
+    firstVisitDate: '${p.firstVisitDate}',
     ${p.description ? `description: '${p.description}',` : ''}
   },`
   )

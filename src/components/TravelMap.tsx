@@ -43,7 +43,7 @@ const TravelMap: React.FC<TravelMapProps> = ({ places }) => {
                 <h3>{place.name}</h3>
                 {place.nameEn && <p>{place.nameEn}</p>}
                 <p>国家: {place.country}</p>
-                <p>访问时间: {place.visitedDate}</p>
+                <p>初次访问时间: {place.firstVisitDate}</p>
                 {place.description && <p>备注: {place.description}</p>}
               </div>
             </Popup>
