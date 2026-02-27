@@ -15,7 +15,10 @@ export interface Place {
 }
 
 // 使用 OpenStreetMap 的 Nominatim API 进行地理编码（免费，无需 API Key）
-async function geocode(placeName: string): Promise<{ lat: number; lng: number; country: string }> {
+async function geocode(
+  placeName: string,
+  preferredCountry?: string
+): Promise<{ lat: number; lng: number; country: string }> {
   const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
     placeName
   )}&addressdetails=1&limit=1`;
@@ -37,7 +40,7 @@ async function geocode(placeName: string): Promise<{ lat: number; lng: number; c
   }
 
   const result = data[0];
-  const country = result.address?.country || '未知';
+  const country = preferredCountry || result.address?.country || '未知';
 
   return {
     lat: parseFloat(result.lat),
@@ -77,6 +80,7 @@ async function generatePlaces(): Promise<void> {
     name: string;
     firstVisitDate: string;
     description?: string;
+    country?: string;
   }>;
 
   console.log(`📍 找到 ${placesSource.length} 个地点`);
@@ -87,7 +91,7 @@ async function generatePlaces(): Promise<void> {
     try {
       console.log(` 正在获取坐标: ${item.name}...`);
 
-      const { lat, lng, country } = await geocode(item.name);
+      const { lat, lng, country } = await geocode(item.name, item.country);
       const nameEn = inferEnglishName(item.name);
 
       // 将日期格式化为 YYYY-MM 或 YYYY-MM-DD
