@@ -14,7 +14,8 @@
     "write-heading-ids": "docusaurus write-heading-ids",
     "typecheck": "tsc",
     "prepare": "husky",
-    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,css,md,mdx}\" --ignore-path .prettierignore"
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,css,md,mdx}\" --ignore-path .prettierignore",
+    "generate-places": "ts-node src/scripts/generate-places.ts"
   },
   "dependencies": {
     "@docusaurus/core": "^3.9.2",
@@ -34,10 +35,14 @@
     "@docusaurus/module-type-aliases": "^3.9.2",
     "@docusaurus/tsconfig": "^3.9.2",
     "@docusaurus/types": "^3.9.2",
+    "@types/js-yaml": "^4.0.9",
     "@types/leaflet": "^1.9.21",
+    "@types/node": "^22.10.2",
     "husky": "^9.1.7",
+    "js-yaml": "^4.1.0",
     "lint-staged": "^16.2.7",
     "prettier": "3.8.1",
+    "ts-node": "^10.9.2",
     "typescript": "~5.9.3"
   },
   "browserslist": {
