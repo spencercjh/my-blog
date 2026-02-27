@@ -58,6 +58,23 @@ This is a personal blog built with Docusaurus 3.7.0, configured for Chinese lang
   1. `md-padding` for Markdown files
   2. `prettier --write --ignore-unknown` for all files
 - **File exclusions**: `.docusaurus/` and `build/` directories excluded from TypeScript compilation
+- **DCO (Developer Certificate of Origin)**: This project requires DCO compliance for all commits
+  - **ALWAYS use `-s` flag when committing**: `git commit -m "message" -s`
+  - This automatically adds the `Signed-off-by: Author Name <author@email>` line
+  - Example:
+    ```bash
+    git commit -m "feat: add new feature" -s
+    ```
+  - This results in commit message:
+
+    ```
+    feat: add new feature
+
+    Signed-off-by: Author Name <author@email>
+    ```
+
+  - **DO NOT manually add Signed-off-by lines** - let git handle it with `-s` flag
+  - This requirement applies to all commits, including those made by agents
 
 ### Content Guidelines
 
