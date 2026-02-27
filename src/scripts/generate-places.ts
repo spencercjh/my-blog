@@ -104,7 +104,7 @@ async function generatePlaces(): Promise<void> {
 
       const place: Place = {
         name: item.name,
-        nameEn,
+        nameEn: nameEn || undefined,
         country,
         lat,
         lng,
@@ -140,18 +140,15 @@ async function generatePlaces(): Promise<void> {
 
 export const PLACES: Place[] = [
 ${places
-  .map(
-    p =>
-      `  {
-    name: '${p.name}',
-    ${p.nameEn ? `nameEn: '${p.nameEn}',` : ''}
-    country: '${p.country}',
-    lat: ${p.lat},
-    lng: ${p.lng},
-    firstVisitDate: '${p.firstVisitDate}',
-    ${p.description ? `description: '${p.description}',` : ''}
-  },`
-  )
+  .map(p => {
+    const desc = p.description ? p.description.replace(/'/g, "\\'").replace(/\n/g, '\\n') : '';
+    const nameEscaped = p.name.replace(/'/g, "\\'");
+    const nameEnEscaped = p.nameEn ? p.nameEn.replace(/'/g, "\\'") : '';
+    const countryEscaped = p.country.replace(/'/g, "\\'");
+    const nameEnLine = nameEnEscaped ? `    nameEn: '${nameEnEscaped}',\n` : '';
+    const descLine = desc ? `    description: '${desc}',\n` : '';
+    return `  {\n    name: '${nameEscaped}',\n${nameEnLine}    country: '${countryEscaped}',\n    lat: ${p.lat},\n    lng: ${p.lng},\n    firstVisitDate: '${p.firstVisitDate}',\n${descLine}  },`;
+  })
   .join('\n')}
 ];
 
