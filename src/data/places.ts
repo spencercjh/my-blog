@@ -10,6 +10,22 @@ export interface Place {
 
 export const PLACES: Place[] = [
   {
+    name: '上海市',
+    nameEn: 'Shanghai',
+    country: '中国',
+    lat: 31.2312707,
+    lng: 121.4700152,
+    firstVisitDate: '1998-03',
+  },
+  {
+    name: '南京市',
+    nameEn: 'Nanjing',
+    country: '中国',
+    lat: 32.0438284,
+    lng: 118.7788631,
+    firstVisitDate: '2008-09',
+  },
+  {
     name: '北京市',
     nameEn: 'Beijing',
     country: '中国',
@@ -22,8 +38,9 @@ export const PLACES: Place[] = [
     country: '中国',
     lat: 34.3323227,
     lng: 108.7128495,
-    firstVisitDate: '2017-05',
-    description: '在这次旅行中，老板是咸阳人，所以我们在咸阳住了几天。',
+    firstVisitDate: '2018-04',
+    description:
+      '和第一份实习工作的同事、老板一起去西安玩了半个月。这是他们的毕业旅行。\n开了辆小破车从上海经南京到咸阳，坐得我下半身都麻了。\n',
   },
   {
     name: '西安市',
@@ -31,17 +48,7 @@ export const PLACES: Place[] = [
     country: '中国',
     lat: 34.261004,
     lng: 108.9423363,
-    firstVisitDate: '2017-05',
-    description:
-      '和第一份实习工作的同事、老板一起去西安玩了半个月。这是他们的毕业旅行。\n开了辆小破车从上海经南京到咸阳，坐得我下半身都麻了。\n',
-  },
-  {
-    name: '宝鸡市',
-    country: '中国',
-    lat: 34.3609713,
-    lng: 107.2322378,
-    firstVisitDate: '2017-05',
-    description: '来西安一定会去兵马俑，兵马俑在宝鸡市，所以也算是去过宝鸡了。',
+    firstVisitDate: '2018-05',
   },
   {
     name: '深圳市',
@@ -218,8 +225,8 @@ export const PLACES: Place[] = [
   {
     name: '香港',
     country: '中国',
-    lat: 22.2792968,
-    lng: 114.1628907,
+    lat: 22.3492155,
+    lng: 114.1857978,
     firstVisitDate: '2024-03',
     description: '第一次出境',
   },
@@ -234,8 +241,8 @@ export const PLACES: Place[] = [
   {
     name: '京都',
     country: '日本',
-    lat: 34.9861909,
-    lng: 135.7600629,
+    lat: 34.9846076,
+    lng: 135.7584303,
     firstVisitDate: '2024-11',
   },
   {
@@ -304,8 +311,8 @@ export const PLACES: Place[] = [
   {
     name: '热海',
     country: '日本',
-    lat: 35.1038519,
-    lng: 139.0781167,
+    lat: 35.1040951,
+    lng: 139.0778148,
     firstVisitDate: '2025-06',
   },
   {

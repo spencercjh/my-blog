@@ -3,23 +3,22 @@
 # country 可选，不指定则使用 API 返回结果
 
 - name: 上海市
+  firstVisitDate: 1998-03
+
+- name: 南京市
+  firstVisitDate: 2008-09
 
 - name: 北京市
   firstVisitDate: 2019-08
 
 - name: 咸阳市
-  firstVisitDate: 2017-05
-  description: 在这次旅行中，老板是咸阳人，所以我们在咸阳住了几天。
-
-- name: 西安市
-  firstVisitDate: 2017-05
+  firstVisitDate: 2018-04
   description: |
     和第一份实习工作的同事、老板一起去西安玩了半个月。这是他们的毕业旅行。
     开了辆小破车从上海经南京到咸阳，坐得我下半身都麻了。
 
-- name: 宝鸡市
-  firstVisitDate: 2017-05
-  description: 来西安一定会去兵马俑，兵马俑在宝鸡市，所以也算是去过宝鸡了。
+- name: 西安市
+  firstVisitDate: 2018-05
 
 - name: 深圳市
   firstVisitDate: 2020-06
