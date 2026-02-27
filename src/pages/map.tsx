@@ -11,6 +11,7 @@ export default function MapPage(): React.JSX.Element {
           <div className="col col--12">
             <h1>行万里路</h1>
             <p>这是我去过的地方，点击标记可以看到访问时间和备注。</p>
+            <p>只有在该城市过夜，或者有重大景点时才会记录。</p>
           </div>
         </div>
         <div className="row margin-top--md">
