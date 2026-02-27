@@ -18,4 +18,20 @@ export const PLACES: Place[] = [
     visitedDate: '2024-05-01',
     description: '2024年5月上海之行',
   },
+  {
+    name: '北京市',
+    nameEn: 'Beijing',
+    country: '中国',
+    lat: 39.9042,
+    lng: 116.4074,
+    visitedDate: '2023-10-15',
+  },
+  {
+    name: '广州市',
+    nameEn: 'Guangzhou',
+    country: '中国',
+    lat: 23.1291,
+    lng: 113.2644,
+    visitedDate: '2023-08-20',
+  },
 ];
