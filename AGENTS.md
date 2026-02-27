@@ -36,7 +36,7 @@ This is a personal blog built with Docusaurus 3.7.0, configured for Chinese lang
 **流程**:
 
 1. 编辑 `src/data/places-source.yml` 添加新地点
-2. 只需输入: 名称(name)、访问日期(visitedDate)、备注(description)
+2. 只需输入: 名称(name)、初次访问日期(firstVisitDate)、备注(description)
 3. 运行 `npm run generate-places` 自动生成坐标和 places.ts
 
 **数据格式** (places-source.yml):
