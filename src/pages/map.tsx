@@ -17,8 +17,13 @@ export default function MapPage(): React.JSX.Element {
           <div className="col col--12">
             <BrowserOnly fallback={<div>加载地图中...</div>}>
               {() => {
-                const TravelMap = require('../components/TravelMap').default;
-                return <TravelMap places={PLACES} />;
+                try {
+                  const TravelMap = require('../components/TravelMap').default;
+                  return <TravelMap places={PLACES} />;
+                } catch (error) {
+                  console.error('Failed to load map component:', error);
+                  return <div>地图加载失败，请刷新页面重试。</div>;
+                }
               }}
             </BrowserOnly>
           </div>
