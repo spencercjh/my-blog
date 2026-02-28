@@ -145,6 +145,12 @@
 - name: 张掖市
   firstVisitDate: '2021-07'
 
+- name: 湖州市
+  firstVisitDate: '2022-12'
+  description: |-
+    跨年夜
+    提车以后第一次上高速，去了南浔古镇
+
 - name: 嘉兴市
   firstVisitDate: '2023-01'
   description: 自驾游

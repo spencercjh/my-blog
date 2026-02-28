@@ -298,6 +298,14 @@ export const PLACES: Place[] = [
     firstVisitDate: '2021-07',
   },
   {
+    name: '湖州市',
+    country: '中国',
+    lat: 30.8942995,
+    lng: 120.0851114,
+    firstVisitDate: '2022-12',
+    description: '跨年夜\n提车以后第一次上高速，去了南浔古镇',
+  },
+  {
     name: '嘉兴市',
     country: '中国',
     lat: 30.7474425,
