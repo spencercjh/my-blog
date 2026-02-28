@@ -76,6 +76,14 @@ export const PLACES: Place[] = [
     description: '由于父亲工作来舟山岛上度过寒暑假，我来的时候还没有桥通到舟山，需要坐船上岛。',
   },
   {
+    name: '遂昌县',
+    country: '中国',
+    lat: 28.595012,
+    lng: 119.2686475,
+    firstVisitDate: '2014-01-01',
+    description: '高中时候出去采风',
+  },
+  {
     name: '北京市',
     nameEn: 'Beijing',
     country: '中国',
@@ -135,10 +143,10 @@ export const PLACES: Place[] = [
     description: '随心飞的第四次出行',
   },
   {
-    name: '湖州市',
+    name: '德清县',
     country: '中国',
-    lat: 30.8942995,
-    lng: 120.0851114,
+    lat: 30.5625691,
+    lng: 120.0500594,
     firstVisitDate: '2020-07',
     description: 'inceptio.ai 团建\n非常愉快的一次工作日两日团建',
   },
@@ -306,6 +314,22 @@ export const PLACES: Place[] = [
     description: '应朋友邀请去度假',
   },
   {
+    name: '安吉县',
+    country: '中国',
+    lat: 30.6383107,
+    lng: 119.6755006,
+    firstVisitDate: '2023-05',
+    description: '自驾游\n这块地方我来了很多很多次',
+  },
+  {
+    name: '溧阳市',
+    country: '中国',
+    lat: 31.4178958,
+    lng: 119.4787471,
+    firstVisitDate: '2023-05',
+    description: '自驾游，泡温泉',
+  },
+  {
     name: '嵊州市',
     country: '中国',
     lat: 29.5644007,
@@ -440,8 +464,8 @@ export const PLACES: Place[] = [
   {
     name: '京都',
     country: '日本',
-    lat: 34.9861908,
-    lng: 135.7601217,
+    lat: 34.9853497,
+    lng: 135.758766,
     firstVisitDate: '2024-11',
   },
   {
@@ -510,8 +534,8 @@ export const PLACES: Place[] = [
   {
     name: '热海',
     country: '日本',
-    lat: 35.1041239,
-    lng: 139.0777851,
+    lat: 35.1038519,
+    lng: 139.0781167,
     firstVisitDate: '2025-06',
   },
   {

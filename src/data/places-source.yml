@@ -34,6 +34,11 @@
   description: |-
     由于父亲工作来舟山岛上度过寒暑假，我来的时候还没有桥通到舟山，需要坐船上岛。
 
+- name: 遂昌县
+  firstVisitDate: '2014'
+  description: |-
+    高中时候出去采风
+
 - name: 北京市
   firstVisitDate: '2019-08'
   description: 和女朋友一起坐火车去的
@@ -65,7 +70,7 @@
   firstVisitDate: '2020-07'
   description: 随心飞的第四次出行
 
-- name: 湖州市
+- name: 德清县
   firstVisitDate: '2020-07'
   description: |-
     inceptio.ai 团建
@@ -147,6 +152,16 @@
 - name: 黄冈市
   firstVisitDate: '2023-01'
   description: 应朋友邀请去度假
+
+- name: 安吉县
+  firstVisitDate: '2023-05'
+  description: |-
+    自驾游
+    这块地方我来了很多很多次
+
+- name: 溧阳市
+  firstVisitDate: '2023-05'
+  description: 自驾游，泡温泉
 
 - name: 嵊州市
   firstVisitDate: '2023-05'
