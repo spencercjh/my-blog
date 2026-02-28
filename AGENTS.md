@@ -27,6 +27,37 @@ This is a personal blog built with Docusaurus 3.7.0, configured for Chinese lang
 - `make list-md` - List all Markdown files that will be processed
 - `npm run write-translations` - Generate translation files
 - `npm run write-heading-ids` - Add heading IDs to markdown files
+- `npm run generate-places` - Generate places.ts data from places-source.yml
+
+### Places Data Entry Workflow
+
+**目的**: 简化地点数据录入，自动获取坐标。
+
+**流程**:
+
+1. 编辑 `src/data/places-source.yml` 添加新地点
+2. 只需输入: 名称(name)、初次访问日期(firstVisitDate)、备注(description)
+3. 运行 `npm run generate-places` 自动生成坐标和 places.ts
+
+**数据格式** (places-source.yml):
+
+```yaml
+- name: 上海市
+  firstVisitDate: 2024-05-01 # 或 2024-05（精确到月）
+  description: 2024年5月上海之行
+
+- name: 北京市
+  firstVisitDate: 2023-10
+```
+
+**说明**:
+
+- 坐标通过 OpenStreetMap Nominatim API 自动获取（免费，无需 API Key）
+- 常见城市名称会自动添加英文名称
+- 生成的 places.ts 包含完整坐标数据，可直接使用
+- 避免手动查找坐标，减少错误
+
+**依赖**: js-yaml, @types/js-yaml, ts-node
 
 ## Architecture & Structure
 

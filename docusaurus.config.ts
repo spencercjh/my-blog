@@ -4,7 +4,7 @@ import type * as Preset from '@docusaurus/preset-classic';
 
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
-let copyright = `Copyright © ${new Date().getFullYear()} by <a href="https://github.com/spencercjh" target="_blank">@spencercjh</a> is licensed under <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_black">CC BY-NC 4.0</a>. Built with Docusaurus.`;
+let copyright = `Copyright © ${new Date().getFullYear()} by <a href="https://github.com/spencercjh" target="_blank">@spencercjh</a> is licensed under <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a>. Built with Docusaurus.`;
 const config: Config = {
   title: "spencercjh's blog",
   tagline: 'Dinosaurs are cool',
@@ -92,6 +92,7 @@ const config: Config = {
       items: [
         { to: '/blog', label: 'Blog', position: 'left' },
         { to: '/blog/tags', label: 'Tags', position: 'left' },
+        { to: '/map', label: '足迹', position: 'left' },
       ],
     },
     tableOfContents: {
