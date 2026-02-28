@@ -15,7 +15,7 @@
     "typecheck": "tsc",
     "prepare": "husky",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,css,md,mdx}\" --ignore-path .prettierignore",
-    "generate-places": "ts-node src/scripts/generate-places.ts"
+    "generate-places": "tsx src/scripts/generate-places.ts"
   },
   "dependencies": {
     "@docusaurus/core": "^3.9.2",
@@ -42,7 +42,7 @@
     "js-yaml": "^4.1.0",
     "lint-staged": "^16.2.7",
     "prettier": "3.8.1",
-    "ts-node": "^10.9.2",
+    "tsx": "^4.21.0",
     "typescript": "~5.9.3"
   },
   "browserslist": {
