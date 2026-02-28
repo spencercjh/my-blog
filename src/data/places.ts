@@ -510,8 +510,8 @@ export const PLACES: Place[] = [
   {
     name: '热海',
     country: '日本',
-    lat: 35.1040951,
-    lng: 139.0778148,
+    lat: 35.1041239,
+    lng: 139.0777851,
     firstVisitDate: '2025-06',
   },
   {
@@ -558,10 +558,10 @@ export const PLACES: Place[] = [
     description: '长途自驾',
   },
   {
-    name: '上饶市',
+    name: '婺源县',
     country: '中国',
-    lat: 28.7435852,
-    lng: 117.40539,
+    lat: 29.323384,
+    lng: 117.7542738,
     firstVisitDate: '2025-11',
     description: '长途自驾\n爬三清山',
   },
