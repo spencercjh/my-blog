@@ -3,187 +3,317 @@
 # country 可选，不指定则使用 API 返回结果
 
 - name: 上海市
-  firstVisitDate: 1998-03
+  firstVisitDate: '1998'
+
+- name: 杭州市
+  firstVisitDate: '2008'
+  description: 具体的到访年份记不清楚了，小时候和爸妈一起去的
 
 - name: 南京市
-  firstVisitDate: 2008-09
+  firstVisitDate: '2009'
+  description: 具体的到访年份记不清楚了，小时候和爸妈一起去的
+
+- name: 无锡市
+  firstVisitDate: '2009'
+  description: 具体的到访年份记不清楚了，小时候和爸妈一起去的
+
+- name: 镇江市
+  firstVisitDate: '2009'
+  description: 具体的到访年份记不清楚了，小时候和爸妈一起去的
+
+- name: 扬州市
+  firstVisitDate: '2009'
+  description: 具体的到访年份记不清楚了，小时候和爸妈一起去的
+
+- name: 苏州市
+  firstVisitDate: '2009'
+  description: 具体的到访年份记不清楚了，小时候和爸妈一起去的
+
+- name: 舟山市
+  firstVisitDate: '2010'
+  description: |-
+    由于父亲工作来舟山岛上度过寒暑假，我来的时候还没有桥通到舟山，需要坐船上岛。
 
 - name: 北京市
-  firstVisitDate: 2019-08
+  firstVisitDate: '2019-08'
+  description: 和女朋友一起坐火车去的
 
 - name: 咸阳市
-  firstVisitDate: 2018-04
+  firstVisitDate: '2018-04'
   description: |
     和第一份实习工作的同事、老板一起去西安玩了半个月。这是他们的毕业旅行。
     开了辆小破车从上海经南京到咸阳，坐得我下半身都麻了。
 
 - name: 西安市
-  firstVisitDate: 2018-05
+  firstVisitDate: '2018-05'
 
 - name: 深圳市
-  firstVisitDate: 2020-06
+  firstVisitDate: '2020-06'
   description: |-
     东航随心飞的第一次出行
     也是我人生中第一次坐飞机
 
 - name: 长沙市
-  firstVisitDate: 2020-07
+  firstVisitDate: '2020-07'
   description: 随心飞的第二次出行
 
 - name: 昆明市
-  firstVisitDate: 2020-07
+  firstVisitDate: '2020-07'
   description: 随心飞的第三次出行
 
 - name: 大连市
-  firstVisitDate: 2020-07
+  firstVisitDate: '2020-07'
   description: 随心飞的第四次出行
 
+- name: 湖州市
+  firstVisitDate: '2020-07'
+  description: |-
+    inceptio.ai 团建
+    非常愉快的一次工作日两日团建
+
 - name: 重庆市
-  firstVisitDate: 2020-08
+  firstVisitDate: '2020-08'
   description: 随心飞的第五次出行
 
 - name: 青岛市
-  firstVisitDate: 2020-08
+  firstVisitDate: '2020-08'
   description: 随心飞的第六次出行
 
 - name: 天津市
-  firstVisitDate: 2020-08
+  firstVisitDate: '2020-08'
   description: 随心飞的第七次出行
 
 - name: 成都市
-  firstVisitDate: 2020-09
+  firstVisitDate: '2020-09'
   description: 随心飞的第八次出行
 
 - name: 广州市
-  firstVisitDate: 2020-09
+  firstVisitDate: '2020-09'
   description: 随心飞的第九次出行
 
+- name: 佛山市
+  firstVisitDate: '2020-09'
+  description: 广佛一体
+
 - name: 厦门市
-  firstVisitDate: 2020-09
+  firstVisitDate: '2020-09'
   description: 随心飞的第十次出行
 
 - name: 武汉市
-  firstVisitDate: 2020-10
+  firstVisitDate: '2020-10'
   description: 随心飞的第十一次出行
 
 - name: 哈尔滨市
-  firstVisitDate: 2020-10
+  firstVisitDate: '2020-10'
   description: 随心飞的第十三次出行
 
 - name: 芒市
-  firstVisitDate: 2020-11
+  firstVisitDate: '2020-11'
   description: 随心飞的第十五次出行
 
 - name: 三亚市
-  firstVisitDate: 2020-11
+  firstVisitDate: '2020-11'
   description: 随心飞的第十六次出行
 
 - name: 成都市
-  firstVisitDate: 2021-04
+  firstVisitDate: '2021-04'
   description: 清明踏青，我记得爬了青城山
 
 - name: 南充市
-  firstVisitDate: 2021-04
-  description: 坐高铁去专机，省机票费用😂
+  firstVisitDate: '2021-04'
+  description: 坐高铁去转机，省机票费用😂
 
 - name: 西宁市
-  firstVisitDate: 2021-07
+  firstVisitDate: '2021-07'
   description: 退学前，我和女友来了一次“西北大环线”
 
 - name: 海西州
-  firstVisitDate: 2021-07
+  firstVisitDate: '2021-07'
   description: 我记得我们在大柴旦过的夜
 
-- name: 酒泉市
-  firstVisitDate: 2021-07
+- name: 敦煌市
+  firstVisitDate: '2021-07'
 
 - name: 嘉峪关市
-  firstVisitDate: 2021-07
+  firstVisitDate: '2021-07'
 
 - name: 张掖市
-  firstVisitDate: 2021-07
+  firstVisitDate: '2021-07'
+
+- name: 嘉兴市
+  firstVisitDate: '2023-01'
+  description: 自驾游
+
+- name: 黄冈市
+  firstVisitDate: '2023-01'
+  description: 应朋友邀请去度假
+
+- name: 嵊州市
+  firstVisitDate: '2023-05'
+  description: 自驾游
+
+- name: 绍兴市
+  firstVisitDate: '2023-05'
+  description: 自驾游
+
+- name: 芜湖市
+  firstVisitDate: '2023-06'
+  description: |-
+    参加朋友婚礼
+
+- name: 嵊泗县
+  firstVisitDate: '2023-06'
+  description: 自驾游
+
+- name: 黄山市
+  firstVisitDate: '2023-07'
+  description: |-
+    加入哔哩哔哩前的长途自驾旅行，没坐缆车爬黄山。
+
+- name: 衢州市
+  firstVisitDate: '2023-07'
+  description: |-
+    加入哔哩哔哩前的长途自驾旅行
+    在衢州和龙游度假，享受低物价生活。
+
+- name: 龙游县
+  firstVisitDate: '2023-07'
+  description: |-
+    加入哔哩哔哩前的长途自驾旅行
+    在衢州和龙游度假，享受低物价生活。
+
+- name: 宁波市
+  firstVisitDate: '2023-12'
+  description: |-
+    跨年出游
 
 - name: 香港
-  firstVisitDate: 2024-03
-  description: 第一次出境
+  firstVisitDate: '2024-02'
+
+- name: 潮州市
+  firstVisitDate: '2024-02'
+
+- name: 汕头市
+  firstVisitDate: '2024-02'
+  description: |-
+    这辈子不会踏上南澳岛！
+
+- name: 义乌市
+  firstVisitDate: '2024-05'
+
+- name: 三明市
+  firstVisitDate: '2024-07'
+  description: 沙县当地的沙县小吃真不太好吃
+
+- name: 淄博市
+  firstVisitDate: '2024-08'
+  description: |-
+    政通人和！烧烤真没什么好吃的
+
+- name: 泰州市
+  firstVisitDate: '2024-09'
+
+- name: 淮安市
+  firstVisitDate: '2024-10'
+  description: 长途自驾
 
 - name: 东京
-  firstVisitDate: 2024-11
+  firstVisitDate: '2024-11'
   description: 第一次出国旅行
 
 - name: 京都
-  firstVisitDate: 2024-11
+  firstVisitDate: '2024-11'
 
 - name: 奈良
-  firstVisitDate: 2024-11
+  firstVisitDate: '2024-11'
 
 - name: 镰仓
-  firstVisitDate: 2024-11
+  firstVisitDate: '2024-11'
 
 - name: 大阪
-  firstVisitDate: 2024-11
+  firstVisitDate: '2024-11'
 
 - name: 新加坡
   country: 新加坡
-  firstVisitDate: 2025-01
+  firstVisitDate: '2025-01'
 
 - name: 曼谷
   country: 泰国
-  firstVisitDate: 2025-01
+  firstVisitDate: '2025-01'
 
 - name: 芭提雅
   country: 泰国
-  firstVisitDate: 2025-02
+  firstVisitDate: '2025-02'
 
 - name: 清迈
   country: 泰国
-  firstVisitDate: 2025-02
+  firstVisitDate: '2025-02'
 
 - name: 济州岛
   country: 韩国
-  firstVisitDate: 2025-02
+  firstVisitDate: '2025-02'
 
 - name: 横滨
-  firstVisitDate: 2025-06
+  firstVisitDate: '2025-06'
 
 - name: 热海
-  firstVisitDate: 2025-06
+  firstVisitDate: '2025-06'
 
 - name: 伊东
-  firstVisitDate: 2025-06
+  firstVisitDate: '2025-06'
 
 - name: 巴厘岛
   country: 印度尼西亚
-  firstVisitDate: 2025-06
+  firstVisitDate: '2025-06'
 
 - name: Komodo
   country: 印度尼西亚
-  firstVisitDate: 2025-06
+  firstVisitDate: '2025-06'
 
 - name: 马累
   country: 马尔代夫
-  firstVisitDate: 2025-10
+  firstVisitDate: '2025-10'
 
 - name: Kuramathi
   country: 马尔代夫
-  firstVisitDate: 2025-10
+  firstVisitDate: '2025-10'
 
-- name: 太原
-  firstVisitDate: 2025-11
+- name: 景德镇市
+  firstVisitDate: '2025-11'
+  description: 长途自驾
 
-- name: 大同
-  firstVisitDate: 2025-11
+- name: 上饶市
+  firstVisitDate: '2025-11'
+  description: |-
+    长途自驾
+    爬三清山
+
+- name: 九江市
+  firstVisitDate: '2025-11'
+  description: |-
+    长途自驾
+    爬庐山
+
+- name: 太原市
+  firstVisitDate: '2025-11'
+
+- name: 大同市
+  firstVisitDate: '2025-11'
+
+- name: 阿坝州
+  firstVisitDate: '2026-01'
+  description: 九寨沟、松州
 
 - name: 神户
-  firstVisitDate: 2026-01
+  firstVisitDate: '2026-01'
 
 - name: 宇治
-  firstVisitDate: 2026-01
+  firstVisitDate: '2026-01'
 
 - name: 甲米
   country: 泰国
-  firstVisitDate: 2026-02
+  firstVisitDate: '2026-02'
 
 - name: 攀牙湾
   country: 泰国
-  firstVisitDate: 2026-02
+  firstVisitDate: '2026-02'
