@@ -404,8 +404,8 @@ export const PLACES: Place[] = [
   {
     name: '香港',
     country: '中国',
-    lat: 22.3492155,
-    lng: 114.1857978,
+    lat: 22.2792968,
+    lng: 114.1628907,
     firstVisitDate: '2024-02',
   },
   {
@@ -454,10 +454,10 @@ export const PLACES: Place[] = [
     firstVisitDate: '2024-09',
   },
   {
-    name: '淮安市',
+    name: '盱眙县',
     country: '中国',
-    lat: 33.5978169,
-    lng: 119.0196971,
+    lat: 33.0139547,
+    lng: 118.538657,
     firstVisitDate: '2024-10',
     description: '长途自驾',
   },
