@@ -298,6 +298,14 @@ export const PLACES: Place[] = [
     firstVisitDate: '2021-07',
   },
   {
+    name: '湖州市',
+    country: '中国',
+    lat: 30.8942995,
+    lng: 120.0851114,
+    firstVisitDate: '2022-12',
+    description: '跨年夜\n提车以后第一次上高速，去了南浔古镇',
+  },
+  {
     name: '嘉兴市',
     country: '中国',
     lat: 30.7474425,
@@ -396,8 +404,8 @@ export const PLACES: Place[] = [
   {
     name: '香港',
     country: '中国',
-    lat: 22.3492155,
-    lng: 114.1857978,
+    lat: 22.2792968,
+    lng: 114.1628907,
     firstVisitDate: '2024-02',
   },
   {
@@ -446,10 +454,10 @@ export const PLACES: Place[] = [
     firstVisitDate: '2024-09',
   },
   {
-    name: '淮安市',
+    name: '盱眙县',
     country: '中国',
-    lat: 33.5978169,
-    lng: 119.0196971,
+    lat: 33.0139547,
+    lng: 118.538657,
     firstVisitDate: '2024-10',
     description: '长途自驾',
   },
