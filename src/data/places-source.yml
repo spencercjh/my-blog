@@ -338,3 +338,15 @@
 - name: 攀牙湾
   country: 泰国
   firstVisitDate: '2026-02'
+
+- name: 丽江市
+  firstVisitDate: '2026-03'
+
+- name: 大理市
+  firstVisitDate: '2026-03'
+
+- name: 腾冲市
+  firstVisitDate: '2026-03'
+
+- name: 保山市
+  firstVisitDate: '2026-03'
