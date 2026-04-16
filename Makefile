@@ -8,7 +8,7 @@ md-padding:
 	@echo "正在处理 $(words $(MD_FILES)) 个 Markdown 文件..."
 	@for file in $(MD_FILES); do \
 		echo "处理: $$file"; \
-		npx md-padding -i "$$file" || echo "警告: $$file 处理失败"; \
+		npx md-padding -i "$$file" --ignore-patterns '<SponsorIframe[\s\S]*?\/>' || echo "警告: $$file 处理失败"; \
 	done
 	@echo "✅ 全部处理完成!"
 
