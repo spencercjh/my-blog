@@ -120,3 +120,19 @@ This is a personal blog built with Docusaurus 3.7.0, configured for Chinese lang
 - Automatic deployment configured for Cloudflare
 - GitHub organization: `spencercjh`
 - Edit URLs point to GitHub repository for content collaboration
+
+## Skills
+
+### shuorenhua (说人话)
+
+用于检查和清理中文文本里的 AI 套路，让文本更自然、减少模板感。
+
+**触发条件**：当用户说 "去 AI 味"、"说人话"、"自然一点"、"别像模板" 等类似需求时。
+
+**Skill 文件位置**：`skills/shuorenhua/SKILL.md`
+
+**使用方式**：
+
+- 当涉及博客文章、文案、说明文本的改写时，参考 `skills/shuorenhua/SKILL.md` 中的指导原则
+- 该 skill 包含详细的场景判断、问题分级（Tier 1/2/3）和改写档位（minimal/standard/aggressive）
+- 参考文件位于 `skills/shuorenhua/references/` 目录，包含短语表、结构反模式、保护范围等内容
