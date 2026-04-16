@@ -135,8 +135,6 @@ git clone https://github.com/MrGeDiao/shuorenhua.git skills/shuorenhua
 
 用于检查和清理中文文本里的 AI 套路，让文本更自然、减少模板感。
 
-用于检查和清理中文文本里的 AI 套路，让文本更自然、减少模板感。
-
 **触发条件**：当用户说 "去 AI 味"、"说人话"、"自然一点"、"别像模板" 等类似需求时。
 
 **Skill 文件位置**：`skills/shuorenhua/SKILL.md`
