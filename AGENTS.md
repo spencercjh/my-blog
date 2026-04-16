@@ -123,7 +123,17 @@ This is a personal blog built with Docusaurus 3.7.0, configured for Chinese lang
 
 ## Skills
 
+> **注意**：Skills 需要手动安装到 `skills/` 目录。该目录已加入 `.gitignore`，不会被提交到 git。安装方式见各 skill 的说明。
+
 ### shuorenhua (说人话)
+
+**安装方式**：
+
+```bash
+git clone https://github.com/MrGeDiao/shuorenhua.git skills/shuorenhua
+```
+
+用于检查和清理中文文本里的 AI 套路，让文本更自然、减少模板感。
 
 用于检查和清理中文文本里的 AI 套路，让文本更自然、减少模板感。
 
