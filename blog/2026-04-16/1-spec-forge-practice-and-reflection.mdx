@@ -1,0 +1,352 @@
+---
+title: spec-forge，API 文档生成工具的实践与思考
+description: 能不能不写一行代码生成Gin服务的API文档？
+slug: spec-forge-practice-and-reflection
+tags: [backend-dev]
+hide_table_of_contents: false
+authors: [spencercjh]
+---
+
+# spec-forge 的实践与反思
+
+接 [上文](./how-do-we-generate-api-docs-in-2026)，我想开发一个 CLI 工具，**一行命令生成 Gin 等 HTTP/gRPC 框架的 API 文档**。
+
+:::warning
+
+本文由 claude code with GLM 5.1 生成，上下文仓库为 [spencercjh/spec-forge](https://github.com/spencercjh/spec-forge)，并通过 skill [MrGeDiao/shuorenhua](https://github.com/MrGeDiao/shuorenhua) （说人话）润色，最后再人工校对。如果让你感到不适，还请多包涵。
+
+:::
+
+```
+<!-- truncate -->
+```
+
+## swaggo 有什么问题？
+
+swaggo 的思路很直观：Go 源码里 **没有声明式的 API 契约**，所以用注释来手动标注。一段典型的 swaggo 注解：
+
+```go
+// @Summary      Get user by ID
+// @Description  Retrieve user details by user ID
+// @Tags         users
+// @Accept       json
+// @Produce      json
+// @Param        id   path      int     true  "User ID"
+// @Success      200  {object}  User
+// @Router       /users/{id} [get]
+func (h *Handler) GetUser(c *gin.Context) {
+    id, _ := strconv.ParseInt(c.Param("id"), 10, 64)
+    user := h.service.GetByID(id)
+    c.JSON(200, user)
+}
+```
+
+一个接口 8 行注解。当有 50 个接口时，问题开始显现：
+
+### 痛点一：注解不是代码，编译器不管你
+
+swaggo 注解写在注释里，Go 编译器完全无视它们。这意味着：
+
+- 你把 `User` 重命名为 `UserResponse`——编译通过，测试通过，但 spec 里还写着 `{object} User`，**静默断裂**。
+- 你在 handler 里新增了一个 query 参数 `c.Query("sort")`——如果忘了在注解里加 `@Param sort`，spec 永远不会包含它。
+- 没有任何 CI 检查能帮你发现这些不一致，因为注释里的类型引用不受编译器约束。
+
+### 痛点二：改一个字段，手动更新 N 个地方
+
+假设你修改了一个 struct：
+
+```go
+// 之前
+type CreateUserRequest struct {
+    Username string `json:"username" binding:"required"`
+    Email    string `json:"email" binding:"required,email"`
+}
+
+// 之后：新增了 Age 字段
+type CreateUserRequest struct {
+    Username string `json:"username" binding:"required"`
+    Email    string `json:"email" binding:"required,email"`
+    Age      int    `json:"age" binding:"required,min=1,max=150"`
+}
+```
+
+代码改完了。但所有引用 `CreateUserRequest` 的 swaggo 注解里的字段描述——如果写了的话——都需要手动同步。重构成本 = **代码重构 + 注解同步**，双重负担。
+
+### 声明式方案就够了吗？
+
+你可能会问：[swaggest/rest](https://github.com/swaggest/rest) 这类库不就是在代码里声明 API 信息吗？确实，它用结构体标签替代了注释：
+
+```go
+// swaggest/rest 的声明式写法
+type helloInput struct {
+    Locale string `query:"locale" default:"en-US" pattern:"^[a-z]{2}-[A-Z]{2}$"`
+    Name   string `path:"name" minLength:"3"`
+    _      struct{} `query:"_" additionalProperties:"false"`
+}
+
+type helloOutput struct {
+    Greeting string `json:"greeting"`
+}
+
+// 路由绑定
+service.Get("/hello/{name}", func(
+    r *rest.Request, w rest.ResponseSetter,
+) (input helloInput, output *helloOutput, err error) {
+    output = &helloOutput{Greeting: "Hello, " + input.Name}
+    return
+})
+```
+
+比 swaggo 好，信息在代码里而非注释里。但它有自己的问题：
+
+**编译器仍然不验证语义一致性**。标签里的 `pattern:"^[a-z]{2}-[A-Z]{2}$"` 是字符串，编译器不会检查它是不是合法的正则表达式。`minLength:"3"` 也是字符串，编译器不保证它和业务逻辑里的实际校验一致。
+
+```go
+// 代码里这样写，编译器不会警告
+input.Name = strings.TrimRight(input.Name, " ") // 实际允许空格
+// 但标签里声明了 minLength: "3"，没说空格的事
+```
+
+**声明与实现的 drift 仍然存在**。标签里写了 `additionalProperties:"false"`，但 handler 代码里可能偷偷处理了未声明的字段；或者标签里定义了复杂的 schema，但 handler 根本没用某些字段。编译器看不到这些不一致。
+
+**声明式并不等于 "自动同步"**。当你修改 struct 字段时，相关标签还是得手动改——只是改在代码里而不是注释里，维护成本没有本质区别。
+
+声明式方案比 swaggo 注解好，但它解决的是 "信息在哪" 的问题（代码 vs 注释），而不是 "信息如何保持一致" 的问题。
+
+---
+
+注解本质上是在 "手动给编译器补充信息"，能不能让程序来做？
+
+## spec-forge 的尝试：用 AST 分析替代手写注解
+
+[spec-forge](https://github.com/spencercjh/spec-forge) 的设计思路是：Go 的 AST 能看到源码里的一切——路由注册、handler 签名、struct 定义、参数绑定调用。如果能自动还原每个接口的参数、请求体、响应体，就不需要手写注解。
+
+整体架构如下：
+
+```
+源码 → AST 解析 → 路由提取 → Handler 分析 → Schema 提取 → OpenAPI Spec
+```
+
+### 我们能做到的
+
+**路由提取** 很可靠。AST 能准确识别 Gin 的路由注册模式：
+
+```go
+// 源码
+api.GET("/users/:id", getUserByID)
+
+// spec-forge 自动转换为 OpenAPI 格式
+// GET /api/v1/users/{id}
+```
+
+参数格式转换（`:id` → `{id}`）、路由组拼接（`/api/v1` + `/users/:id`）都由 AST 解析自动完成。
+
+**参数绑定检测** 也做得不错。常见的绑定模式都能识别：
+
+```go
+// 源码：c.ShouldBindJSON(&req) → 自动提取 CreateUserRequest 作为 request body
+// 源码：c.ShouldBindQuery(&req) → 自动提取 ListUsersRequest 的字段作为 query 参数
+```
+
+**Struct → OpenAPI Schema 转换**：将 Go struct 映射到 OpenAPI 类型系统：
+
+```json
+{
+  "properties": {
+    "id": { "type": "integer", "format": "int64" },
+    "username": { "type": "string" },
+    "email": { "type": "string" },
+    "fullName": { "type": "string" },
+    "age": { "type": "integer", "format": "int32" }
+  },
+  "required": ["id", "username", "email", "fullName"]
+}
+```
+
+`json` tag 映射属性名、`binding:"required"` 标记必填、Go 类型到 OpenAPI 类型的对应关系——这些都不需要手写。
+
+### 成果展示
+
+以 `GET /api/v1/users` 为例，spec-forge 能自动生成这样的 OpenAPI 操作：
+
+```json
+{
+  "operationId": "listUsers",
+  "parameters": [
+    { "name": "page", "in": "query", "schema": { "type": "integer", "format": "int32" } },
+    { "name": "size", "in": "query", "schema": { "type": "integer", "format": "int32" } },
+    { "name": "username", "in": "query", "schema": { "type": "string" } }
+  ],
+  "responses": {
+    "200": {
+      "content": { "application/json": { "schema": { "$ref": "#/components/schemas/PageResult" } } }
+    },
+    "400": {
+      "content": {
+        "application/json": { "schema": { "$ref": "#/components/schemas/ApiResponse" } }
+      }
+    }
+  },
+  "tags": ["Users"]
+}
+```
+
+路由、参数、类型、响应结构——全部从源码自动提取，零注解。
+
+## 碰壁：为什么 AST 全自动化走不通
+
+demo 项目很干净，但真实世界的 Gin 项目要复杂得多。以下是 spec-forge 开发中遇到的三个核心难题。
+
+### 难题一：Handler 包装函数的黑盒
+
+真实项目中，几乎没有人直接写 `c.JSON(200, data)`。大家都会封装响应 helper：
+
+```go
+// 项目里常见的响应封装
+func done(c *gin.Context, data interface{}, err error) {
+    if err != nil {
+        fail(c, err)
+        return
+    }
+    c.JSON(http.StatusOK, ApiResponse{
+        Code:    0,
+        Message: "success",
+        Data:    data,
+    })
+}
+```
+
+handler 看起来是这样：
+
+```go
+func getUserByID(c *gin.Context) {
+    user, err := service.GetByID(c.Param("id"))
+    done(c, user, err) // 响应类型被藏在 helper 里
+}
+```
+
+`done(c, user, err)` 的第一个数据参数是 `*User`，但 AST 看到的是 `interface{}`。要拿到真实类型，需要 **跨函数追踪**：识别 `done` 是响应 helper，展开它的函数体，关联参数和实际返回结构。
+
+你可以追踪一层。但两层呢？如果 `done` 内部又调了 `respond(c, wrap(data))` 呢？追踪深度每增加一层，复杂度就指数级增长。而且每个项目的 helper 函数签名都不一样，有些是 `done(c, data, err)`，有些是 `Respond(c, 200, data)`，有些是 `c.JSON(200, R.OK(data))`——你需要逐一适配。
+
+### 难题二：参数类型推断的困境
+
+`c.Param("id")` 返回的是 `string`，但语义上是 `int`。要推断出真实类型，你需要追踪后续的 `strconv.ParseInt` 调用：
+
+```go
+idStr := c.Param("id")
+id, err := strconv.ParseInt(idStr, 10, 64)
+```
+
+问题是，这个转换可能发生在任何地方——可能被赋值给一个局部变量，可能在另一个函数里，可能根本没有转换（就是当 string 用的）。**推断太激进会生成错误的 spec，太保守会让所有参数都是 `string`，spec 就失去了参考价值。**
+
+这是 **信息缺失** 问题：源码里根本没有声明 `id` 是 `int`，任何推断都是在 "猜"。
+
+### 难题三：长期维护成本不可控
+
+每个 "支持一种新的写法" 都是一个无底洞。Gin 生态没有标准化的项目结构，每个团队都有自己的约定：
+
+- 有的人用 `c.ShouldBindJSON`，有的人用 `c.Bind`，有的人手写 `json.Unmarshal`
+- 有的人把 handler 写在同一个包里，有的人拆成多个包
+- 有的人用 middleware 注入参数，有的人用 context 传递
+
+你支持的写法越多，代码就越复杂，bug 就越多。而且真实项目的多样性永远超过你测试用例的覆盖范围——上线后会不断收到 "我的项目跑不通" 的 issue。
+
+最终，用户拿到的自动生成的 spec 仍然需要 **大量人工 review 和调整**。如果生成结果总要人工检查和修改，那它和手写注解有什么本质区别？
+
+### 决策时刻
+
+经过反复尝试，结论在 [spec-forge#70](https://github.com/spencercjh/spec-forge/issues/70) 记录：
+
+> After repeated attempts, we have concluded to abandon the product goal of "fully replacing swaggo by automatically generating an OpenAPI spec via Gin AST."
+
+**认清现实**：完全自动化对于无 IDL 框架来说行不通——技术能力足够，但 API 信息分散在源码各处，很难完整收集。
+
+## 转向：AST 辅助 + 人机协作
+
+放弃完全自动化不等于放弃方向。机器和人类各有分工：
+
+- **机器**：枚举路由、定位 handler、提取 struct 定义、识别绑定模式——确定性工作，AST 做得又快又准。
+- **人类**：判断参数语义类型、理解业务含义、决定哪些信息暴露在文档里。
+- **LLM**：生成描述性文本（summary、description）、推断模糊情况下的默认值。
+
+spec-forge 的新方向是 **"AST 辅助 + LLM 协作"**：
+
+```
+源码 → AST 分析 → 生成 annotation plan (Markdown)
+                    ↓
+              LLM 辅助 → 生成 swaggo 注解草稿
+                    ↓
+              开发者 Review → 确认/修改
+                    ↓
+              swaggo 生成最终 OpenAPI spec
+```
+
+### AST 仍然有价值
+
+AST 分析不再给出 "最终答案"，而是生成 **结构化的待办清单**（annotation plan）。每个接口对应一个 section，包含：
+
+- **确定的信息**（AST 能准确提取）：路由、HTTP 方法、handler 位置、struct 定义、绑定模式
+- **推断的信息**（可能需要修正）：参数类型、响应结构
+- **明确标记 "需要人工确认" 的部分**，不强行猜一个可能错误的答案
+
+这份 plan 同时面向人类和 LLM：开发者可以直接用它来写注解，也可以喂给 LLM 生成初稿。
+
+### LLM 的角色
+
+LLM 在工作流中补全的是 **语义信息**——AST 看不到的东西：
+
+- 接口的 summary 和 description
+- 参数的业务含义描述（"用户唯一标识符" vs "id"）
+- tag 分组建议
+- 不确定情况下的类型推断（由人确认）
+
+spec-forge 的 `enrich` 命令就是这个思路：先生成基础 spec（100% 来自静态分析），再用 LLM 为已有的 schema 和操作补充描述。LLM 不会凭空发明类型或修改结构，只在已有框架内填充语义。
+
+### 对比：纯 swaggo vs spec-forge 辅助
+
+| 维度      | 纯 swaggo                | spec-forge 辅助     |
+| --------- | ------------------------ | ------------------- |
+| 路由信息  | 手写 `@Router`           | AST 自动提取        |
+| 类型信息  | 手写 `@Param`/`@Success` | AST 提取 + 人工确认 |
+| 描述/摘要 | 手写                     | LLM 生成            |
+| 注解编写  | 全手写                   | LLM 草稿 + review   |
+| 信任度    | 高（你写的）             | 高（你确认的）      |
+
+核心改变：**从 "全手写" 变成 "review + 修改"**。心智负担从 "从零开始" 变成 "检查和修正"。
+
+## 更广泛的启示
+
+这个问题不只存在于 Go/Gin。
+
+- **Express（Node.js）**：路由也是函数调用，参数在 `req.query`/`req.body` 里，同样没有编译时 API 元信息。社区有 `swagger-jsdoc`（类似 swaggo 的 JSDoc 注解方案）和 `tsoa`（TypeScript 装饰器方案），各有各的痛点。
+- **Flask（Python）**：虽然有 Flasgger 和 APIFlask 等工具，但 Python 的动态类型意味着很多信息在运行时才能确定。
+- **FastAPI**：Python 生态里做得最好的——利用 Python type hints 作为 "隐式 IDL" 自动生成 OpenAPI spec。这反证了：**你需要类型信息来生成准确的文档**。
+
+任何 "路由即代码" 的框架都面临同一个根本矛盾：**源码里缺乏足够的声明式信息来无歧义地还原 API 契约**。
+
+### "完全自动化" vs "有效辅助"
+
+完全自动化——一键生成、零维护。但 80% 准确率的自动文档比没有文档更危险，你会 **信任一个错误的文档**。API 文档的核心价值是 **准确性**。
+
+正确的做法：**机器做确定的事，人来判断不确定的事。**
+
+## 结语
+
+回到开头的问题：**不靠 IDL 的框架，API 文档该如何自动生成？**
+
+完全自动化？目前做不到，API 信息分散在源码各处，很难完整收集。
+完全手写？太痛苦，而且注定会过时。
+
+spec-forge 的答案：**AST 提取确定信息，LLM 补充语义，人类把关最终结果。** spec-forge 选择站在 "有效辅助" 这一端。
+
+如果你也受够了手写 swaggo 注解，欢迎试试 [spec-forge](https://github.com/spencercjh/spec-forge)，或者至少来看看这个思路。项目的 [annotate 命令](https://github.com/spencercjh/spec-forge/issues/70) 正在开发中——我们相信这是比 "完全替代 swaggo" 更诚实的方向。
+
+<SponsorIframe
+  src="https://github.com/sponsors/spencercjh/card"
+  title="Sponsor spencercjh"
+  width={600}
+  height={225}
+  style={{ borderRadius: 6, overflow: 'hidden' }}
+  allow=" payment *; clipboard-read; clipboard-write "
+/>
