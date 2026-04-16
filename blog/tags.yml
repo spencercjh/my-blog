@@ -18,3 +18,7 @@ backend-dev:
   label: 'backend-dev'
   permalink: '/backend-dev'
   description: '对后端开发的一些理解与实践'
+small-talk:
+  label: 'small-talk'
+  permalink: '/small-talk'
+  description: '闲聊'
