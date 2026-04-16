@@ -1,0 +1,127 @@
+---
+title: 2026年了，我们该如何产出API文档？
+description: 开发者工具链相关讨论
+slug: how-do-we-generate-api-docs-in-2026
+tags: [backend-dev]
+hide_table_of_contents: false
+authors: [spencercjh]
+---
+
+# 2026 年了，我们该如何产出 API 文档？
+
+2026 年的今天：hermes agent、OpenClaw、各种各样的 CLI、skills、MCP，你方唱罢我登场。潮起潮落，最后剩下些什么？服务端的 API
+一定仍然是企业内最重要的“资产”。
+
+在此背景下，**我们该如何产出 API 文档**？特别地限定一下讨论范围，我们如何在 <u> 企业内部 </u> 产出 API 文档供其他 <u>
+技术人员 </u> 使用？
+
+**本文所说的“文档”不限于形式，Markdown、YAML、JSON，人和 agent 有一方能读就行。** 后文的重点将会是 **O** pen **A** PI **S**
+pecification YAML/JSON 文档（legacy named as Swagger specification）。
+
+抛出这个问题之后，可能会有以下质疑：
+
+> - “AI Native” 时代了，还有这种需求吗？
+> - 这难道不是很成熟的技术吗？
+> - 人工编写文档怎么了？
+
+<!-- truncate -->
+
+## AI Native 时代了，还有这种需求吗？
+
+相较于中推圈对大模型、**O** ne **P** erson **C** ompany 的热烈讨论，企业内部的后端工作大多数时候还是挺“无聊”的：根据上下游的需求，开发
+API。数据库 CRUD 也好，工作流数据搬运工也罢；RESTful API
+也好，rpc、[SSE](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events)、[Socket.IO](https://socket.io/)
+也罢。最后都是交付 API。而文档是 API 交付产物的一部分，上下游之间需要某种 contract 来沟通，以进行 **I** nter-**P** rocess \*
+\*C\*\* ommunication。在大模型时代，文档、文件都是大家最看重的。agent 记忆用文档，任务规划用文档，系统 prompt
+用文档，所以东西都建构在文档上面。API 文档的重要性没有降低，有效的文档能让 agent 更快完成 API 接入。
+
+### 我们不是有 MCP、Skills、CLI 了，还需要 API 文档吗？
+
+依我个人对上述 3 样事物浅薄的理解：
+
+- MCP server：从 API 到 MCP server，有转化范式。然而并不是所有 client 都通过 MCP 来调用 API。
+- Skills：可以把 API 文档转化成 Skills 文档，让 agent 明白如何调用服务。由此可见高质量 API 文档是基础。
+- CLI：人们发现可以写 CLI 给 agent 用以此来替代 skills 文档。可没有正确的 API 文档，CLI 无从开发起。和 MCP server 类似地，不是所有
+  client 都通过 CLI 来调用 API。
+
+API 是企业内部重要的资产，要好好利用起来让 agent 能用上 API。没有 API 文档，API 只能是零散的信息。
+
+## 这难道不是很成熟的技术吗？
+
+对一部分框架是的。
+
+- 直接编写 OAS 定义 API，根据 OAS 生成服务端代码。
+- 使用 **I** nterface **D** escription **L** anguage 定义 API：使用 [Thrift](https://thrift.apache.org/docs/idl.html)
+  的框架（[Thrift](https://thrift.apache.org/)、[CPP/bRPC](https://github.com/apache/brpc)、[Go/Hertz](https://www.cloudwego.io/docs/hertz/)、[Go/Kitex](https://www.cloudwego.io/docs/kitex/)
+  等）、使用 [Protobuf](https://protobuf.dev/)
+  的框架（[gRPC](https://grpc.io/)、[Connect](https://connectrpc.com/)、[Go/Hertz](https://www.cloudwego.io/docs/hertz/)、[Go/Kitex](https://www.cloudwego.io/docs/kitex/)、[Go/Kratos](https://go-kratos.dev/)
+  等）、[Go/go-zero](https://go-zero.dev/reference/cli-guide/swagger/) 的 `.api` 等。
+- swagger built-in
+  或者有成熟生成库：[Java/Spring](https://spring.io/projects)（[springdoc](https://springdoc.org/)）、[Python/Flask](https://flask.palletsprojects.com/en/stable/)（[flask-rest-api](https://flask-rest-api.readthedocs.io/en/stable/openapi.html)）、[Python/Django](https://www.djangoproject.com/)（[drf-spectacular](https://drf-spectacular.readthedocs.io/en/latest/)）、[Python/FastAPI](https://fastapi.tiangolo.com/) 、[Go/goa](https://github.com/goadesign/goa)、[Go/huma](https://github.com/danielgtaylor/huma)、[NodeJS/Express](https://expressjs.com/)（[express-openapi](https://www.npmjs.com/package/express-openapi)
+  ）等。
+
+这些框架的文档生成几乎是零成本的。_（尽管有些框架由于语言的机制限制，“运行时”才能产出文档，且存在泛型擦除问题。）_
+
+更多的框架没有这个待遇，且主要“重灾区”在 [Swaggo](https://github.com/swaggo/) 下面：echo、fiber、buffalo、gin、fasthttp、(net/)
+http。gorilla/mux 也有类似的问题。
+
+尽管有了 [swaggest/rest](https://github.com/swaggest/rest/)
+这样的项目，使得研发可以从写 [godoc 注释](https://github.com/swaggo/gin-swagger)
+变成写 [链式 API 声明](https://github.com/swaggest/rest/blob/master/_examples/gingonic/main.go)，让上述很多老项目能拥有生成
+API 文档能力。**但其改动成本还是非常高，每一个 API handler 都要改，这样一来对老项目就很不友好。**
+
+## 人工编写文档不行吗？
+
+其实 [swaggest/rest](https://github.com/swaggest/rest/)
+也是人工编写的文档，无非就是可维护性高一点。我认为人工写不是问题，问题是“漂移”（drift），文档不保真会造成很多问题。在“刀耕火种”的年代，文档编写的典型
+case 如下：
+
+> 项目 v1.0 上线，代码写完测完以后研发花了 1-2 天时间在 Word、Markdown 里写下一份 API 文档。其中包括每一个 API
+> 的请求、返回值细节，每个字段的具体含义。
+>
+> 过了 1 个月，新接口的文档还能更新上去。
+>
+> 过了 2 个月，新增字段已经和文档分叉了。
+>
+> 过了 3 个月，那个文档在哪儿可能都不知道了。
+
+无论是人写还是 agent 来写，其中关键问题是工具链检查，把文档更新过程变为强制约束。
+
+如果是新项目，源码和 godoc 都是 agent 生成的，agent 能否写好 swaggo godoc 也是个问题。
+
+## 结论
+
+OAS/IDL > 编译时文档生成 > 运行时文档生成 > code as docs > comments as docs > docs
+
+我认为“API 文档工具链是否成熟”应是当下后端开发技术选型时的一个重要考量因素。Swaggo 下面的那些传统 go
+框架都不应该被优先考虑使用了，谁还愿意写那些注释文档/链式声明？让 agent 写这些 godoc 太浪费 tokens 了。
+
+## 最佳实践
+
+站点
+
+- [envoy API](https://www.envoyproxy.io/docs/envoy/v1.37.1/api/api)
+- [Cloudprober Config Guide](https://cloudprober.org/docs/config/guide/)
+
+工具
+
+- [tools/cmd/protoc-gen-docs at master · istio/tools](https://github.com/istio/tools/tree/master/cmd/protoc-gen-docs)
+- [pseudomuto/protoc-gen-doc: Documentation generator plugin for Google Protocol Buffers](https://github.com/pseudomuto/protoc-gen-doc)
+- [markvincze/sabledocs: Simple static documentation generator for Protobuf and gRPC contracts.](https://github.com/markvincze/sabledocs)
+
+**个人愚见：能用现成代码、工具解决的问题不要交给 agent 来做。能用成熟方式自动化（automation）的模式不要用 agent 来做。**
+
+## 挣扎
+
+能不能开发一个程序，把 Gin 框架缺失的文档自动生成工具链“这条腿”给接上呢？请看 [下文](./1-spec-forge-practice-and-reflection.mdx)。
+
+---
+
+<SponsorIframe
+  src="https://github.com/sponsors/spencercjh/card"
+  title="Sponsor spencercjh"
+  width={600}
+  height={225}
+  style={{ borderRadius: 6, overflow: 'hidden' }}
+  allow=" payment *; clipboard-read; clipboard-write "
+/>
