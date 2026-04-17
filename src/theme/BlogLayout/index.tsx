@@ -70,7 +70,8 @@ export default function BlogLayout(props: Props): ReactNode {
           <BlogSidebar sidebar={sidebar} />
           <main
             className={clsx('col', {
-              'col--7': hasSidebar && !isExpandedLayout,
+              'col--7': hasSidebar && !isExpandedLayout && toc,
+              'col--9': hasSidebar && !isExpandedLayout && !toc,
               'col--9 col--offset-1': !hasSidebar,
               'col--12': isExpandedLayout && !toc,
               'col--10': isExpandedLayout && toc,

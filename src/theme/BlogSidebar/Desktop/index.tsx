@@ -64,7 +64,6 @@ function BlogSidebarDesktop({ sidebar }: Props) {
       // Ignore localStorage errors
     }
     setIsCollapsed(initialCollapsed);
-    emitCollapseState(initialCollapsed);
   }, []);
 
   const toggleCollapsed = () => {

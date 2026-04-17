@@ -23,7 +23,7 @@ export default function GiscusComponent(): React.JSX.Element | null {
     script.setAttribute('data-emit-metadata', '0');
     script.setAttribute('data-input-position', 'bottom');
     script.setAttribute('data-lang', 'zh-CN');
-    script.setAttribute('data-theme', 'https://github.com/spencercjh/my-blog');
+    script.setAttribute('data-theme', 'preferred_color_scheme');
     script.setAttribute('crossorigin', 'anonymous');
     script.async = true;
 
