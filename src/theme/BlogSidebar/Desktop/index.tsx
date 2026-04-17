@@ -50,7 +50,7 @@ function BlogSidebarDesktop({ sidebar }: Props) {
     if (typeof window === 'undefined') {
       return;
     }
-    window.dispatchEvent(new CustomEvent<boolean>(SIDEBAR_TOGGLE_EVENT, { detail: collapsed }));
+    window.dispatchEvent(new CustomEvent(SIDEBAR_TOGGLE_EVENT, { detail: collapsed }));
   };
 
   useEffect(() => {
