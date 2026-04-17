@@ -1,0 +1,120 @@
+.sidebar {
+  max-height: calc(100vh - (var(--ifm-navbar-height) + 2rem));
+  overflow-y: auto;
+  position: sticky;
+  top: calc(var(--ifm-navbar-height) + 2rem);
+}
+
+.sidebarColumn {
+  min-width: 0;
+}
+
+.floatingExpandButton {
+  position: fixed;
+  left: 16px;
+  top: calc(var(--ifm-navbar-height) + 16px);
+  background: var(--ifm-background-surface-color);
+  border: 1px solid var(--ifm-color-emphasis-200);
+  padding: 8px;
+  cursor: pointer;
+  color: var(--ifm-font-color-base);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--ifm-global-radius);
+  transition: all var(--ifm-transition-fast) ease;
+  z-index: 10;
+  box-shadow: var(--ifm-global-shadow-lw);
+}
+
+.floatingExpandButton:hover {
+  background-color: var(--ifm-color-emphasis-100);
+  box-shadow: var(--ifm-global-shadow-md);
+}
+
+.floatingExpandButton:focus-visible {
+  outline: 2px solid var(--ifm-color-primary);
+  outline-offset: 2px;
+}
+
+.sidebarItemTitle {
+  font-size: var(--ifm-h3-font-size);
+  font-weight: var(--ifm-font-weight-bold);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.titleWithToggle {
+  user-select: none;
+}
+
+.toggleButton {
+  background: transparent;
+  border: none;
+  padding: 4px;
+  cursor: pointer;
+  color: var(--ifm-font-color-base);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--ifm-global-radius);
+  transition: background-color var(--ifm-transition-fast) ease;
+}
+
+.toggleButton:hover {
+  background-color: var(--ifm-color-emphasis-100);
+}
+
+.toggleButton:focus-visible {
+  outline: 2px solid var(--ifm-color-primary);
+  outline-offset: 2px;
+}
+
+.iconRotated {
+  transform: rotate(-90deg);
+}
+
+.toggleButton svg,
+.floatingExpandButton svg {
+  transition: transform var(--ifm-transition-fast) ease;
+}
+
+.sidebarItemList {
+  font-size: 0.9rem;
+}
+
+.sidebarItem {
+  margin-top: 0.7rem;
+}
+
+.sidebarItemLink {
+  color: var(--ifm-font-color-base);
+  display: block;
+}
+
+.sidebarItemLink:hover {
+  text-decoration: none;
+}
+
+.sidebarItemLinkActive {
+  color: var(--ifm-color-primary) !important;
+}
+
+@media (max-width: 996px) {
+  .sidebarColumn {
+    display: none;
+  }
+  .sidebar {
+    display: none;
+  }
+
+  .floatingExpandButton {
+    display: none;
+  }
+}
+
+.yearGroupHeading {
+  margin-top: 1.6rem;
+  margin-bottom: 0.4rem;
+}

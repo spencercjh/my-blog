@@ -1,0 +1,9 @@
+.blogContainerExpanded {
+  transition: max-width var(--ifm-transition-fast) ease;
+}
+
+@media (min-width: 997px) {
+  .blogContainerExpanded {
+    max-width: min(96vw, 1760px) !important;
+  }
+}

@@ -54,7 +54,7 @@ const ICON_MAP: Record<string, React.FC<React.SVGProps<SVGSVGElement>>> = {
   x: XIcon,
 };
 
-export default function SocialLinks(): JSX.Element {
+export default function SocialLinks(): React.JSX.Element {
   return (
     <div className={styles.socialLinks}>
       {SOCIAL_LINKS.map(({ href, label, title, icon }) => {
