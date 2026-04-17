@@ -145,7 +145,8 @@ async function generatePlaces(): Promise<void> {
       // 避免 API 请求过快
       await new Promise(resolve => setTimeout(resolve, 1000));
     } catch (error) {
-      console.error(`  ✗ ${item.name}: ${error.message}`);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      console.error(`  ✗ ${item.name}: ${errorMessage}`);
       // 跳过该地点，继续处理后续地点
       if (error instanceof TypeError && error.message.includes('JSON.parse')) {
         console.warn(`    ⚠️  跳过 ${item.name}: API 解析错误，可能是限流`);
