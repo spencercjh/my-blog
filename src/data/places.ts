@@ -46,8 +46,8 @@ export const PLACES: Place[] = [
   {
     name: '镇江市',
     country: '中国',
-    lat: 32.1891959,
-    lng: 119.4200069,
+    lat: 32.1893957,
+    lng: 119.4199854,
     firstVisitDate: '2009-01-01',
     description: '具体的到访年份记不清楚了，小时候和爸妈一起去的',
   },
@@ -137,8 +137,8 @@ export const PLACES: Place[] = [
   {
     name: '大连市',
     country: '中国',
-    lat: 38.9130495,
-    lng: 121.6098013,
+    lat: 39.740278,
+    lng: 122.255833,
     firstVisitDate: '2020-07',
     description: '随心飞的第四次出行',
   },
@@ -205,8 +205,8 @@ export const PLACES: Place[] = [
   {
     name: '厦门市',
     country: '中国',
-    lat: 24.4801069,
-    lng: 118.0853479,
+    lat: 24.5438732,
+    lng: 118.0768065,
     firstVisitDate: '2020-09',
     description: '随心飞的第十次出行',
   },
@@ -293,8 +293,8 @@ export const PLACES: Place[] = [
   {
     name: '张掖市',
     country: '中国',
-    lat: 39.121833,
-    lng: 99.924947,
+    lat: 38.9365134,
+    lng: 100.4556326,
     firstVisitDate: '2021-07',
   },
   {
@@ -404,8 +404,8 @@ export const PLACES: Place[] = [
   {
     name: '香港',
     country: '中国',
-    lat: 22.3492155,
-    lng: 114.1857978,
+    lat: 22.2792968,
+    lng: 114.1628907,
     firstVisitDate: '2024-02',
   },
   {
@@ -542,15 +542,15 @@ export const PLACES: Place[] = [
   {
     name: '热海',
     country: '日本',
-    lat: 35.1038519,
-    lng: 139.0781167,
+    lat: 35.10409,
+    lng: 139.0777771,
     firstVisitDate: '2025-06',
   },
   {
     name: '伊东',
     country: '日本',
-    lat: 34.9755734,
-    lng: 139.0923766,
+    lat: 34.9755718,
+    lng: 139.0923388,
     firstVisitDate: '2025-06',
   },
   {
@@ -592,8 +592,8 @@ export const PLACES: Place[] = [
   {
     name: '婺源县',
     country: '中国',
-    lat: 29.2506588,
-    lng: 117.8558318,
+    lat: 29.323384,
+    lng: 117.7542738,
     firstVisitDate: '2025-11',
     description: '长途自驾\n爬三清山',
   },
@@ -674,8 +674,8 @@ export const PLACES: Place[] = [
   {
     name: '腾冲市',
     country: '中国',
-    lat: 25.0283988,
-    lng: 98.4936839,
+    lat: 25.1725265,
+    lng: 98.5168272,
     firstVisitDate: '2026-03',
   },
   {
@@ -684,5 +684,33 @@ export const PLACES: Place[] = [
     lat: 25.1147115,
     lng: 99.1591622,
     firstVisitDate: '2026-03',
+  },
+  {
+    name: '泰安市',
+    country: '中国',
+    lat: 36.2002968,
+    lng: 117.0809316,
+    firstVisitDate: '2026-04',
+  },
+  {
+    name: '温州市',
+    country: '中国',
+    lat: 27.9963899,
+    lng: 120.695345,
+    firstVisitDate: '2026-04',
+  },
+  {
+    name: '瑞安市',
+    country: '中国',
+    lat: 27.7809878,
+    lng: 120.6511821,
+    firstVisitDate: '2026-04',
+  },
+  {
+    name: '北麂乡',
+    country: '中国',
+    lat: 27.6241137,
+    lng: 121.1945629,
+    firstVisitDate: '2026-04',
   },
 ];
