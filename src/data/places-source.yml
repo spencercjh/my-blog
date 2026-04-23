@@ -350,3 +350,12 @@
 
 - name: 保山市
   firstVisitDate: '2026-03'
+
+- name: 泰安市
+  firstVisitDate: '2026-04'
+
+- name: 温州市
+  firstVisitDate: '2026-04'
+
+- name: 瑞安市
+  firstVisitDate: '2026-04'

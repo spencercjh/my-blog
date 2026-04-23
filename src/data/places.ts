@@ -137,8 +137,8 @@ export const PLACES: Place[] = [
   {
     name: '大连市',
     country: '中国',
-    lat: 38.9130495,
-    lng: 121.6098013,
+    lat: 39.740278,
+    lng: 122.255833,
     firstVisitDate: '2020-07',
     description: '随心飞的第四次出行',
   },
@@ -263,8 +263,8 @@ export const PLACES: Place[] = [
   {
     name: '西宁市',
     country: '中国',
-    lat: 36.6172544,
-    lng: 101.7761582,
+    lat: 36.824463,
+    lng: 101.440811,
     firstVisitDate: '2021-07',
     description: '退学前，我和女友来了一次“西北大环线”',
   },
@@ -356,8 +356,8 @@ export const PLACES: Place[] = [
   {
     name: '芜湖市',
     country: '中国',
-    lat: 31.3536127,
-    lng: 118.4277477,
+    lat: 31.1800568,
+    lng: 118.2141777,
     firstVisitDate: '2023-06',
     description: '参加朋友婚礼',
   },
@@ -404,8 +404,8 @@ export const PLACES: Place[] = [
   {
     name: '香港',
     country: '中国',
-    lat: 22.3492155,
-    lng: 114.1857978,
+    lat: 22.2792968,
+    lng: 114.1628907,
     firstVisitDate: '2024-02',
   },
   {
@@ -426,8 +426,8 @@ export const PLACES: Place[] = [
   {
     name: '义乌市',
     country: '中国',
-    lat: 29.3089226,
-    lng: 120.0702728,
+    lat: 29.3093002,
+    lng: 120.0703805,
     firstVisitDate: '2024-05',
   },
   {
@@ -542,15 +542,15 @@ export const PLACES: Place[] = [
   {
     name: '热海',
     country: '日本',
-    lat: 35.1038519,
-    lng: 139.0781167,
+    lat: 35.1040951,
+    lng: 139.0778148,
     firstVisitDate: '2025-06',
   },
   {
     name: '伊东',
     country: '日本',
-    lat: 34.9755734,
-    lng: 139.0923766,
+    lat: 34.9755718,
+    lng: 139.0923388,
     firstVisitDate: '2025-06',
   },
   {
@@ -584,8 +584,8 @@ export const PLACES: Place[] = [
   {
     name: '景德镇市',
     country: '中国',
-    lat: 29.2712774,
-    lng: 117.1727822,
+    lat: 29.3582395,
+    lng: 117.2735595,
     firstVisitDate: '2025-11',
     description: '长途自驾',
   },
@@ -684,5 +684,26 @@ export const PLACES: Place[] = [
     lat: 25.1147115,
     lng: 99.1591622,
     firstVisitDate: '2026-03',
+  },
+  {
+    name: '泰安市',
+    country: '中国',
+    lat: 36.2002968,
+    lng: 117.0809316,
+    firstVisitDate: '2026-04',
+  },
+  {
+    name: '温州市',
+    country: '中国',
+    lat: 27.9963899,
+    lng: 120.695345,
+    firstVisitDate: '2026-04',
+  },
+  {
+    name: '瑞安市',
+    country: '中国',
+    lat: 27.7809878,
+    lng: 120.6511821,
+    firstVisitDate: '2026-04',
   },
 ];
