@@ -46,8 +46,8 @@ export const PLACES: Place[] = [
   {
     name: '镇江市',
     country: '中国',
-    lat: 32.1891959,
-    lng: 119.4200069,
+    lat: 32.1893957,
+    lng: 119.4199854,
     firstVisitDate: '2009-01-01',
     description: '具体的到访年份记不清楚了，小时候和爸妈一起去的',
   },
@@ -205,8 +205,8 @@ export const PLACES: Place[] = [
   {
     name: '厦门市',
     country: '中国',
-    lat: 24.4801069,
-    lng: 118.0853479,
+    lat: 24.5438732,
+    lng: 118.0768065,
     firstVisitDate: '2020-09',
     description: '随心飞的第十次出行',
   },
@@ -263,8 +263,8 @@ export const PLACES: Place[] = [
   {
     name: '西宁市',
     country: '中国',
-    lat: 36.824463,
-    lng: 101.440811,
+    lat: 36.6172544,
+    lng: 101.7761582,
     firstVisitDate: '2021-07',
     description: '退学前，我和女友来了一次“西北大环线”',
   },
@@ -293,8 +293,8 @@ export const PLACES: Place[] = [
   {
     name: '张掖市',
     country: '中国',
-    lat: 39.121833,
-    lng: 99.924947,
+    lat: 38.9365134,
+    lng: 100.4556326,
     firstVisitDate: '2021-07',
   },
   {
@@ -356,8 +356,8 @@ export const PLACES: Place[] = [
   {
     name: '芜湖市',
     country: '中国',
-    lat: 31.1800568,
-    lng: 118.2141777,
+    lat: 31.3536127,
+    lng: 118.4277477,
     firstVisitDate: '2023-06',
     description: '参加朋友婚礼',
   },
@@ -426,8 +426,8 @@ export const PLACES: Place[] = [
   {
     name: '义乌市',
     country: '中国',
-    lat: 29.3093002,
-    lng: 120.0703805,
+    lat: 29.3089226,
+    lng: 120.0702728,
     firstVisitDate: '2024-05',
   },
   {
@@ -542,8 +542,8 @@ export const PLACES: Place[] = [
   {
     name: '热海',
     country: '日本',
-    lat: 35.1040951,
-    lng: 139.0778148,
+    lat: 35.10409,
+    lng: 139.0777771,
     firstVisitDate: '2025-06',
   },
   {
@@ -584,16 +584,16 @@ export const PLACES: Place[] = [
   {
     name: '景德镇市',
     country: '中国',
-    lat: 29.3582395,
-    lng: 117.2735595,
+    lat: 29.2712774,
+    lng: 117.1727822,
     firstVisitDate: '2025-11',
     description: '长途自驾',
   },
   {
     name: '婺源县',
     country: '中国',
-    lat: 29.2506588,
-    lng: 117.8558318,
+    lat: 29.323384,
+    lng: 117.7542738,
     firstVisitDate: '2025-11',
     description: '长途自驾\n爬三清山',
   },
@@ -674,8 +674,8 @@ export const PLACES: Place[] = [
   {
     name: '腾冲市',
     country: '中国',
-    lat: 25.0283988,
-    lng: 98.4936839,
+    lat: 25.1725265,
+    lng: 98.5168272,
     firstVisitDate: '2026-03',
   },
   {
@@ -704,6 +704,13 @@ export const PLACES: Place[] = [
     country: '中国',
     lat: 27.7809878,
     lng: 120.6511821,
+    firstVisitDate: '2026-04',
+  },
+  {
+    name: '北麂乡',
+    country: '中国',
+    lat: 27.6241137,
+    lng: 121.1945629,
     firstVisitDate: '2026-04',
   },
 ];
