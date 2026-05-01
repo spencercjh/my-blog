@@ -34,7 +34,7 @@
   "devDependencies": {
     "@docusaurus/module-type-aliases": "^3.10.0",
     "@docusaurus/tsconfig": "^3.10.0",
-    "@docusaurus/types": "^3.10.0",
+    "@docusaurus/types": "^3.10.1",
     "@types/js-yaml": "^4.0.9",
     "@types/leaflet": "^1.9.21",
     "@types/node": "^25.5.0",
