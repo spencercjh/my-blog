@@ -362,3 +362,11 @@
 
 - name: 北麂乡
   firstVisitDate: '2026-04'
+
+- name: 河内市
+  country: 越南
+  firstVisitDate: '2026-05'
+
+- name: 暹粒市
+  country: 柬埔寨
+  firstVisitDate: '2026-05'
