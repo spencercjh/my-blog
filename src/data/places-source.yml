@@ -370,3 +370,5 @@
 - name: 暹粒市
   country: 柬埔寨
   firstVisitDate: '2026-05'
+- name: 金门县
+  firstVisitDate: '2026-06'
