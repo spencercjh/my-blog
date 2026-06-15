@@ -205,8 +205,8 @@ export const PLACES: Place[] = [
   {
     name: '厦门市',
     country: '中国',
-    lat: 24.4801069,
-    lng: 118.0853479,
+    lat: 24.5438732,
+    lng: 118.0768065,
     firstVisitDate: '2020-09',
     description: '随心飞的第十次出行',
   },
@@ -404,8 +404,8 @@ export const PLACES: Place[] = [
   {
     name: '香港',
     country: '中国',
-    lat: 22.3492155,
-    lng: 114.1857978,
+    lat: 22.2818333,
+    lng: 114.1582831,
     firstVisitDate: '2024-02',
   },
   {
@@ -472,8 +472,8 @@ export const PLACES: Place[] = [
   {
     name: '京都',
     country: '日本',
-    lat: 34.9846076,
-    lng: 135.7584303,
+    lat: 34.9861909,
+    lng: 135.7600629,
     firstVisitDate: '2024-11',
   },
   {
@@ -542,8 +542,8 @@ export const PLACES: Place[] = [
   {
     name: '热海',
     country: '日本',
-    lat: 35.1037872,
-    lng: 139.0781781,
+    lat: 35.1041239,
+    lng: 139.0777851,
     firstVisitDate: '2025-06',
   },
   {
@@ -630,8 +630,8 @@ export const PLACES: Place[] = [
   {
     name: '神户',
     country: '日本',
-    lat: 34.6792832,
-    lng: 135.1784451,
+    lat: 34.679281,
+    lng: 135.1782989,
     firstVisitDate: '2026-01',
   },
   {
@@ -726,5 +726,12 @@ export const PLACES: Place[] = [
     lat: 13.3617562,
     lng: 103.8590321,
     firstVisitDate: '2026-05',
+  },
+  {
+    name: '金门县',
+    country: '臺灣',
+    lat: 24.4480637,
+    lng: 118.3856331,
+    firstVisitDate: '2026-06',
   },
 ];
