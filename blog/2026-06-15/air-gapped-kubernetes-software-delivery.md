@@ -1,15 +1,15 @@
 ---
-title: Air-Gapped Kubernetes 环境交付软件的那些事
-description: 从手搓脚本到成熟工具到踩坑过程
+title: 从刀耕火种到 Zarf：air-gap Kubernetes 软件交付踩坑实录
+description: 10GB 离线包、出差现场漏镜像、被否决的造轮子方案——记一次用 Zarf 把 air-gap Kubernetes 交付从刀耕火种里捞出来的过程。
 slug: air-gapped-kubernetes-software-delivery
 tags: [backend-dev]
 hide_table_of_contents: false
 authors: [spencercjh]
 ---
 
-# Air-Gapped Kubernetes 环境交付软件的那些事
+# 从刀耕火种到 Zarf：air-gap Kubernetes 软件交付踩坑实录
 
-这次再来谈一个在 LLM Agent 普及的今天显得很难引人关注的事情。为什么说“再”呢，因为我上次在 4 月写的 blog 是讨论如何生成 API 文档（主要讨论的是 OpenAPI Spec）的。这对很多新项目来说都不是问题，但现实生活里存在非常多的现存项目和框架，问题就这么摆在那里需要有人去解决。这次讨论的问题在商用软件交付过程中也是非常经典—— air-gapped，无公网环境 Kubernetes 服务交付。本文讲述我使用 [Zarf](zarf.dev) 让公司的离线交付走出刀耕火种的困境。
+这次再来谈一个在 LLM Agent 普及的今天显得很难引人关注的事情。为什么说“再”呢，因为我上次在 4 月写的 blog 是讨论如何生成 API 文档（主要讨论的是 OpenAPI Spec）的。这对很多新项目来说都不是问题，但现实生活里存在非常多的现存项目和框架，问题就这么摆在那里需要有人去解决。这次讨论的问题在商用软件交付过程中也是非常经典—— air-gapped，无公网环境 Kubernetes 服务交付。本文讲述我使用 [Zarf](https://zarf.dev) 让公司的离线交付走出刀耕火种的困境。
 
 **我之前的工作经历从来没有做过 Air-Gap 环境交付，有相关从业经历的朋友阅读本文还请多多指教。**
 
@@ -48,7 +48,7 @@ helm install hami ...
 
 ### 分发
 
-公司之前有 GCP 的 statup credit，离线包在 GCP 的 VM 上构建完成后，走内网上传到 GCP 对象存储。研发是爽了，身处中国大陆的客户就惨了。由于缺少经验，checksum 文件都没放一个。
+公司之前有 GCP 的 startup credit，离线包在 GCP 的 VM 上构建完成后，走内网上传到 GCP 对象存储。研发是爽了，身处中国大陆的客户就惨了。由于缺少经验，checksum 文件都没放一个。
 
 ### 安装
 
@@ -122,7 +122,7 @@ Helm Chart 更麻烦，HAMi 企业版套件包含以下必须组件：
 
 ## Zarf
 
-> 这里可能需要再用一两句话介绍一下 Zarf 到底是什么。
+Zarf 是一个专为 air-gap（无公网）环境设计的开源 Kubernetes 软件交付工具：它把镜像、Helm Charts、配置文件和需要执行的 hooks 脚本打成一个包，再在目标集群里用几条命令完成镜像分发和组件部署，全程不依赖外网。下面只讲在 HAMi 企业版离线交付里我们真正用上的部分。
 
 ### 得到了什么
 
@@ -142,7 +142,7 @@ Helm Chart 更麻烦，HAMi 企业版套件包含以下必须组件：
 
 - `zarf init` 初始化后， `zarf package deploy` 自动导入镜像、部署 Charts。同样的命令可以做重装，用新的包也能做升级。
 
-用户无感就能完成镜像的内网分发。compoents 中的 charts 安装失败后可以直接重新执行命令完成重装，升级也是如此，心智负担很低。
+用户无感就能完成镜像的内网分发。components 中的 charts 安装失败后可以直接重新执行命令完成重装，升级也是如此，心智负担很低。
 
 - 打包时顺带产出 SBOM，后续直接用 Grype 扫描
 
@@ -231,18 +231,18 @@ zarf package deploy hami-ai-platform-v0.0.1-airgap-amd64.tar.zst \
 
 #### 构建和分发的后续优化
 
-当我解决了‘有没有“的问题后，我发现一个包 17G 实在不利于后续的 bug patch，此外有些用户不需要 vllm 和 gpu-burn 的 example。他们自己能做功能验收和试用。于是我开始尝试做制品优化分层和体积优化。结果一个版本有那么多东西需要上传到对象存储：
+当我解决了“有没有漏镜像”的问题后，我发现一个包 17G 实在不利于后续的 bug patch，此外有些用户不需要 vllm 和 gpu-burn 的 example。他们自己能做功能验收和试用。于是我开始尝试做制品优化分层和体积优化。结果一个版本有那么多东西需要上传到对象存储：
 
 | 序号 |                            包                            | 大小 | 内容                                                                                                                                                                                      | 直接交付用户 |
 | :--: | :------------------------------------------------------: | :--: | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------ |
 |  1   |       hami-ai-platform-v0.0.2-airgap-amd64.tar.zst       | 6.0G | HAMi 平台版所有组件（hami, gpu-operator, kube-prometheus-stack, envoy-gateway, hami-ai-platform）                                                                                         | ❌           |
 |  2   | zarf-package-hami-example-gpu-burn-amd64-v0.0.1.tar.zst  | 1.5G | gpu burn deployment example                                                                                                                                                               | ❌           |
 |  3   | zarf-package-hami-example-vllm-qwen-amd64-v0.0.2.tar.zst | 8.7G | vllm-openai + Qwen3 0.6B（离线版）deployment example                                                                                                                                      | ❌           |
-|  4   |             zarf-init-amd64-v0.76.0.tar.zst              | 388M | zarf 自举依赖（docker registery、K3s、git server 等）                                                                                                                                     | ❌           |
+|  4   |             zarf-init-amd64-v0.76.0.tar.zst              | 388M | zarf 自举依赖（docker registry、K3s、git server 等）                                                                                                                                      | ❌           |
 |  5   |       hami-ai-platform-v0.0.2-airgap-amd64.tar.gz        | 17G  | 1，2，3，4，DEPLOY-AI-PLATFORM.md，collect-cluster-info.sh，collect-hami-license-info.sh，kantaloupe example values，[zarf binary](https://github.com/zarf-dev/zarf/releases/tag/v0.76.0) | ✅           |
 |  6   |       hami-enterprise-v0.0.2-airgap-amd64.tar.zst        | 5.1G | HAMi 企业版所有组件（hami, gpu-operator, kube-prometheus-stack）                                                                                                                          | ❌           |
-|  7   |    hami-ai-platform-slim-v0.0.2-airgap-amd64.tar.zst     | 2.9G | HAMi 平台版所有组件（不含 example 和非主流 NVDIA 显卡驱动）                                                                                                                                | ❌           |
-|  8   |     hami-enterprise-slim-v0.0.2-airgap-amd64.tar.zst     | 2.0G | HAMi 企业版所有组件（不含 example 和非主流 NVDIA 显卡驱动）                                                                                                                               | ❌           |
+|  7   |    hami-ai-platform-slim-v0.0.2-airgap-amd64.tar.zst     | 2.9G | HAMi 平台版所有组件（不含 example 和非主流 NVIDIA 显卡驱动）                                                                                                                              | ❌           |
+|  8   |     hami-enterprise-slim-v0.0.2-airgap-amd64.tar.zst     | 2.0G | HAMi 企业版所有组件（不含 example 和非主流 NVIDIA 显卡驱动）                                                                                                                              | ❌           |
 |  9   |     hami-ai-platform-slim-v0.0.2-airgap-amd64.tar.gz     | 3.3G | 4，7，DEPLOY-AI-PLATFORM.md，collect-cluster-info.sh，collect-hami-license-info.sh，kantaloupe example values，[zarf binary](https://github.com/zarf-dev/zarf/releases/tag/v0.76.0)       | ✅           |
 |  10  |        hami-enterprise-v0.0.2-airgap-amd64.tar.gz        | 16G  | 2，3，4，6，DEPLOY-ENTERPRISE.md，collect-cluster-info.sh，collect-hami-license-info.sh，[zarf binary](https://github.com/zarf-dev/zarf/releases/tag/v0.76.0)                             | ✅           |
 |  11  |     hami-enterprise-slim-v0.0.2-airgap-amd64.tar.gz      | 2.4G | 4，8，DEPLOY-ENTERPRISE.md，collect-cluster-info.sh，collect-hami-license-info.sh，[zarf binary](https://github.com/zarf-dev/zarf/releases/tag/v0.76.0)                                   | ✅           |
@@ -257,7 +257,7 @@ zarf package deploy hami-ai-platform-v0.0.1-airgap-amd64.tar.zst \
 
 > 阿里云 OSS web console 上只能 presign 有效时间 9 小时的下载链接，这样的表现差异，是什么用意呢？
 
-#### 部署时：不支持 --values = componetX = valuesX.yaml
+#### 部署时：不支持 --values = componentX = valuesX.yaml
 
 ```bash
 zarf package deploy hami-ai-platform-v0.0.1-airgap-amd64.tar.zst \
@@ -276,7 +276,7 @@ Zarf 现在并不支持为特定 component 指定 values 文件，`--values` 传
 举个例子，如何为网站暴露服务 expose service。我们总结出了以下 3 种选项：
 
 1. Envoy Gateway with NodePort envoyService。看起来比较土，但这对个位数 air-gap 节点的客户来说，这是最简单的方案。
-2. Envoy Gateway with LoadBalance service。集群里有 LoadBlanace controller 时用户可以选择这个模式。
+2. Envoy Gateway with LoadBalancer service。集群里有 LoadBalancer controller 时用户可以选择这个模式。
 3. 禁用 Envoy Gateway，仅保留 Cluster IP service。
 
 ### 限制
@@ -295,7 +295,7 @@ Zarf 是一个用于 air-gap 环境交付 Kubernetes 软件的项目，它绝对
 
 #### 不能再使用原生 Helm 管理同一批资源
 
-一旦让 Zarf 接手了一批组件，再试图用另一套 Helm 流程去管理同一批资源，后面很容易遇到 ownership 冲突、升级打架或者状态难以判断的问题。这不是 Zarf 独有的毛病，是交付边界没划清时几乎必然会出现的结果。用 Zarf 可以很方便地拉起一套组件，但可不能想着装完以后就把 Zarf 一脚踢开，再用回 Helm 做日常迭代。**因此，开发环境哪怕是 air-gap 的，也没法用 Zarf。** 我也是踩了这个坑以后，又在公司了搞了个 helmfile repo。
+一旦让 Zarf 接手了一批组件，再试图用另一套 Helm 流程去管理同一批资源，后面很容易遇到 ownership 冲突、升级打架或者状态难以判断的问题。这不是 Zarf 独有的毛病，是交付边界没划清时几乎必然会出现的结果。用 Zarf 可以很方便地拉起一套组件，但可不能想着装完以后就把 Zarf 一脚踢开，再用回 Helm 做日常迭代。**因此，开发环境哪怕是 air-gap 的，也没法用 Zarf。** 我也是踩了这个坑以后，又在公司搞了个 helmfile repo。
 
 #### 很难灵活迭代
 
@@ -306,3 +306,5 @@ Zarf 的设计决定了每次我们都在传输全量软件栈。这就注定和
 - 文档的字越多越没人看。
 - 复杂度前置，以后自己出去交付就轻松。
 - 多换位思考。
+
+说到底，我们交付的从来不是代码，也不是 Helm Chart，而是一整套能落地的环境。Zarf 没那么神，但它帮我们把交付从“现场施工”变回了“可复制的制品”——对 air-gap 交付来说，这就够了。
