@@ -184,11 +184,33 @@ zarf package deploy hami-ai-platform-v0.0.1-airgap-amd64.tar.zst \
   --confirm
 ```
 
+### zarf init 到底接管了什么
+
+前面提到交付物时出现过那个 `zarf-init-…tar.zst`，这里把它拆开说清楚。`zarf init` 装的东西其实是固定的，顺序也基本写死了：先 `zarf-injector`，再 `zarf-seed-registry`，然后是正式的 `zarf-registry`，最后才是 `zarf-agent`，另外还可以选装 `git-server`。后面 agent 改写镜像要用到的状态，会放在集群里一个叫 `zarf-state` 的 secret 里。
+
+这套东西里最关键的不是 agent，而是前面那两步。因为它先要解决一个最别扭的问题：**要在集群里跑 registry，得先有 registry 的镜像；可要把镜像弄进集群，又得先有一个能拉镜像的 registry。** air-gap 场景里，这两样一开始都没有。
+
+Zarf 的做法很硬：直接拿 **ConfigMap 当运输层**。`registry:3` 压缩后大概还有 18MB，单个 ConfigMap 有 1MB 上限，塞不进去，就只能先打 tar，再切成很多块，分散塞进一堆 ConfigMap 里。
+
+但把碎片送进去还不够，还得有人在集群里把它重新拼起来，再临时顶出一个能用的 registry。干这个活的是 `zarf-injector`。它本身是个 **不到 1MiB 的 Rust 二进制**，而且还是 MUSL 静态编译。这里偏偏没用 Go，不是风格问题，而是尺寸问题：它自己也得塞进 ConfigMap，Go 二进制太大，不合适，只能换更小的 Rust。
+
+还有一道坎也很现实：要跑 injector pod，总得先有个容器镜像。但这时候又没有地方拉镜像，所以 Zarf 不是去拉一个新的，而是想办法复用集群里原本就有的 `pause` 镜像。Kubernetes 不会直接把 pause 镜像地址告诉你，它就自己去猜：名字里带 `pause`、主版本号是 3 或 4、体积小于 1MiB，大体按这个范围去找。
+
+后面的流程就接起来了：先起一个用了 pause 镜像的 pod，把那堆 ConfigMap 挂进去；pod 里跑 injector，把那些碎片重新拼回 `registry:3`；再临时起一个只读的 seed registry。等 seed registry 活过来以后，真正的 `docker-registry` 才拿它当镜像来源把自己拉起来。正式 registry 起来以后，injector 和 seed registry 这一套临时结构就可以删掉了。
+
+再往细一层说，injector 在重组后还会做 SHA256 校验，临时 registry 绑在每个节点的 `127.0.0.1:31999` NodePort 上，seed 里放的是 OCI layout。这几条更多是在 `zarf-injector` 仓库和 ADR-0003 里展开的，不是主文档正面讲的重点，但也能看出来这套东西并不是“装个 registry”这么简单。
+
+把这一层补上以后，后面再说“镜像为什么可以无感分发”“为什么不用一处处改 values”“为什么同一个 namespace 里不要混着来”，读者就不会觉得这是经验技巧了，而会知道这是这套接管方式自然推出来的结果。
+
 ### 收敛了什么
 
 #### 镜像无感分发和使用
 
-镜像的导入和分发现在是无感的，且完全不需要修改 values 文件。 `zarf init` 会安装一个 admission webhook，它会“拦截”所有的容器镜像，将其转化为私有镜像仓库地址。可以在 namespace 上打上 `zarf.dev/agent=ignore` 在某个 namespace 里禁用上述功能。
+镜像的导入和分发后来基本变成无感的了，也不用再一处处改 values。这里真正起作用的是上一节提到的 `zarf-agent`。它是个 mutating webhook，资源进集群前先被它拦一下，PodSpec 里的镜像地址会被改写到内网 registry。所以原始 yaml 或 chart 里照样写公网镜像名也没关系。真要局部关掉，也可以在 namespace 上打 `zarf.dev/agent=ignore`。
+
+这里有个很容易被忽略、但其实很关键的细节：对 **没有用 digest 锁定** 的镜像，agent 改写时不会只改 host，还会在 tag 后面再补一段 CRC32。比如 `ghcr.io/stefanprodan/podinfo:6.4.0`，进内网以后会变成 `…/podinfo:6.4.0-zarf-298505108`。后面这串 `298505108`，是拿原始镜像全名 `ghcr.io/stefanprodan/podinfo` 算出来的 CRC32。
+
+它这么做不是为了显得复杂，而是为了防撞。像 `docker.io/x/podinfo:6.4.0` 和 `ghcr.io/x/podinfo:6.4.0` 这种镜像，推到同一个内网 registry 里，路径和 tag 很可能会撞上，不额外区分就会互相覆盖。多这一段 hash，来源就分开了。只有 digest 锁定的镜像不用这么干，因为 digest 本身已经唯一。要看一个 Pod 在改写前到底用的是什么镜像，也可以去看 `zarf.dev/original-image-<容器名>` 这个 annotation。
 
 我是到后面才知道怎么替换 envoy 数据面 `docker.io/envoyproxy/envoy` 的镜像（CRD `EnvoyProxy` 中的 `spec.provider.kubernetes.envoyDeployment.container.image` ），在此之前都是 Zarf 稳稳地接住了我 🤡。
 
