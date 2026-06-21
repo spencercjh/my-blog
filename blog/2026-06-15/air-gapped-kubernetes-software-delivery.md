@@ -170,7 +170,7 @@ hami-ai-platform-v0.0.1-airgap-amd64.tar.gz
 - `DEPLOY.md` 是实测可用的操作手册。
 - `hami-ai-platform-v0.0.1-airgap-amd64.tar.zst`、`zarf-package-hami-example-vllm-qwen-amd64-v0.0.1.tar.zst`、`zarf-package-hami-example-gpu-burn-amd64-v0.0.1.tar.zst` 。这三个 `tar.zst` 文件是可以使用 `zarf package deploy` 部署的软件包。
 - `zarf-init-amd64-v0.76.0.tar.zst` 是 `zarf init ...` 自举需要的包，具体细节后面再谈。
-- `collect-cluster-info.sh` 和 `collect-hami-license-info.sh` 是安装前，后需要用户执行的脚本，用于收集必要的信息。
+- `collect-cluster-info.sh` 和 `collect-hami-license-info.sh` 是安装前后需要用户执行的脚本，用于收集必要的信息。
 - `override-values-examples` 目录下是一些组件的 values 示例。尽管目标是尽可能少的命令完成安装，但由于有前后端服务，有时候总是需要做些配置。如何让默认配置足够好用，让用户需要配的东西尽可能的少也是我花了很多功夫做的事情。
 
 安装仅需 2 个命令：
