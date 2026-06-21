@@ -9,9 +9,9 @@ authors: [spencercjh]
 
 # 从刀耕火种到 Zarf：air-gap Kubernetes 软件交付踩坑实录
 
-这次再来谈一个在 LLM Agent 普及的今天显得很难引人关注的事情。为什么说“再”呢，因为我上次在 4 月写的 blog 是讨论如何生成 API 文档（主要讨论的是 OpenAPI Spec）的。这对很多新项目来说都不是问题，但现实生活里存在非常多的现存项目和框架，问题就这么摆在那里需要有人去解决。这次讨论的问题在商用软件交付过程中也是非常经典—— air-gapped，无公网环境 Kubernetes 服务交付。本文讲述我使用 [Zarf](https://zarf.dev) 让公司的离线交付走出刀耕火种的困境。
+这次再来谈一个在 LLM Agent 普及的今天显得很难引人关注的事情。为什么说“再”呢，因为我上次在 4 月写的 blog 是讨论如何生成 API 文档（主要讨论的是 OpenAPI Spec）的。这对很多新项目来说都不是问题，但现实生活里存在非常多的现存项目和框架，问题就这么摆在那里需要有人去解决。这次讨论的问题在商用软件交付过程中也是非常经典—— air-gap，无公网环境 Kubernetes 服务交付。本文讲述我使用 [Zarf](https://zarf.dev) 让公司的离线交付走出刀耕火种的困境。
 
-**我之前的工作经历从来没有做过 Air-Gap 环境交付，有相关从业经历的朋友阅读本文还请多多指教。**
+**我之前的工作经历从来没有做过 air-gap 环境交付，有相关从业经历的朋友阅读本文还请多多指教。**
 
 <!-- truncate -->
 
@@ -42,7 +42,7 @@ helm install hami ...
 
 为了获取所有 Helm Charts 需要的容器镜像，前人用 AI 搓了一个脚本。可是我第一次出差去给用户交付就漏了 5、6 个镜像，导致 Helm Chart 安装失败，被迫 Ctrl+C 停下来排障。
 
-> 至于为什么会漏，使用 zarf 都不能完全解决，还得再写点代码才能解决。此处不多展开，后面会详细介绍。
+> 至于为什么会漏，使用 Zarf 都不能完全解决，还得再写点代码才能解决。此处不多展开，后面会详细介绍。
 
 有些客户的机器在传统 HPC、IDC 环境，copy 一次内容需要刻录光盘并传输到可信设备后，再由内网传输到集群主节点。漏几次镜像以后，再碰上 mbp 无法识别 USB 光驱的破事，一下午的时间就浪费了。
 
@@ -54,7 +54,7 @@ helm install hami ...
 
 离线包经历“七七四十九天”抵达客户的集群主节点后，九九八十一难才走过一半。
 
-镜像遗漏的问题前面已经提到，只要客户的 Kubernetes 集群节点数量大于一，我们就会为镜像犯难：我们得把镜像推送到集群使用的镜像仓库，再手动修改所有 charts 的 values，调整镜像仓库名称。
+镜像遗漏的问题前面已经提到，只要客户的 Kubernetes 集群节点数量大于一，我就会为镜像犯难：我得把镜像推送到集群使用的镜像仓库，再手动修改所有 charts 的 values，调整镜像仓库名称。
 
 Helm Chart 更麻烦，HAMi 企业版套件包含以下必须组件：
 
@@ -64,7 +64,7 @@ Helm Chart 更麻烦，HAMi 企业版套件包含以下必须组件：
 4. kube-prometheus-stack，监控指标实现：Prometheus operator、server、collector 等 deployment 和 monitor CRD；
 5. envoy-gateway，expose service：Envoy operator、Envoy Gateway deployment。
 
-很明显，1 依赖 2，3 依赖 4 和 5。Helm Charts 之间的顺序可以写进文档，但写进文档只是把复杂度转嫁给执行人。我们往往容易关注到组件的启动依赖关系，却容易忽略 templates 中的 CRD 依赖关系。5 依赖 Kubernetes Gateway API CRD，3 依赖 4 安装的 monitor CRD。
+很明显，1 依赖 2，3 依赖 4 和 5。Helm Charts 之间的顺序可以写进文档，但写进文档只是把复杂度转嫁给执行人。我往往容易关注到组件的启动依赖关系，却容易忽略 templates 中的 CRD 依赖关系。5 依赖 Kubernetes Gateway API CRD，3 依赖 4 安装的 monitor CRD。
 
 更让人“忍俊不禁”的，是 3、4 之间的强耦合和不可配置。这导致 Helm Chart release name、namespace 都不能较文档有一点出入，否则前端界面上会看不到显卡指标。
 
@@ -77,13 +77,13 @@ Helm Chart 更麻烦，HAMi 企业版套件包含以下必须组件：
 
 ### 思考
 
-很多人以为离线交付的难点是 "没外网"。实际上从某种意义上来说，没有镜像加速的国内机器不都是 Air-Gap 环境？！我们在上面完全拉不了 GitHub 上的制品，只能从私有镜像仓库实例拉镜像。因此我觉得“没外网”只是一小部份困难，真正麻烦的不是怎么把镜像带进去，而是怎么把一整套能跑、能升级、能排障的环境稳定交出去。如何提升交付流程效率，降低过程中人工成本，就成了我亟需解决的问题。我们 **交付的不是代码，也不是 Helm Chart，而是一整套能落地的环境。** 目标定了，答案就不会是再补几段脚本或者把安装手册写得更细。**实践证明，无论文档写得多么详实，只要让人（客户或我们自己人）操作上述过程，都还是会出现各种各样的问题。只有把复杂度前置并对用户隐藏，才能真正提升效率，减少交付时对意外状况。**
+很多人以为离线交付的难点是 "没外网"。实际上从某种意义上来说，没有镜像加速的国内机器不都是 air-gap 环境？！我在上面完全拉不了 GitHub 上的制品，只能从私有镜像仓库实例拉镜像。因此我觉得“没外网”只是一小部份困难，真正麻烦的不是怎么把镜像带进去，而是怎么把一整套能跑、能升级、能排障的环境稳定交出去。如何提升交付流程效率，降低过程中人工成本，就成了我亟需解决的问题。我 **交付的不是代码，也不是 Helm Chart，而是一整套能落地的环境。** 目标定了，答案就不会是再补几段脚本或者把安装手册写得更细。**实践证明，无论文档写得多么详实，只要让人（客户或我们自己人）操作上述过程，都还是会出现各种各样的问题。只有把复杂度前置并对用户隐藏，才能真正提升效率，减少交付时对意外状况。**
 
 > 让 LLM agent 来操作估计都不会有那么多事了，然而在 air-gap 环境，想复制点文字出来都不太容易。形形色色的客户也让我发现，看似成熟的 Harness Agent 实际上离广大开发还有一段距离。
 
 ## 差点“造轮子”
 
-如果不选 Zarf，我们原本很可能会走向一套自定义 air-gap bundle：
+如果不选 Zarf，我原本很可能会走向一套自定义 air-gap bundle：
 
 - 外层还是一个 `tar.gz`
 - 里面放一个 `registry/` 目录，直接做成 OCI image layout
@@ -105,7 +105,7 @@ Helm Chart 更麻烦，HAMi 企业版套件包含以下必须组件：
 
 我记得开始干活的头两天，我用 cc + Deepseek V4 照着老板的方案手搓脚本，用 codex + GPT 5.4 探索 Zarf。两条线的差距越来越大，Zarf 线很快完成了基本工作，而手搓脚本方案在脚本的边缘 case 里苦苦挣扎。
 
-后来我发了推特问朋友们，会不会采用 Zarf 这样的产品。结果是，真正干离线交付的人都在忙于手搓脚本，而我们没搞过的都感到很新奇酷炫，想尝鲜。
+后来我发了推特问朋友们，会不会采用 Zarf 这样的产品。结果是，真正干离线交付的人都在忙于手搓脚本，而我没搞过的都感到很新奇酷炫，想尝鲜。
 
 理性分析：如果手搓脚本，团队要维护的就不只是 HAMi 的离线包，而是一整套自研 air-gap 安装体系。出于“代码就是负债，软件维护成本大于开发成本”的考量，我放弃了老板的方案。我希望一次投入，以后不用再为交付本身写什么代码了，只修使用过程中出现的错误。
 
@@ -118,15 +118,15 @@ Helm Chart 更麻烦，HAMi 企业版套件包含以下必须组件：
 
 接到这个需求之后，接触到 Zarf 之前，我的脑海里一直都有一个声音：helmfile。我在之前的工作经历里用 helmfile 做多集群 charts 交付，接上 GitHub Action workflows 后能够搓出半套 GitOps 系统出来（还差一半是因为不像 Argo CD，集群里没有组件来“调协”）。我想让 AI 写一套武装到牙齿的一系列 helmfile 相关文件，应该能实现上述 4 点吧。
 
-但 GPT 5.5 High 在探索完 Zarf 后说 Zarf 已经能满足所有的需求了，helmfile 终归不适合 air-gap 环境。helmfile “就是”做多集群 charts 交付的，不要“强人所难”。主要体现在我们需要维护很多代码来处理镜像。
+但 GPT 5.5 High 在探索完 Zarf 后说 Zarf 已经能满足所有的需求了，helmfile 终归不适合 air-gap 环境。helmfile “就是”做多集群 charts 交付的，不要“强人所难”。主要体现在我需要维护很多代码来处理镜像。
 
 ## Zarf
 
-Zarf 是一个专为 air-gap（无公网）环境设计的开源 Kubernetes 软件交付工具：它把镜像、Helm Charts、配置文件和需要执行的 hooks 脚本打成一个包，再在目标集群里用几条命令完成镜像分发和组件部署，全程不依赖外网。下面只讲在 HAMi 企业版离线交付里我们真正用上的部分。
+Zarf 是一个专为 air-gap（无公网）环境设计的开源 Kubernetes 软件交付工具：它把镜像、Helm Charts、配置文件和需要执行的 hooks 脚本打成一个包，再在目标集群里用几条命令完成镜像分发和组件部署，全程不依赖外网。下面只讲在 HAMi 企业版离线交付里我真正用上的部分。
 
 ### 得到了什么
 
-在 HAMi 企业版离线交付包的场景里，我们真正用上 Zarf 的是下面这些 feature。
+在 HAMi 企业版离线交付包的场景里，我真正用上 Zarf 的是下面这些 feature。
 
 - 把镜像、Helm Charts、配置文件和必需执行的 hooks 脚本打进一个包。
 
@@ -190,15 +190,15 @@ zarf package deploy hami-ai-platform-v0.0.1-airgap-amd64.tar.zst \
 
 镜像的导入和分发现在是无感的，且完全不需要修改 values 文件。 `zarf init` 会安装一个 admission webhook，它会“拦截”所有的容器镜像，将其转化为私有镜像仓库地址。可以在 namespace 上打上 `zarf.dev/agent=ignore` 在某个 namespace 里禁用上述功能。
 
-我是到后面才知道怎么替换 envoy 数据面 `docker.io/envoyproxy/envoy` 的镜像（CRD `EnvoyProxy` 中的 `spec.provider.kubernetes.envoyDeployment.container.image` ），在此之前都是 zarf 稳稳地接住了我 🤡。
+我是到后面才知道怎么替换 envoy 数据面 `docker.io/envoyproxy/envoy` 的镜像（CRD `EnvoyProxy` 中的 `spec.provider.kubernetes.envoyDeployment.container.image` ），在此之前都是 Zarf 稳稳地接住了我 🤡。
 
 #### hooks 自动执行
 
-旧流程里，"部署之前检查什么、失败之后收什么" 往往是文档里的附加说明。这种说明的最大问题是：只有人记得执行，它才存在。现在，我们利用 `onDeploy.before`、`onDeploy.after`、`onDeploy.onFailure` actions，实现了“部署前预检”，“部署后等待与状态确认”和“失败后诊断信息收集”的自动化。
+旧流程里，"部署之前检查什么、失败之后收什么" 往往是文档里的附加说明。这种说明的最大问题是：只有人记得执行，它才存在。现在，我利用 `onDeploy.before`、`onDeploy.after`、`onDeploy.onFailure` actions，实现了“部署前预检”，“部署后等待与状态确认”和“失败后诊断信息收集”的自动化。
 
 #### SBOM 是免费的
 
-以前如果想把 SBOM、漏洞扫描报告一起交付，通常理解成另一套流程：先交付软件，再补安全材料。但在这个项目里，我们的目标是让安全材料也成为交付物的一部分（用户需要的话）。
+以前如果想把 SBOM、漏洞扫描报告一起交付，通常理解成另一套流程：先交付软件，再补安全材料。但在这个项目里，我的目标是让安全材料也成为交付物的一部分（用户需要的话）。
 
 ### 踩坑
 
@@ -238,7 +238,7 @@ zarf package deploy hami-ai-platform-v0.0.1-airgap-amd64.tar.zst \
 |  1   |       hami-ai-platform-v0.0.2-airgap-amd64.tar.zst       | 6.0G | HAMi 平台版所有组件（hami, gpu-operator, kube-prometheus-stack, envoy-gateway, hami-ai-platform）                                                                                         | ❌           |
 |  2   | zarf-package-hami-example-gpu-burn-amd64-v0.0.1.tar.zst  | 1.5G | gpu burn deployment example                                                                                                                                                               | ❌           |
 |  3   | zarf-package-hami-example-vllm-qwen-amd64-v0.0.2.tar.zst | 8.7G | vllm-openai + Qwen3 0.6B（离线版）deployment example                                                                                                                                      | ❌           |
-|  4   |             zarf-init-amd64-v0.76.0.tar.zst              | 388M | zarf 自举依赖（docker registry、K3s、git server 等）                                                                                                                                      | ❌           |
+|  4   |             zarf-init-amd64-v0.76.0.tar.zst              | 388M | Zarf 自举依赖（docker registry、K3s、git server 等）                                                                                                                                      | ❌           |
 |  5   |       hami-ai-platform-v0.0.2-airgap-amd64.tar.gz        | 17G  | 1，2，3，4，DEPLOY-AI-PLATFORM.md，collect-cluster-info.sh，collect-hami-license-info.sh，kantaloupe example values，[zarf binary](https://github.com/zarf-dev/zarf/releases/tag/v0.76.0) | ✅           |
 |  6   |       hami-enterprise-v0.0.2-airgap-amd64.tar.zst        | 5.1G | HAMi 企业版所有组件（hami, gpu-operator, kube-prometheus-stack）                                                                                                                          | ❌           |
 |  7   |    hami-ai-platform-slim-v0.0.2-airgap-amd64.tar.zst     | 2.9G | HAMi 平台版所有组件（不含 example 和非主流 NVIDIA 显卡驱动）                                                                                                                              | ❌           |
@@ -268,12 +268,12 @@ zarf package deploy hami-ai-platform-v0.0.1-airgap-amd64.tar.zst \
 
 Zarf 现在并不支持为特定 component 指定 values 文件，`--values` 传入的文件是针对所有 components 的。也就是说，如果 2 个 component Charts 都有 `foo.bar` 的配置项，且在 `my-overrides.yaml` 里出现了， 可能会有不符预期的表现。最常见的 case 就是很多 Charts 都会有 `global.XXX` 的配置，如果都需要配，那完全用不了了。
 
-所幸我们没有这样的需求。且我对企业版服务的 Helm Charts 持续迭代的目标是：
+所幸我没有这样的需求。且我对企业版服务的 Helm Charts 持续迭代的目标是：
 
 - 尽可能不配置；
 - 如需配置，只做选择题，不让用户做填空题。
 
-举个例子，如何为网站暴露服务 expose service。我们总结出了以下 3 种选项：
+举个例子，如何为网站暴露服务 expose service。我总结出了以下 3 种选项：
 
 1. Envoy Gateway with NodePort envoyService。看起来比较土，但这对个位数 air-gap 节点的客户来说，这是最简单的方案。
 2. Envoy Gateway with LoadBalancer service。集群里有 LoadBalancer controller 时用户可以选择这个模式。
@@ -281,7 +281,7 @@ Zarf 现在并不支持为特定 component 指定 values 文件，`--values` 传
 
 ### 限制
 
-Zarf 是一个用于 air-gap 环境交付 Kubernetes 软件的项目，它绝对不应该用于其他和 air-gap 无关的场景。对我们来说，Zarf 最合适的是：
+Zarf 是一个用于 air-gap 环境交付 Kubernetes 软件的项目，它绝对不应该用于其他和 air-gap 无关的场景。对我来说，Zarf 最合适的是：
 
 - 无公网环境；
 - 首次交付，定期可控升级；
@@ -291,7 +291,7 @@ Zarf 是一个用于 air-gap 环境交付 Kubernetes 软件的项目，它绝对
 
 #### 不能在同一个 namespace 里混用内外部镜像仓库
 
-前文已经介绍，Zarf 使用 admission webhook 的方式悄悄地替换了掌控 namespace 中所有容器的镜像，将他们替换成私有仓库的版本。一个集群中可以做到部分 namespace 绕开 Zarf，正常访问其他镜像仓库，但不能在同一个 namespace 里再使用不同镜像仓库的镜像。
+前文已经介绍，Zarf 使用 admission webhook 的方式悄悄地替换了掌控 namespace 中所有容器的镜像，将他们替换成私有镜像仓库的版本。一个集群中可以做到部分 namespace 绕开 Zarf，正常访问其他镜像仓库，但不能在同一个 namespace 里再使用不同镜像仓库的镜像。
 
 #### 不能再使用原生 Helm 管理同一批资源
 
@@ -299,7 +299,7 @@ Zarf 是一个用于 air-gap 环境交付 Kubernetes 软件的项目，它绝对
 
 #### 很难灵活迭代
 
-Zarf 的设计决定了每次我们都在传输全量软件栈。这就注定和“灵活”不沾边。
+Zarf 的设计决定了每次我都在传输全量软件栈。这就注定和“灵活”不沾边。
 
 ## 总结
 
@@ -307,4 +307,4 @@ Zarf 的设计决定了每次我们都在传输全量软件栈。这就注定和
 - 复杂度前置，以后自己出去交付就轻松。
 - 多换位思考。
 
-说到底，我们交付的从来不是代码，也不是 Helm Chart，而是一整套能落地的环境。Zarf 没那么神，但它帮我们把交付从“现场施工”变回了“可复制的制品”——对 air-gap 交付来说，这就够了。
+说到底，我交付的从来不是代码，也不是 Helm Chart，而是一整套能落地的环境。Zarf 没那么神，但它帮我把交付从“现场施工”变回了“可复制的制品”——对 air-gap 交付来说，这就够了。
