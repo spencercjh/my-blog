@@ -404,8 +404,8 @@ export const PLACES: Place[] = [
   {
     name: '香港',
     country: '中国',
-    lat: 22.2818333,
-    lng: 114.1582831,
+    lat: 22.3492155,
+    lng: 114.1857978,
     firstVisitDate: '2024-02',
   },
   {
@@ -542,15 +542,15 @@ export const PLACES: Place[] = [
   {
     name: '热海',
     country: '日本',
-    lat: 35.1041239,
-    lng: 139.0777851,
+    lat: 35.1039035,
+    lng: 139.0780587,
     firstVisitDate: '2025-06',
   },
   {
     name: '伊东',
     country: '日本',
-    lat: 34.9755861,
-    lng: 139.0922222,
+    lat: 34.9755818,
+    lng: 139.0922763,
     firstVisitDate: '2025-06',
   },
   {
@@ -630,15 +630,15 @@ export const PLACES: Place[] = [
   {
     name: '神户',
     country: '日本',
-    lat: 34.679281,
-    lng: 135.1782989,
+    lat: 34.6792922,
+    lng: 135.1780754,
     firstVisitDate: '2026-01',
   },
   {
     name: '宇治',
     country: '日本',
-    lat: 34.8950117,
-    lng: 135.8063772,
+    lat: 34.8945835,
+    lng: 135.8063336,
     firstVisitDate: '2026-01',
   },
   {
@@ -732,6 +732,27 @@ export const PLACES: Place[] = [
     country: '臺灣',
     lat: 24.4480637,
     lng: 118.3856331,
+    firstVisitDate: '2026-06',
+  },
+  {
+    name: '长治市',
+    country: '中国',
+    lat: 36.1830167,
+    lng: 113.0992929,
+    firstVisitDate: '2026-06',
+  },
+  {
+    name: '高平市',
+    country: '中国',
+    lat: 35.7984314,
+    lng: 112.9229854,
+    firstVisitDate: '2026-06',
+  },
+  {
+    name: '晋城市',
+    country: '中国',
+    lat: 35.4913132,
+    lng: 112.8454497,
     firstVisitDate: '2026-06',
   },
 ];
