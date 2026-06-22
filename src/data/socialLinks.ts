@@ -13,7 +13,7 @@ export const SOCIAL_LINKS: SocialLink[] = [
     icon: 'github',
   },
   {
-    href: 'https://x.com/bore_quality_ai',
+    href: 'https://x.com/real_spencercjh',
     label: 'X',
     title: 'X',
     icon: 'x',
