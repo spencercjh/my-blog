@@ -206,13 +206,15 @@
 - name: 宁波市
   firstVisitDate: '2023-12'
   description: |-
-    跨年出游
+    跨年自驾游
 
 - name: 香港
   firstVisitDate: '2024-02'
+  description: 香港已经不是那个香港
 
 - name: 潮州市
   firstVisitDate: '2024-02'
+  description: 牛肉和粿条是真好吃
 
 - name: 汕头市
   firstVisitDate: '2024-02'
@@ -221,6 +223,7 @@
 
 - name: 义乌市
   firstVisitDate: '2024-05'
+  description: 周末自驾游
 
 - name: 三明市
   firstVisitDate: '2024-07'
@@ -233,6 +236,7 @@
 
 - name: 泰州市
   firstVisitDate: '2024-09'
+  description: 路过，呆了一天随便转转
 
 - name: 盱眙县
   firstVisitDate: '2024-10'
@@ -240,60 +244,85 @@
 
 - name: 东京
   firstVisitDate: '2024-11'
-  description: 第一次出国旅行
+  description: |-
+    第一次出国旅行
 
 - name: 京都
   firstVisitDate: '2024-11'
+  description: |-
+    第一次出国旅行
 
 - name: 奈良
   firstVisitDate: '2024-11'
+  description: |-
+    第一次出国旅行
 
 - name: 镰仓
   firstVisitDate: '2024-11'
+  description: |-
+    第一次出国旅行
 
 - name: 大阪
   firstVisitDate: '2024-11'
+  description: |-
+    第一次出国旅行
+    第二次去日本去大阪玩了环球影城
 
 - name: 新加坡
   country: 新加坡
   firstVisitDate: '2025-01'
+  description: |-
+    great
+    动物园的体验太好了
 
 - name: 曼谷
   country: 泰国
   firstVisitDate: '2025-01'
+  description: 每次去曼谷都是去大体育场附近的运动商店买买买😂
 
 - name: 芭提雅
   country: 泰国
   firstVisitDate: '2025-02'
+  description: 开发过度
 
 - name: 清迈
   country: 泰国
   firstVisitDate: '2025-02'
+  description: 另一种泰文化
 
 - name: 济州岛
   country: 韩国
   firstVisitDate: '2025-02'
+  description: 散心
 
 - name: 横滨
   firstVisitDate: '2025-06'
+  description: |-
+    海边很美
+    住在横滨去哪儿都方便
 
 - name: 热海
   firstVisitDate: '2025-06'
+  description: 观光
 
 - name: 伊东
   firstVisitDate: '2025-06'
+  description: 观光
 
 - name: 巴厘岛
   country: 印度尼西亚
   firstVisitDate: '2025-06'
+  description: 探险
 
 - name: Komodo
   country: 印度尼西亚
   firstVisitDate: '2025-06'
+  description: 在船上住了3天两夜，精彩纷呈，永生难忘
 
 - name: 马累
   country: 马尔代夫
   firstVisitDate: '2025-10'
+  description: 度假
 
 - name: Kuramathi
   country: 马尔代夫
@@ -317,9 +346,11 @@
 
 - name: 太原市
   firstVisitDate: '2025-11'
+  description: 古建之旅
 
 - name: 大同市
   firstVisitDate: '2025-11'
+  description: 古建之旅
 
 - name: 阿坝州
   firstVisitDate: '2026-01'
@@ -327,58 +358,80 @@
 
 - name: 神户
   firstVisitDate: '2026-01'
+  description: 温泉
 
 - name: 宇治
   firstVisitDate: '2026-01'
+  description: 抹茶
 
 - name: 甲米
   country: 泰国
   firstVisitDate: '2026-02'
+  description: 我最喜欢的泰国城市
 
 - name: 攀牙湾
   country: 泰国
   firstVisitDate: '2026-02'
+  description: 跳岛
 
 - name: 丽江市
   firstVisitDate: '2026-03'
+  description: 古镇游
 
 - name: 大理市
   firstVisitDate: '2026-03'
+  description: 环洱海
 
 - name: 腾冲市
   firstVisitDate: '2026-03'
+  description: 温泉、高黎贡山、观鸟
 
 - name: 保山市
   firstVisitDate: '2026-03'
+  description: 咖啡农庄
 
 - name: 泰安市
   firstVisitDate: '2026-04'
+  description: 跑泰山
 
 - name: 温州市
   firstVisitDate: '2026-04'
+  description: 吃吃喝喝，途径过夜
 
 - name: 瑞安市
   firstVisitDate: '2026-04'
+  description: 途径过夜
 
 - name: 北麂乡
   firstVisitDate: '2026-04'
+  description: 观鸟
 
 - name: 河内市
   country: 越南
   firstVisitDate: '2026-05'
+  description: 公司里的德国同事都说河内机场让人很生气
 
 - name: 暹粒市
   country: 柬埔寨
   firstVisitDate: '2026-05'
+  description: 永生难忘
 
 - name: 金门县
   firstVisitDate: '2026-06'
+  description: 为了观鸟而来。结果成了“金囧”，非常尴尬的一次旅行
 
 - name: 长治市
   firstVisitDate: '2026-06'
+  description: 古建之旅
 
 - name: 高平市
   firstVisitDate: '2026-06'
+  description: 古建之旅
 
 - name: 晋城市
   firstVisitDate: '2026-06'
+  description: 古建之旅
+
+- name: 六安市
+  firstVisitDate: '2026-08'
+  description: 横排头观鸟
