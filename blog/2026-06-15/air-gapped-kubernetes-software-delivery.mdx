@@ -15,7 +15,7 @@ authors: [spencercjh]
 
 当时我们交付的是一份 10 GB 左右的压缩包和一本安装手册。后来我才意识到：我交付的不是代码，也不是 Helm Chart，而是一整套要在没有公网的集群里跑起来、升级和排障的环境。
 
-这篇文章最初写于 Zarf v0.76.0。2026 年 8 月，项目升级到了 [v0.82.0](https://github.com/zarf-dev/zarf/releases/tag/v0.82.0)，旧文里一些绝对判断也被实践推翻了。这一版保留当时的事故和选择过程，再补上后来踩到的 values、CRD、镜像架构和制品校验问题。
+那也是我第一次负责 air-gap 环境交付。这篇文章最初写于 Zarf v0.76.0。2026 年 8 月，项目升级到了 [v0.82.0](https://github.com/zarf-dev/zarf/releases/tag/v0.82.0)，旧文里一些绝对判断也被实践推翻了。这一版保留当时的事故和选择过程，再补上后来踩到的 values、CRD、镜像架构和制品校验问题。
 
 <!-- truncate -->
 
@@ -50,7 +50,11 @@ helm install hami ...
 
 文件越来越大以后，发一个小补丁也要重新上传整套软件栈。旧版完整交付物一度达到 17 GiB；我后来拆出完整包、Slim 包和独立示例，又写了 Makefile 和带重试的上传脚本。做到这一步，自动化已经不是为了优雅，只是因为我的脑子确实记不住那么多构建和上传命令。
 
+构建完成后，`upload-to-oss.sh` 和 `upload-to-r2.sh` 会检查预期制品是否存在，跳过远端同名对象，再调用 `ossutil` 或 AWS CLI 上传。断点续传和底层重试交给客户端，至少能让我睡觉时继续跑；正式发布仍要另外核对本地与远端 SHA-256。`presign-oss.sh` 再生成一周有效的下载地址。当时阿里云 OSS Web 控制台只能生成最长 9 小时的地址，命令行工具却能签一周——这是什么用意呢？
+
 ### 安装时：顺序和耦合全写在文档里
+
+离线包经历「七七四十九天」抵达客户的集群主节点后，九九八十一难才走过一半。
 
 HAMi AI 平台不是一个 Chart，而是一组有前后关系的组件：
 
@@ -61,6 +65,8 @@ HAMi AI 平台不是一个 Chart，而是一组有前后关系的组件：
 - HAMi AI 平台的 API、controller、UI 和数据库迁移。
 
 依赖关系不只发生在 Pod 之间。`prometheus` 需要先有 Prometheus Operator CRD，`envoy-gateway` 需要先有 Gateway API 和 Envoy Gateway CRD，业务 Chart 还依赖固定的 release name、Namespace 和 values。早期版本里，release name 或 Namespace 只要和文档有一点出入，前端就可能看不到 GPU 指标。
+
+在当时的流程里，只要集群不止一个节点，镜像还得先推到客户的 Registry，再逐个修改所有 Chart 的 values，把公网镜像地址换成内网地址。镜像漏一次，不只是补一个文件，还要重新核对整套镜像映射。
 
 客户自己操作时，错误往往会连在一起：解压目录混入 macOS 特征文件、漏导入镜像、不理解多份 values 的合并结果、改坏默认 values、颠倒 CRD 和主 Chart 的安装顺序，或者把同一批资源交给两套 Helm 流程管理。
 
@@ -80,7 +86,11 @@ HAMi AI 平台不是一个 Chart，而是一组有前后关系的组件：
 
 头两天我同时推进两条线：一条照着自研方案写脚本，一条验证 Zarf。差距很快就出来了。Zarf 线已经能创建 package 并跑通基本部署，手搓脚本还困在失败恢复和边界条件里。
 
+我还发推问了圈子里的朋友。样本当然不大，但结果很有意思：真正做过离线交付的人大多在忙着手搓脚本，没做过的人反而觉得 Zarf 很新奇，想尝鲜。
+
 我之前用 Helmfile 做过多集群 Chart 交付，它很适合开发环境和频繁迭代，但这次还要处理离线镜像收集、内网 Registry 引导和制品检查。为了让 Helmfile 也做这些事，我还是得继续写代码。
+
+我给替代方案定的门槛很具体：两三条命令完成整套安装；能表达 Chart 和 CRD 的先后关系；原生支持部署前、部署后和失败后的 actions；镜像分发也不能再靠我维护另一套脚本系统。
 
 代码就是负债，软件的维护成本通常比第一版开发成本更高。Zarf 已经把 package、镜像分发、Chart 生命周期和 hooks 放在同一个模型里，自研方案就没有继续做下去。
 
@@ -118,7 +128,7 @@ ghcr.io/stefanprodan/podinfo:6.4.0
 
 v0.82.0 的 `labeled` policy 只改写显式标记 `zarf.dev/agent: mutate` 的 Namespace 或资源。当前 package 会在创建工作负载前设置所需标签；已有 Pod 不会因为后来补了标签而改变，需要重新创建才会再次经过 admission webhook。`zarf.dev/agent: ignore` 仍可排除单个资源或 Namespace。
 
-我后来才知道怎样在 `EnvoyProxy` CRD 里显式替换 Envoy 数据面镜像。在此之前，确实是 Zarf 稳稳地接住了我 🤡。
+我后来才知道怎样通过 `EnvoyProxy.spec.provider.kubernetes.envoyDeployment.container.image` 显式替换 Envoy 数据面镜像。在此之前，确实是 Zarf 稳稳地接住了我 🤡。
 
 ### component 和 actions 把顺序放回 package
 
@@ -146,7 +156,9 @@ hami-ai-platform-v0.0.3-airgap-amd64/
 └── kantaloupe/
 ```
 
-核心 `.tar.zst` 和外层 `.tar.gz` 都会生成 SHA-256，不能只校验其中一层。Zarf 创建 package 时默认生成 SBOM，构建后还可以检查 definition、镜像清单、OCI manifest digest 和 SBOM。
+`collect-cluster-info.sh` 和 `collect-hami-license-info.sh` 用于安装前后的环境与授权信息收集，`hami/` 和 `kantaloupe/` 则放需要随交付物一起提供的配置示例。它们留在目录树里，是因为离线交付物不只有 Zarf package，还要包含现场拿到包以后完成检查和配置所需的材料。
+
+核心 `.tar.zst` 和外层 `.tar.gz` 都会生成 SHA-256，不能只校验其中一层。Zarf 创建 package 时默认生成 SBOM，构建后还可以检查 definition、镜像清单、OCI manifest digest 和 SBOM。以前 SBOM 和漏洞报告像是交付后的另一项工作；现在 SBOM 会随 package 生成，`scan-vulnerabilities.sh` 再提取 SBOM 并调用 Grype 生成报告。不过这份报告仍需人工复核，当前脚本的退出码不能当成发布门禁。
 
 部署时选择与硬件、现有共享服务和产品范围匹配的 component：
 
@@ -160,6 +172,8 @@ VALUES_FILE=./package-values.yaml
   --values="${VALUES_FILE}" \
   --confirm
 ```
+
+同一个入口也用于失败后的重跑和新 package 升级；能不能安全升级，仍取决于 Chart、数据库、PVC 和 CRD 的迁移设计。
 
 我不再让现场手工安装十几个 Chart，但这不意味着一条命令跑完就能交差。执行前要确认 kubecontext、Kubernetes 版本、StorageClass、硬件驱动、现有 Helm release、CRD ownership、component 集合和 values。执行后再验证设备分配、Prometheus targets、Gateway 请求、数据库迁移和业务 API。
 
@@ -181,6 +195,8 @@ v0.82.0 可以直接使用 `--values` 和 `--set-values`，不再需要旧命令
 
 package 中的 `charts[].values` 映射也不能删。它决定 package values 怎样传给每个 Chart；升级只是移除了 feature gate，没有自动推断不同 Chart 的键路径。`--values` 在 CLI help 中仍标记为 Alpha，发布前需要保留 manifest render 和 package inspect。
 
+当前 package 的多个 Chart 都把 package values 的根节点映射到 Chart values 的根节点。如果两边都有 `foo.bar` 或 `global.*` 这类同名配置，一份 package values 就可能同时影响多个 Chart；CLI 又不能把某个 values 文件只交给指定 component。正因为如此，package values 的键名和 `charts[].values` 映射必须按整套软件设计，不能把现场已有的 Chart values 不加区分地塞进去。
+
 这也影响了我维护业务 Chart 的方式：尽可能不让实施人员配置；确实要配时，多做选择题，少做填空题。比如暴露 AI 平台服务，可以在 Envoy Gateway NodePort、LoadBalancer 和只保留 ClusterIP 之间选择，而不是让现场临时拼一套网关 values。
 
 ### Server-Side Apply 治不好 Helm Secret 超限
@@ -199,22 +215,32 @@ Secret "sh.helm.release.v1.eg-crds.v1" is invalid: data too long: must have at m
 
 Server-Side Apply 解决的是字段提交，Helm release Secret 属于另一条生命周期。把两者都归结成「CRD 太大」，很容易开错药。
 
-### 镜像发现不是一个 pass，而是失败后加出来的四层保险
+### 构建时：镜像还是不全
 
-一开始我以为把 Chart 完整 render 一遍，再抓取 `image:` 就够了。后来发现不够，于是继续加：
+如果 Zarf 自己就能找全所有镜像，也不需要我继续写这些补丁了。
 
-- `zarf dev inspect manifests`：从最终 Kubernetes manifest 提取显式镜像；
-- `zarf dev find-images`：扫描 Chart 模板，`--why` 可以追查镜像来源；
-- `update-gpu-operator-images.py`：单独处理 GPU Operator 的 OS 后缀、`Chart.appVersion`、子 Chart 和合并后 values；
-- `known-images.txt`：记录 Envoy 数据面、HAMi `mock-device-plugin` 等控制器运行时创建的镜像。
+最典型的是 GPU Operator。一开始我以为把 Chart 完整 render 一遍，再抓取 `image:` 就够了。后来才发现，问题不只是镜像「藏得深」，而是有些镜像从机制上就不会出现在一次静态渲染里：GPU Operator 会根据 values、Chart 版本和目标操作系统拼出镜像，Envoy Gateway 等控制器还会在运行时创建工作负载。这正是早期脚本反复漏镜像的原因。
 
-最后用一条命令交叉比较自动发现、`zarf.yaml` 和手工清单：
+我后来把 `discover-images.sh` 做成了四层保险，其中前三层负责自动发现：
+
+- **Pass 1：`zarf dev inspect manifests`**。先把 `zarf.yaml` 里的 Chart 完整 render 成最终 Kubernetes manifest，再提取已经落成资源对象的显式镜像。
+- **Pass 2：`zarf dev find-images`**。从 Chart 模板继续找没有进入最终 manifest 的镜像引用；必要时可以用 `--why` 追查来源，再解析 YAML 输出。
+- **Pass 3：`update-gpu-operator-images.py`**。GPU Operator 的 driver、GDS 和 GDRCopy 镜像带有操作系统后缀，需要查询 Registry tags API；部分组件版本继承 `Chart.appVersion`，启用状态还取决于合并后的 values，内置 NFD 子 Chart 也要单独处理。实现思路参考了 NVIDIA 的 [gpu-operator#2367](https://github.com/NVIDIA/gpu-operator/pull/2367)。当时项目固定的旧 Chart release 没有可直接使用的完整镜像清单，因此我把相关逻辑移植到仓库里。
+- **第四层：`known-images.txt`**。Envoy 数据面、HAMi `mock-device-plugin` 等镜像由控制器在运行时创建，不会出现在 Helm 模板里。对这批数量有限、来源明确的镜像，我没有再叠一层脆弱的自动推导，而是保留显式名单。这里「能审查」比「看起来全自动」更重要。
+
+最后用一条命令交叉比较自动发现结果、`zarf.yaml` 和手工清单：
 
 ```bash
 ./scripts/discover-images.sh --check .
 ```
 
-发布时不能只看退出码。三个自动 pass 都要成功，`MISSING` 和 `KNOWN-MISSING` 必须为空，`MANUAL` 要逐项审查。
+报告里的三个状态分别表示：
+
+- **`MISSING`**：自动发现了，但 `zarf.yaml` 没有声明；
+- **`MANUAL`**：`zarf.yaml` 已经声明，但自动发现没有覆盖；
+- **`KNOWN-MISSING`**：`known-images.txt` 已经记录，但 `zarf.yaml` 仍然遗漏。
+
+发布时不能只看退出码。三个自动 pass 都要成功，`MISSING` 和 `KNOWN-MISSING` 必须为空，`MANUAL` 要逐项确认来源。因为离线交付里最吓人的从来不是镜像多，而是以为已经找全，到了现场才发现包里少了一个。
 
 架构是另一层问题。`zarf package create --architecture arm64` 只告诉 Zarf 选择哪个平台，不能保证输入一定是 ARM64。单架构 AMD64 manifest 或错误架构的本地 image archive 仍可能进入名为 arm64 的 package。构建前要检查输入，构建后还要检查 package 的镜像清单和内部索引。
 
@@ -226,7 +252,7 @@ package 签名也是同样的道理。v0.82.0 支持 `--verify`、`--trusted-roo
 
 ## Zarf 没替我解决什么
 
-最先踩到的是资源所有权。我试过同时用 Zarf 和 Helm 管同一批资源，后来专门建了 Helmfile repo 处理开发环境。现在迁移已有资源时才考虑 `--take-ownership`；`--force-conflicts` 处理的是 Server-Side Apply 字段所有权冲突，不是一个更强的「覆盖安装」开关。
+最先踩到的是资源所有权。我试过同时用 Zarf 和 Helm 管同一批资源，后来专门建了 Helmfile repo 处理开发环境。不能想着装完以后就把 Zarf 一脚踢开，再用 Helm 管回同一批资源；两个管理者迟早会在 ownership、升级或状态判断上打架。现在迁移已有资源时才考虑 `--take-ownership`；`--force-conflicts` 处理的是 Server-Side Apply 字段所有权冲突，不是一个更强的「覆盖安装」开关。
 
 数据库、PVC 和 CRD 也不会因为进入 Zarf package 就获得事务回滚。fresh install、N-1 upgrade、真实设备分配、数据库迁移和 Gateway 请求仍要在测试集群验收，Pod 全部 `Running` 只能说明检查刚刚开始。
 
