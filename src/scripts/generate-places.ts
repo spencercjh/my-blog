@@ -42,6 +42,7 @@ const countryCodeMap: Record<string, string> = {
   台湾: 'TW',
   越南: 'VN',
   柬埔寨: 'KH',
+  马来西亚: 'MY',
 };
 
 function getCountryCode(countryName?: string): string | undefined {
@@ -118,6 +119,9 @@ function inferEnglishName(name: string): string | undefined {
     天津市: 'Tianjin',
     甲米: 'Krabi',
     攀牙湾: 'Phang Nga Bay',
+    哥打京那巴鲁: 'Kota Kinabalu',
+    山打根: 'Sandakan',
+    基纳巴唐岸: 'Kinabatangan',
   };
   return commonNames[name];
 }
