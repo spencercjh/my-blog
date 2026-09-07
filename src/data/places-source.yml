@@ -435,3 +435,18 @@
 - name: 六安市
   firstVisitDate: '2026-08'
   description: 横排头观鸟
+
+- name: 哥打京那巴鲁
+  country: 马来西亚
+  firstVisitDate: '2026-09'
+  description: 观鸟之旅
+
+- name: 山打根
+  country: 马来西亚
+  firstVisitDate: '2026-09'
+  description: 观鸟之旅
+
+- name: 基纳巴唐岸
+  country: 马来西亚
+  firstVisitDate: '2026-09'
+  description: 观鸟之旅
