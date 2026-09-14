@@ -803,6 +803,14 @@ export const PLACES: Place[] = [
     description: '横排头观鸟',
   },
   {
+    name: '东台市',
+    country: '中国',
+    lat: 32.735374,
+    lng: 120.855194,
+    firstVisitDate: '2026-09',
+    description: '条子泥、川水湾观鸟',
+  },
+  {
     name: '哥打京那巴鲁',
     nameEn: 'Kota Kinabalu',
     country: '马来西亚',
