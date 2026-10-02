@@ -2,7 +2,12 @@
   // This file is not used in compilation. It is here just for a nice editor experience.
   "extends": "@docusaurus/tsconfig",
   "compilerOptions": {
-    "baseUrl": ".",
+    // Clear the legacy option inherited from Docusaurus for TypeScript 7.
+    "baseUrl": null,
+    "paths": {
+      "@site/*": ["./*"],
+      "*": ["./*"]
+    },
     "ignoreDeprecations": "6.0"
   },
   "exclude": [".docusaurus", "build"]
