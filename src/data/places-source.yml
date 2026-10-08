@@ -1,6 +1,10 @@
 # 地点数据源文件
-# 只需输入名称、初次访问日期、国家和备注，坐标将通过构建脚本自动获取
-# country 可选，不指定则使用 API 返回结果
+# 必填字段：name、firstVisitDate；可选字段：country、description。
+# country 是有效字段，例如 中国、马来西亚；不要因示例省略该字段而删除。
+# 国家取值顺序：源记录的 country → places.ts 已有记录的 country → 地理编码结果的 country。
+# 查询新坐标时，生成器会将有国家代码映射的 country 用作国家限制。
+# lat、lng 保存在 places.ts 中；生成器优先复用已有坐标，仅为未缓存地点查询坐标。
+# 字段定义和读取逻辑见 src/scripts/generate-places.ts 的 PlaceSource、resolvePlace。
 
 - name: 上海市
   firstVisitDate: '1998'
@@ -455,3 +459,27 @@
   country: 马来西亚
   firstVisitDate: '2026-09'
   description: 观鸟之旅
+
+# 定位点：贵州宽阔水国家级自然保护区
+- name: 遵义市
+  country: 中国
+  firstVisitDate: '2026-10'
+  description: 国庆观鸟自然之旅
+
+# 定位点：市中心
+- name: 黔西市
+  country: 中国
+  firstVisitDate: '2026-10'
+  description: 国庆观鸟自然之旅
+
+# 定位点：织金洞景区入口
+- name: 织金县
+  country: 中国
+  firstVisitDate: '2026-10'
+  description: 国庆观鸟自然之旅
+
+# 定位点：观山湖公园内，管理处附近
+- name: 贵阳市
+  country: 中国
+  firstVisitDate: '2026-10'
+  description: 国庆观鸟自然之旅
