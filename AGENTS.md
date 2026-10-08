@@ -31,33 +31,49 @@ This is a personal blog built with Docusaurus 3.7.0, configured for Chinese lang
 
 ### Places Data Entry Workflow
 
-**目的**: 简化地点数据录入，自动获取坐标。
+**目的**: 简化地点数据录入，复用已有坐标，并为新地点自动获取坐标。
 
 **流程**:
 
-1. 编辑 `src/data/places-source.yml` 添加新地点
-2. 只需输入: 名称(name)、初次访问日期(firstVisitDate)、备注(description)
-3. 运行 `npm run generate-places` 自动生成坐标和 places.ts
+1. 编辑 `src/data/places-source.yml` 添加新地点。
+2. 填写必填字段 `name`、`firstVisitDate`，按需填写可选字段 `country`、`description`。
+3. 运行 `npm run generate-places` 生成 `src/data/places.ts`。
 
-**数据格式** (places-source.yml):
+**源记录字段**:
+
+| 字段             | 类型   | 是否必填 | 说明                                                                                          |
+| ---------------- | ------ | -------- | --------------------------------------------------------------------------------------------- |
+| `name`           | string | 是       | 地点的显示名称。                                                                              |
+| `firstVisitDate` | string | 是       | 初次访问日期，推荐使用 `YYYY-MM` 或 `YYYY-MM-DD`。                                            |
+| `country`        | string | 否       | 有效的国家字段，例如 `中国`、`马来西亚`；优先用于生成结果，查询新坐标时也会传给地理编码函数。 |
+| `description`    | string | 否       | 地点备注。                                                                                    |
+
+**数据格式** (`places-source.yml`):
 
 ```yaml
 - name: 上海市
-  firstVisitDate: 2024-05-01 # 或 2024-05（精确到月）
+  country: 中国
+  firstVisitDate: '2024-05-01' # 或 '2024-05'（精确到月）
   description: 2024年5月上海之行
 
 - name: 北京市
-  firstVisitDate: 2023-10
+  firstVisitDate: '2023-10'
 ```
 
-**说明**:
+**生成规则**:
 
-- 坐标通过 OpenStreetMap Nominatim API 自动获取（免费，无需 API Key）
-- 常见城市名称会自动添加英文名称
-- 生成的 places.ts 包含完整坐标数据，可直接使用
-- 避免手动查找坐标，减少错误
+- 生成器按 `name` 与规范化后的 `firstVisitDate` 匹配已有 `places.ts` 记录，优先复用坐标，仅为未缓存的地点调用 OpenStreetMap Nominatim API。
+- 国家按源记录的 `country`、已有记录的 `country`、地理编码结果的 `country` 的顺序取值。有效的 `country` 字段应保留。
+- 查询新坐标时，若 `country` 在生成器的国家代码映射中有对应项，则使用 `countrycodes` 限定查询国家。
+- `lat`、`lng` 属于 `places.ts` 的地图数据，不在源记录中配置。显示名称与实际定位点不同时，在源文件注释中记录定位点，并将确认后的坐标保存在 `places.ts` 中供后续生成复用。
+- 常见城市名称会自动添加英文名称。
 
-**依赖**: js-yaml, @types/js-yaml, ts-node
+**Agent 审阅要求**:
+
+- 审阅源记录字段时，核对 `src/scripts/generate-places.ts` 中的 `PlaceSource` 类型和 `resolvePlace` 实际读取逻辑。示例省略可选字段，不表示这些字段无效。
+- `country` 是受支持的可选字段，不得仅因示例未包含该字段或坐标由生成器处理而要求删除。
+
+**依赖**: js-yaml、tsx、prettier。
 
 ## Architecture & Structure
 
