@@ -455,3 +455,27 @@
   country: 马来西亚
   firstVisitDate: '2026-09'
   description: 观鸟之旅
+
+# 定位点：贵州宽阔水国家级自然保护区
+- name: 遵义市
+  country: 中国
+  firstVisitDate: '2026-10'
+  description: 国庆观鸟自然之旅
+
+# 定位点：市中心
+- name: 黔西市
+  country: 中国
+  firstVisitDate: '2026-10'
+  description: 国庆观鸟自然之旅
+
+# 定位点：织金洞景区入口
+- name: 织金县
+  country: 中国
+  firstVisitDate: '2026-10'
+  description: 国庆观鸟自然之旅
+
+# 定位点：观山湖公园内，管理处附近
+- name: 贵阳市
+  country: 中国
+  firstVisitDate: '2026-10'
+  description: 国庆观鸟自然之旅
