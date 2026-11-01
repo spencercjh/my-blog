@@ -41,7 +41,7 @@
     "husky": "^9.1.7",
     "js-yaml": "^5.4.2",
     "lint-staged": "^17.6.0",
-    "prettier": "3.9.6",
+    "prettier": "3.9.10",
     "tsx": "^4.23.15",
     "typescript": "~7.0.2"
   },
